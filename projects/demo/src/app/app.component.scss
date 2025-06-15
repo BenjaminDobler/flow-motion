@@ -1,0 +1,32 @@
+:host {
+  position: relative;
+}
+
+.drag-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(100, 100, 100, 0.5);
+  width: 200px;
+  height: 200px;
+  border-radius: 6px;
+}
+
+.drag-child {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  bottom: 0;
+  background: #ff0000;
+}
+
+.draw {
+  stroke-dasharray: 10;
+  animation: dashdraw 4s linear infinite;
+}
+@keyframes dashdraw {
+  to {
+    stroke-dashoffset: 200;
+  }
+}

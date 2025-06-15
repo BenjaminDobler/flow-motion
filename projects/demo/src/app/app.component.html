@@ -1,0 +1,76 @@
+<div dragworld style="border: solid 1px #000">
+  <svg viewBox="0 0 1000 1000" height="100%" width="100%">
+    @for (link of dragService.links(); track $index) {
+      <path
+        class="draw"
+        stroke="cornflowerblue"
+        stroke-width="3"
+        [attr.d]="link().path2"
+        fill="none"
+        stroke-dasharray="10"
+      />
+    }
+  </svg>
+
+  <div
+    id="container1"
+    [draggable]
+    #draggableRef="draggable"
+    class="drag-container"
+  >
+    <div
+      id="property1"
+      style="top: 30px"
+      [draggable]
+      class="drag-prop drag-child"
+    ></div>
+    <div
+      id="property2"
+      style="top: 60px"
+      [draggable]
+      class="drag-prop drag-child"
+    ></div>
+    <div id="property3" [draggable] class="drag-prop drag-child"></div>
+
+    {{ draggableRef.x() }} x {{ draggableRef.y() }}
+  </div>
+
+  <div
+    id="container2"
+    [draggable]
+    #draggableRef2="draggable"
+    class="drag-container"
+  >
+    <div
+      id="property4"
+      style="top: 30px; right: 0"
+      [draggable]
+      class="drag-prop drag-child"
+    ></div>
+    <div
+      id="property5"
+      style="top: 60px; right: 0"
+      [draggable]
+      class="drag-prop drag-child"
+    ></div>
+    <div
+      id="property6"
+      [draggable]
+      style="right: 0"
+      class="drag-prop drag-child"
+    ></div>
+
+    {{ draggableRef2.x() }} x {{ draggableRef2.y() }}
+  </div>
+</div>
+
+<div style="position: absolute; right: 0; top: 0">
+  @for (drag of dragService.dragElements(); track $index) {
+    <div> ID: {{ drag.id }} Global: {{ drag.gX() }}x{{ drag.gY() }}  Local: {{ drag.x() }}x{{ drag.y() }}</div>
+  }
+  @for (link of dragService.links(); track $index) {
+    {{ link().x1 }} {{ link().y1 }} {{ link().x2 }} {{ link().y2 }}
+  }
+
+  <button (click)="dragService.createLink()">Create Link</button>
+</div>
