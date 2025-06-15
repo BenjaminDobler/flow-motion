@@ -15,6 +15,7 @@ import { makeDraggable } from './drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DragService } from '../../services/drag.service';
 import { DragWorld } from '../drag-world/drag.world';
+import { DragProperty } from '../drag-property/drag-property.directive';
 
 @Directive({
   selector: '[draggable]',
@@ -65,9 +66,9 @@ export class DraggerDirective {
 
   public resizeOffset = 5;
 
-  draggableChildren = viewChildren<DraggerDirective>(DraggerDirective);
+  draggableChildren = viewChildren<DragProperty>(DragProperty);
   draggableContentChildren =
-    contentChildren<DraggerDirective>(DraggerDirective);
+    contentChildren<DragProperty>(DragProperty);
 
   dragService: DragService = inject(DragService);
 

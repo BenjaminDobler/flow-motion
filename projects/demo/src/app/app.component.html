@@ -51,16 +51,16 @@
     <div
       id="property1"
       style="top: 30px"
-      [draggable]
+      dragproperty="property1"
       class="drag-prop drag-child"
     ></div>
     <div
       id="property2"
       style="top: 60px"
-      [draggable]
+      dragproperty="property2"
       class="drag-prop drag-child"
     ></div>
-    <div id="property3" [draggable] class="drag-prop drag-child"></div>
+    <div id="property3" dragproperty="property3" class="drag-prop drag-child"></div>
   </div>
 
   <div
@@ -72,18 +72,18 @@
     <div
       id="property4"
       style="top: 30px; right: 0"
-      [draggable]
+      dragproperty="property4"
       class="drag-prop drag-child"
     ></div>
     <div
       id="property5"
       style="top: 60px; right: 0"
-      [draggable]
+      dragproperty="property5"
       class="drag-prop drag-child"
     ></div>
     <div
       id="property6"
-      [draggable]
+      dragproperty="property6"
       style="right: 0"
       class="drag-prop drag-child"
     ></div>
@@ -98,16 +98,20 @@
     <div
       id="property7"
       style="top: 30px"
-      [draggable]
+      dragproperty="property1"
       class="drag-prop drag-child"
     ></div>
     <div
       id="property8"
       style="top: 60px"
-      [draggable]
+      dragproperty="property1"
       class="drag-prop drag-child"
     ></div>
-    <div id="property9" [draggable] class="drag-prop drag-child"></div>
+    <div
+      id="property9"
+      dragproperty="property9"
+      class="drag-prop drag-child"
+    ></div>
   </div>
 </div>
 
@@ -122,10 +126,13 @@
 
   <h3>Links</h3>
   @for (link of dragService.links(); track $index) {
-    <div>{{link().inputId}}: {{ link().x1 }}x{{ link().y1 }} {{link().outputId}}: {{ link().x2 }}x{{ link().y2 }}</div>
+    <div>
+      {{ link().inputId }}: {{ link().x1 }}x{{ link().y1 }}
+      {{ link().outputId }}: {{ link().x2 }}x{{ link().y2 }}
+    </div>
   }
 
-  <br>
+  <br />
   <button (click)="dragService.createLink('property1', 'property4')">
     Create Link
   </button>
