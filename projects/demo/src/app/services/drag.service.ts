@@ -6,8 +6,11 @@ type Link = Signal<{
   y1: number | undefined;
   x2: number | undefined;
   y2: number | undefined;
+  stroke: string;
   path: string;
   path2: string;
+  inputId: string;
+  outputId: string;
 }>;
 
 export class DragService {
@@ -30,19 +33,31 @@ export class DragService {
     this.dragElements.update((x) => x.filter((e) => e !== el));
   }
 
-  createLink() {
-    const p1 = this.dragElements().find((d) => d.id === 'property1');
-    const p2 = this.dragElements().find((d) => d.id === 'property4');
+  createLink(id1: string, id2: string, stroke = 'cornflowerblue') {
+    const p1 = this.dragElements().find((d) => d.id === id1);
+    const p2 = this.dragElements().find((d) => d.id === id2);
 
-    const link = computed(() => ({
-      x1: p1?.gX(),
-      y1: p1?.gY(),
-      x2: p2?.gX(),
-      y2: p2?.gY(),
-      path: `M ${p1?.gX()} ${p1?.gY()} L ${p2?.gX()} ${p2?.gY()}`,
-      path2: `M ${p1?.gX()} ${p1?.gY()} C ${p2?.gX()} ${p1?.gY()} ${p1?.gX()} ${p2?.gY()} ${p2?.gX()} ${p2?.gY()}`,
-    }));
+    const x1 = p1?.gX();
+    const y1 = p1?.gY();
+    const x2 = p2?.gX();
+    const y2 = p2?.gY();
 
-    this.links.update((x) => [...x, link]);
+    const yOffset = 10;
+
+    if (p1 && p2) {
+      const link = computed(() => ({
+        x1:p1?.gX(),
+        y1:p1.gY(),
+        x2:p2.gX(),
+        y2:p2.gY(),
+        inputId: id1,
+        outputId: id2,
+        stroke,
+        path: `M ${p1?.gX()} ${p1?.gY()} L ${p2?.gX()} ${p2?.gY()}`,
+        path2: `M ${p1?.gX()} ${p1?.gY() + yOffset} C ${p2?.gX()} ${p1?.gY() + yOffset} ${p1?.gX()} ${p2?.gY() + yOffset} ${p2?.gX()} ${p2?.gY() + yOffset}`,
+      }));
+
+      this.links.update((x) => [...x, link]);
+    }
   }
 }
