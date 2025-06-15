@@ -1,18 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DraggerDirective } from './directives/drag-directive/dragger.directive';
-import { DragService } from './services/drag.service';
-import { DragWorld } from './directives/drag-world/drag.world';
+import { NgBondService } from './services/ngbond.service';
 import { DragProperty } from './directives/drag-property/drag-property.directive';
+import { NgBondContainerComponent } from './components/ng-bond-container/ng-bond-container.component';
 
 @Component({
   selector: 'app-root',
-  imports: [DraggerDirective, DragWorld, DragProperty],
+  imports: [DraggerDirective, DragProperty, NgBondContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [DragService]
+  providers: [NgBondService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   title = 'demo';
 
-  protected dragService: DragService = inject(DragService);
+  protected ngBondService: NgBondService = inject(NgBondService);
 }

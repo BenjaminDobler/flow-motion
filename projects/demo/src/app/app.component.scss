@@ -14,20 +14,12 @@
 
 .drag-child {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
   top: 0;
   bottom: 0;
-  background: #ff0000;
+  background: #c9c9c9;
   border-radius: 100%;
 }
 
-.draw {
-  stroke-dasharray: 10;
-  animation: dashdraw 4s linear infinite;
-}
-@keyframes dashdraw {
-  to {
-    stroke-dashoffset: 200;
-  }
-}
+

@@ -19,7 +19,7 @@ interface DragPoint {
   gY: Signal<number>;
 }
 
-export class DragService {
+export class NgBondService {
   dragElements = signal<(DraggerDirective | DragProperty)[]>([]);
 
   links = signal<Link[]>([]);
@@ -40,8 +40,8 @@ export class DragService {
   }
 
   createLink(id1: string, id2: string, stroke = 'cornflowerblue') {
-    const p1 = this.dragElements().find((d) => d.id === id1);
-    const p2 = this.dragElements().find((d) => d.id === id2);
+    const p1 = this.dragElements().find((d) => d.id() === id1);
+    const p2 = this.dragElements().find((d) => d.id() === id2);
 
     const x1 = p1?.gX();
     const y1 = p1?.gY();
@@ -72,7 +72,8 @@ export class DragService {
     dragPoint: DragPoint,
     stroke = 'cornflowerblue',
   ) {
-    const p1 = this.dragElements().find((d) => d.id === id1);
+    console.log('create preview link');
+    const p1 = this.dragElements().find((d) => d.id() === id1);
     const p2 = dragPoint;
 
     const x1 = p1?.gX();
@@ -80,7 +81,7 @@ export class DragService {
     const x2 = p2?.gX();
     const y2 = p2?.gY();
 
-    const yOffset = 10;
+    const yOffset = 7;
 
     if (p1 && p2) {
       const link = computed(() => ({
@@ -102,6 +103,10 @@ export class DragService {
   }
 
   removePreview(link: any) {
+    this.links.update((x) => x.filter((l) => l !== link));
+  }
+
+  removeLink(link: any) {
     this.links.update((x) => x.filter((l) => l !== link));
   }
 

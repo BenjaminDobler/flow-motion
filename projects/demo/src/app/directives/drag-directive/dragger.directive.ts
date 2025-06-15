@@ -1,7 +1,6 @@
 import {
   contentChildren,
   Directive,
-  effect,
   ElementRef,
   EventEmitter,
   inject,
@@ -9,18 +8,17 @@ import {
   Input,
   model,
   Output,
-  viewChildren,
 } from '@angular/core';
 import { makeDraggable } from './drag.util';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DragService } from '../../services/drag.service';
-import { DragWorld } from '../drag-world/drag.world';
+import { NgBondService } from '../../services/ngbond.service';
 import { DragProperty } from '../drag-property/drag-property.directive';
+import { NgBondContainerComponent } from '../../components/ng-bond-container/ng-bond-container.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Directive({
-  selector: '[draggable]',
+  selector: '[bondcontainer]',
   standalone: true,
-  exportAs: 'draggable',
+  exportAs: 'bondcontainer',
 })
 export class DraggerDirective {
   el: ElementRef = inject(ElementRef);
@@ -31,20 +29,14 @@ export class DraggerDirective {
   @Input()
   resizable = true;
 
-  @Input()
-  id?: string;
+  id = input<string>('', {alias: 'bondcontainer'});
+
 
   @Input()
   minWidth = 0;
 
   @Input()
   minHeight = 0;
-
-  // @Input()
-  // x = 0;
-
-  // @Input()
-  // y = 0;
 
   x = model(0);
   y = model(0);
@@ -64,23 +56,22 @@ export class DraggerDirective {
   @Output()
   heightUpdated: EventEmitter<number> = new EventEmitter<number>();
 
+  onDestroy$ = new Subject<void>();
+
   public resizeOffset = 5;
 
-  draggableChildren = viewChildren<DragProperty>(DragProperty);
-  draggableContentChildren =
-    contentChildren<DragProperty>(DragProperty);
+  draggableContentChildren = contentChildren<DragProperty>(DragProperty);
+  dragContainerContentChildren =
+    contentChildren<DraggerDirective>(DraggerDirective);
 
-  dragService: DragService = inject(DragService);
+  ngBondService: NgBondService = inject(NgBondService);
 
-  dragWorld: DragWorld = inject(DragWorld);
+  dragWorld: NgBondContainerComponent = inject(NgBondContainerComponent);
 
-  constructor() {
-    effect(() => {
-      console.log(this.draggableChildren());
-      console.log(this.draggableContentChildren());
-    });
+  ngAfterViewInit() {
     const itemElement = this.el?.nativeElement;
     let parentElement = itemElement.parentElement;
+    console.log(itemElement, parentElement);
     let parentRect = parentElement.getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
 
@@ -117,17 +108,18 @@ export class DraggerDirective {
       this.gY.set(gY);
 
       this.draggableContentChildren().forEach((c) => c.updatePosition());
+      this.dragContainerContentChildren().forEach((c) => c.updatePosition());
 
       this.positionUpdated.emit({ x, y });
     };
 
     const drag = makeDraggable(itemElement);
 
-    drag.dragStart$.pipe(takeUntilDestroyed()).subscribe(() => {
+    drag.dragStart$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
       itemRect = itemElement.getBoundingClientRect();
       parentRect = parentElement.getBoundingClientRect();
     });
-    drag.dragMove$.pipe(takeUntilDestroyed()).subscribe((move) => {
+    drag.dragMove$.pipe(takeUntil(this.onDestroy$)).subscribe((move) => {
       this.resizeOffset = this.resizable ? this.resizeOffset : 0;
 
       const isBottomHeightDrag =
@@ -188,10 +180,12 @@ export class DraggerDirective {
       }
     });
 
-    drag.dragStart$.pipe(takeUntilDestroyed()).subscribe(() => {
-      // console.log('drag start');
-    });
+    // drag.dragStart$.pipe(takeUntilDestroyed()).subscribe(() => {
+    //   // console.log('drag start');
+    // });
   }
+
+  constructor() {}
 
   updatePosition() {
     const itemElement = this.el?.nativeElement;
@@ -215,14 +209,19 @@ export class DraggerDirective {
 
     this.gX.set(gX);
     this.gY.set(gY);
+
+    this.draggableContentChildren().forEach((c) => c.updatePosition());
+    this.dragContainerContentChildren().forEach((c) => c.updatePosition());
   }
 
   ngOnInit() {
-    this.dragService.registerDraggableElement(this);
+    this.ngBondService.registerDraggableElement(this);
     this.updatePosition();
   }
 
   ngOnDestroy() {
-    this.dragService.removeDraggableElement(this);
+    this.ngBondService.removeDraggableElement(this);
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 }

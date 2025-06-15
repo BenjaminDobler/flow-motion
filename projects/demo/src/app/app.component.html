@@ -1,147 +1,99 @@
-<div
-  dragworld
-  style="
-    position: relative;
-    width: 1000px;
-    height: 1000px;
-    border: solid 1px #000;
-  "
->
-  <svg
-    #svg_canvas
-    style="position: absolute; top: 0; left: 0"
-    style="background: #111"
-    width="1000"
-    height="1000"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <defs>
-      <pattern id=":S4:" patternUnits="userSpaceOnUse" width="20" height="20">
-        <circle r="1" cx="10" cy="10" fill="#313131"></circle>
-      </pattern>
-    </defs>
-
-    <rect id="canvas_bg" width="100%" height="100%" fill="url(#:S4:)"></rect>
-  </svg>
-
-  <svg
-    style="position: absolute; left: 0; top: 0"
-    viewBox="0 0 1000 1000"
-    height="100%"
-    width="100%"
-  >
-    @for (link of dragService.links(); track $index) {
-      <path
-        class="draw"
-        [attr.stroke]="link().stroke"
-        stroke-width="3"
-        [attr.d]="link().path2"
-        fill="none"
-        stroke-dasharray="10"
-      />
-    }
-  </svg>
-
-  <div
-    id="container1"
-    [draggable]
-    #draggableRef="draggable"
-    class="drag-container"
-  >
+<ng-bond-container>
+  <div bondcontainer="container1" class="drag-container">
     <div
-      id="property1"
+      bondproperty="property1"
       style="top: 30px"
-      dragproperty="property1"
       class="drag-prop drag-child"
     ></div>
     <div
-      id="property2"
+      bondproperty="property2"
       style="top: 60px"
-      dragproperty="property2"
       class="drag-prop drag-child"
     ></div>
-    <div id="property3" dragproperty="property3" class="drag-prop drag-child"></div>
+    <div bondproperty="property3" class="drag-prop drag-child"></div>
   </div>
 
-  <div
-    id="container2"
-    [draggable]
-    #draggableRef2="draggable"
-    class="drag-container"
-  >
+  <div bondcontainer="container2" class="drag-container">
     <div
-      id="property4"
+      bondproperty="property4"
       style="top: 30px; right: 0"
-      dragproperty="property4"
       class="drag-prop drag-child"
     ></div>
     <div
-      id="property5"
+      bondproperty="property5"
       style="top: 60px; right: 0"
-      dragproperty="property5"
       class="drag-prop drag-child"
     ></div>
     <div
-      id="property6"
-      dragproperty="property6"
+      bondproperty="property6"
       style="right: 0"
       class="drag-prop drag-child"
     ></div>
+
+    <div
+      bondcontainer="inner-container"
+      class="drag-container"
+      style="width: 100px; height: 100px"
+    >
+      <div
+        bondproperty="innerprop"
+        style="top: 50px; right: 50px"
+        class="drag-prop drag-child"
+      ></div>
+    </div>
   </div>
 
   <div
-    id="container3"
-    [draggable]
-    #draggableRef3="draggable"
+    bondcontainer="container3"
     class="drag-container"
   >
     <div
-      id="property7"
+      bondproperty="property7"
       style="top: 30px"
-      dragproperty="property1"
       class="drag-prop drag-child"
     ></div>
     <div
-      id="property8"
+      bondproperty="property8"
       style="top: 60px"
-      dragproperty="property1"
       class="drag-prop drag-child"
     ></div>
     <div
-      id="property9"
-      dragproperty="property9"
+      bondproperty="property9"
       class="drag-prop drag-child"
     ></div>
   </div>
-</div>
+</ng-bond-container>
 
 <div style="position: absolute; right: 0; top: 0">
   <h3>Targets</h3>
-  @for (drag of dragService.dragElements(); track $index) {
+  @for (drag of ngBondService.dragElements(); track $index) {
     <div>
-      ID: {{ drag.id }} Global: {{ drag.gX() }}x{{ drag.gY() }} Local:
+      ID: {{ drag.id() }} Global: {{ drag.gX() }}x{{ drag.gY() }} Local:
       {{ drag.x() }}x{{ drag.y() }}
     </div>
   }
 
   <h3>Links</h3>
-  @for (link of dragService.links(); track $index) {
+  @for (link of ngBondService.links(); track $index) {
     <div>
       {{ link().inputId }}: {{ link().x1 }}x{{ link().y1 }}
       {{ link().outputId }}: {{ link().x2 }}x{{ link().y2 }}
+      <button (click)="ngBondService.removeLink(link)">Remove</button>
     </div>
   }
 
   <br />
-  <button (click)="dragService.createLink('property1', 'property4')">
+  <button (click)="ngBondService.createLink('property1', 'property4')">
     Create Link
   </button>
   <br />
-  <button (click)="dragService.createLink('property2', 'property5', '#00ff00')">
+  <button
+    (click)="ngBondService.createLink('property2', 'property5', '#00ff00')"
+  >
     Create Link
   </button>
   <br />
-  <button (click)="dragService.createLink('property6', 'property8')">
+  <button (click)="ngBondService.createLink('property6', 'property8')">
     Create Link
   </button>
 </div>

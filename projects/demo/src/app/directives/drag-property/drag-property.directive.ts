@@ -1,48 +1,27 @@
 import {
-  contentChildren,
   Directive,
-  effect,
   ElementRef,
-  EventEmitter,
   inject,
   input,
-  Input,
   model,
-  Output,
+  output,
   Signal,
   signal,
-  viewChildren,
 } from '@angular/core';
 import { makeDraggable } from '../drag-directive/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DragService, Link } from '../../services/drag.service';
-import { DragWorld } from '../drag-world/drag.world';
-import { preserveWhitespacesDefault } from '@angular/compiler';
+import { NgBondService, Link } from '../../services/ngbond.service';
+import { NgBondContainerComponent } from '../../components/ng-bond-container/ng-bond-container.component';
 
 @Directive({
-  selector: '[dragproperty]',
+  selector: '[bondproperty]',
   standalone: true,
-  exportAs: 'dragproperty',
+  exportAs: 'bondproperty',
 })
 export class DragProperty {
   el: ElementRef = inject(ElementRef);
 
-  @Input()
-  positioning: 'none' | 'absolute' | 'transform' = 'absolute';
-
-  @Input()
-  resizable = true;
-
-  @Input()
-  id?: string;
-
-  @Input()
-  minWidth = 0;
-
-  @Input()
-  minHeight = 0;
-
-  dragproperty = input<string>('');
+  id = input<string>('', { alias: 'bondproperty' });
 
   x = model(0);
   y = model(0);
@@ -50,27 +29,15 @@ export class DragProperty {
   gX = model(0);
   gY = model(0);
 
-  @Output()
-  positionUpdated: EventEmitter<{ x: number; y: number }> = new EventEmitter<{
-    x: number;
-    y: number;
-  }>();
-
-  @Output()
-  widthUpdated: EventEmitter<number> = new EventEmitter<number>();
-
-  @Output()
-  heightUpdated: EventEmitter<number> = new EventEmitter<number>();
+  positionUpdated = output<{ x: number; y: number }>();
+  widthUpdated = output<number>();
+  heightUpdated = output<number>();
 
   public resizeOffset = 5;
 
-  //   draggableChildren = viewChildren<DraggerDirective>(DraggerDirective);
-  //   draggableContentChildren =
-  //     contentChildren<DraggerDirective>(DraggerDirective);
+  ngBondService: NgBondService = inject(NgBondService);
 
-  dragService: DragService = inject(DragService);
-
-  dragWorld: DragWorld = inject(DragWorld);
+  dragWorld: NgBondContainerComponent = inject(NgBondContainerComponent);
 
   constructor() {
     const itemElement = this.el.nativeElement;
@@ -84,11 +51,8 @@ export class DragProperty {
     let parentElement = itemElement.parentElement;
     let parentRect = parentElement.getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
-
     let worldRect = parentRect;
-
     let currentPreview: Signal<Link> | null;
-
     let isFirstMove = true;
 
     drag.dragStart$.pipe(takeUntilDestroyed()).subscribe((evt) => {
@@ -96,7 +60,7 @@ export class DragProperty {
       itemRect = itemElement.getBoundingClientRect();
       parentRect = parentElement.getBoundingClientRect();
       worldRect = parentRect;
-        isFirstMove = true;
+      isFirstMove = true;
       if (this.dragWorld) {
         let worldEl = this.dragWorld.el.nativeElement;
         worldRect = worldEl.getBoundingClientRect();
@@ -104,11 +68,12 @@ export class DragProperty {
     });
 
     drag.dragMove$.subscribe((move) => {
-      if (isFirstMove && this.id) {
-        currentPreview = this.dragService.createPreviewLink(
-          this.id,
+      console.log('move ', this.id());
+      if (isFirstMove && this.id()) {
+        currentPreview = this.ngBondService.createPreviewLink(
+          this.id(),
           dragPreview,
-          '#dedede'
+          '#dedede',
         ) as any;
         isFirstMove = false;
       }
@@ -126,18 +91,16 @@ export class DragProperty {
     });
 
     drag.dragEnd$.subscribe((e) => {
-      console.log('dragEnd', e);
-      //getComponent(e.originalEvent.target);
-      const targetComp = this.dragService.getComponent(e.originalEvent.target);
-      console.log(e.originalEvent.target);
-      console.log('target comp ', targetComp);
+      const targetComp = this.ngBondService.getComponent(
+        e.originalEvent.target,
+      );
 
-      if (this.id && targetComp?.id) {
-        this.dragService.createLink(this.id, targetComp.id);
+      if (this.id() && targetComp?.id()) {
+        this.ngBondService.createLink(this.id(), targetComp.id());
       }
 
       if (currentPreview) {
-        this.dragService.removePreview(currentPreview);
+        this.ngBondService.removePreview(currentPreview);
       }
     });
   }
@@ -167,11 +130,11 @@ export class DragProperty {
   }
 
   ngOnInit() {
-    this.dragService.registerDraggableElement(this);
+    this.ngBondService.registerDraggableElement(this);
     this.updatePosition();
   }
 
   ngOnDestroy() {
-    this.dragService.removeDraggableElement(this);
+    this.ngBondService.removeDraggableElement(this);
   }
 }
