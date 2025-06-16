@@ -20,6 +20,21 @@
   bottom: 0;
   background: #c9c9c9;
   border-radius: 100%;
+
+  &.has-link {
+    border: solid 1px red;
+    animation: pop-in 0.3s;
+  }
 }
 
-
+@keyframes pop-in {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

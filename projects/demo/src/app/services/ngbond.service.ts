@@ -1,6 +1,6 @@
 import { computed, effect, Signal, signal } from '@angular/core';
-import { DraggerDirective } from '../directives/drag-directive/dragger.directive';
-import { DragProperty } from '../directives/drag-property/drag-property.directive';
+import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
+import { NgBondProperty } from '../components/ng-bond-property/ng-bond-property';
 
 export type Link = Signal<{
   x1: number | undefined;
@@ -20,7 +20,7 @@ interface DragPoint {
 }
 
 export class NgBondService {
-  dragElements = signal<(DraggerDirective | DragProperty)[]>([]);
+  dragElements = signal<(NgBondContainer | NgBondProperty)[]>([]);
 
   links = signal<Link[]>([]);
 
@@ -31,24 +31,26 @@ export class NgBondService {
     });
   }
 
-  registerDraggableElement(el: DraggerDirective | DragProperty) {
+  registerDraggableElement(el: NgBondContainer | NgBondProperty) {
     this.dragElements.update((els) => [...els, el]);
   }
 
-  removeDraggableElement(el: DraggerDirective | DragProperty) {
+  removeDraggableElement(el: NgBondContainer | NgBondProperty) {
     this.dragElements.update((x) => x.filter((e) => e !== el));
   }
 
   createLink(id1: string, id2: string, stroke = 'cornflowerblue') {
-    const p1 = this.dragElements().find((d) => d.id() === id1);
-    const p2 = this.dragElements().find((d) => d.id() === id2);
+    const p1 = this.dragElements().find(
+      (d) => d.id() === id1,
+    ) as NgBondProperty;
+    const p2 = this.dragElements().find(
+      (d) => d.id() === id2,
+    ) as NgBondProperty;
 
-    const x1 = p1?.gX();
-    const y1 = p1?.gY();
-    const x2 = p2?.gX();
-    const y2 = p2?.gY();
+    p2.hasLink.set(true);
+    p1.hasLink.set(true);
 
-    const yOffset = 10;
+    const yOffset = 7;
 
     if (p1 && p2) {
       const link = computed(() => ({
@@ -76,11 +78,6 @@ export class NgBondService {
     const p1 = this.dragElements().find((d) => d.id() === id1);
     const p2 = dragPoint;
 
-    const x1 = p1?.gX();
-    const y1 = p1?.gY();
-    const x2 = p2?.gX();
-    const y2 = p2?.gY();
-
     const yOffset = 7;
 
     if (p1 && p2) {
@@ -107,6 +104,16 @@ export class NgBondService {
   }
 
   removeLink(link: any) {
+    const p1 = this.dragElements().find(
+      (d) => d.id() === link().inputId,
+    ) as NgBondProperty;
+    const p2 = this.dragElements().find(
+      (d) => d.id() === link().outputId,
+    ) as NgBondProperty;
+
+    p1.hasLink.set(false);
+    p2.hasLink.set(false);
+
     this.links.update((x) => x.filter((l) => l !== link));
   }
 

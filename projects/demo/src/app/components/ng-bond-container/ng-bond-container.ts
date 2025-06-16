@@ -8,11 +8,12 @@ import {
   Input,
   model,
   Output,
+  viewChildren,
 } from '@angular/core';
-import { makeDraggable } from './drag.util';
+import { makeDraggable } from '../util/drag.util';
 import { NgBondService } from '../../services/ngbond.service';
-import { DragProperty } from '../drag-property/drag-property.directive';
-import { NgBondContainerComponent } from '../../components/ng-bond-container/ng-bond-container.component';
+import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
+import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 import { Subject, takeUntil } from 'rxjs';
 
 @Directive({
@@ -20,7 +21,7 @@ import { Subject, takeUntil } from 'rxjs';
   standalone: true,
   exportAs: 'bondcontainer',
 })
-export class DraggerDirective {
+export class NgBondContainer {
   el: ElementRef = inject(ElementRef);
 
   @Input()
@@ -29,8 +30,7 @@ export class DraggerDirective {
   @Input()
   resizable = true;
 
-  id = input<string>('', {alias: 'bondcontainer'});
-
+  id = input<string>('', { alias: 'bondcontainer' });
 
   @Input()
   minWidth = 0;
@@ -60,13 +60,15 @@ export class DraggerDirective {
 
   public resizeOffset = 5;
 
-  draggableContentChildren = contentChildren<DragProperty>(DragProperty);
+  draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty);
   dragContainerContentChildren =
-    contentChildren<DraggerDirective>(DraggerDirective);
+    contentChildren<NgBondContainer>(NgBondContainer);
+
+  dragViewChildren = viewChildren<NgBondProperty>(NgBondProperty);
 
   ngBondService: NgBondService = inject(NgBondService);
 
-  dragWorld: NgBondContainerComponent = inject(NgBondContainerComponent);
+  dragWorld: NgBondWorld = inject(NgBondWorld);
 
   ngAfterViewInit() {
     const itemElement = this.el?.nativeElement;
@@ -74,6 +76,8 @@ export class DraggerDirective {
     console.log(itemElement, parentElement);
     let parentRect = parentElement.getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
+
+    console.log('init dragger directive ', this.id());
 
     let worldRect = parentRect;
     if (this.dragWorld) {
@@ -109,6 +113,8 @@ export class DraggerDirective {
 
       this.draggableContentChildren().forEach((c) => c.updatePosition());
       this.dragContainerContentChildren().forEach((c) => c.updatePosition());
+      this.dragViewChildren().forEach((c) => c.updatePosition());
+      console.log('drag view children ', this.dragViewChildren());
 
       this.positionUpdated.emit({ x, y });
     };

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DraggerDirective } from './directives/drag-directive/dragger.directive';
+import { NgBondContainer } from './components/ng-bond-container/ng-bond-container';
 import { NgBondService } from './services/ngbond.service';
-import { DragProperty } from './directives/drag-property/drag-property.directive';
-import { NgBondContainerComponent } from './components/ng-bond-container/ng-bond-container.component';
+import { NgBondProperty } from './components/ng-bond-property/ng-bond-property';
+import { NgBondWorld } from './components/ng-bond-world/ng-bond-world.component';
+import { PropertyContainerComponent } from './usage/components/property-container/property-container.component';
 
 @Component({
   selector: 'app-root',
-  imports: [DraggerDirective, DragProperty, NgBondContainerComponent],
+  imports: [NgBondContainer, NgBondProperty, NgBondWorld, PropertyContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [NgBondService],

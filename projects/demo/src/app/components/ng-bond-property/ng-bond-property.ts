@@ -8,17 +8,22 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { makeDraggable } from '../drag-directive/drag.util';
+import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgBondService, Link } from '../../services/ngbond.service';
-import { NgBondContainerComponent } from '../../components/ng-bond-container/ng-bond-container.component';
+import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 
 @Directive({
   selector: '[bondproperty]',
   standalone: true,
   exportAs: 'bondproperty',
+  host: {
+    '[class.has-link]': 'this.hasLink()'
+  }
 })
-export class DragProperty {
+export class NgBondProperty {
+
+  hasLink = signal<boolean>(false);
   el: ElementRef = inject(ElementRef);
 
   id = input<string>('', { alias: 'bondproperty' });
@@ -37,11 +42,13 @@ export class DragProperty {
 
   ngBondService: NgBondService = inject(NgBondService);
 
-  dragWorld: NgBondContainerComponent = inject(NgBondContainerComponent);
+  dragWorld: NgBondWorld = inject(NgBondWorld);
 
   constructor() {
     const itemElement = this.el.nativeElement;
     const drag = makeDraggable(itemElement);
+
+    
 
     const dragPreview = {
       gX: signal<number>(0),
