@@ -2,11 +2,13 @@ import { computed, effect, Signal, signal } from '@angular/core';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
 import { NgBondProperty } from '../components/ng-bond-property/ng-bond-property';
 
+
 export type Link = Signal<{
   x1: number | undefined;
   y1: number | undefined;
   x2: number | undefined;
   y2: number | undefined;
+  strokeWidth: number;
   stroke: string;
   path: string;
   path2: string;
@@ -48,7 +50,9 @@ export class NgBondService {
     ) as NgBondProperty;
 
     p2.hasLink.set(true);
+    p2.isEndOfLink.set(true);
     p1.hasLink.set(true);
+    p1.isStartOfLink.set(true);
 
     const yOffset = 7;
 
@@ -60,6 +64,7 @@ export class NgBondService {
         y2: p2.gY(),
         inputId: id1,
         outputId: id2,
+        strokeWidth: p1.bondstrokewidth(),
         stroke,
         path: `M ${p1?.gX()} ${p1?.gY()} L ${p2?.gX()} ${p2?.gY()}`,
         path2: `M ${p1?.gX()} ${p1?.gY() + yOffset} C ${p2?.gX()} ${p1?.gY() + yOffset} ${p1?.gX()} ${p2?.gY() + yOffset} ${p2?.gX()} ${p2?.gY() + yOffset}`,
@@ -75,10 +80,16 @@ export class NgBondService {
     stroke = 'cornflowerblue',
   ) {
     console.log('create preview link');
-    const p1 = this.dragElements().find((d) => d.id() === id1);
+    const p1 = this.dragElements().find((d) => d.id() === id1) as NgBondProperty;
     const p2 = dragPoint;
 
     const yOffset = 7;
+
+    if (p1.bondcolor()!=='') {
+      stroke = p1.bondcolor();
+    }
+
+    
 
     if (p1 && p2) {
       const link = computed(() => ({
@@ -88,6 +99,7 @@ export class NgBondService {
         y2: p2.gY(),
         inputId: id1,
         outputId: 'current_drag_preview',
+        strokeWidth: p1.bondstrokewidth(),
         stroke,
         path: `M ${p1?.gX()} ${p1?.gY()} L ${p2?.gX()} ${p2?.gY()}`,
         path2: `M ${p1?.gX()} ${p1?.gY() + yOffset} C ${p2?.gX()} ${p1?.gY() + yOffset} ${p1?.gX()} ${p2?.gY() + yOffset} ${p2?.gX()} ${p2?.gY() + yOffset}`,
@@ -112,7 +124,10 @@ export class NgBondService {
     ) as NgBondProperty;
 
     p1.hasLink.set(false);
+    p1.isStartOfLink.set(false);
     p2.hasLink.set(false);
+    p2.isEndOfLink.set(false);
+
 
     this.links.update((x) => x.filter((l) => l !== link));
   }

@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgBondService, Link } from '../../services/ngbond.service';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
+import { Link, NgBondService } from '../../services/ngbond.service';
 
 @Directive({
   selector: '[bondproperty]',
@@ -24,13 +24,20 @@ import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 export class NgBondProperty {
 
   hasLink = signal<boolean>(false);
+  isStartOfLink = signal<boolean>(false);
+  isEndOfLink = signal<boolean>(false);
   el: ElementRef = inject(ElementRef);
 
   id = input<string>('', { alias: 'bondproperty' });
 
-  x = model(0);
+  bondcolor = input<string>('');
+  bondstrokewidth = input<number>(2);
+
+  // Positions within the parent
+  x = model(0); 
   y = model(0);
 
+  // global positions within the bond world
   gX = model(0);
   gY = model(0);
 

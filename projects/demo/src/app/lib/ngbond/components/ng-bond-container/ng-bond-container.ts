@@ -11,10 +11,10 @@ import {
   viewChildren,
 } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
-import { NgBondService } from '../../services/ngbond.service';
 import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 import { Subject, takeUntil } from 'rxjs';
+import { NgBondService } from '../../services/ngbond.service';
 
 @Directive({
   selector: '[bondcontainer]',
@@ -60,9 +60,11 @@ export class NgBondContainer {
 
   public resizeOffset = 5;
 
-  draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty);
-  dragContainerContentChildren =
-    contentChildren<NgBondContainer>(NgBondContainer);
+  draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty, {descendants: true});
+  dragContainerContentChildren = contentChildren<NgBondContainer>(
+    NgBondContainer,
+    { descendants: true },
+  );
 
   dragViewChildren = viewChildren<NgBondProperty>(NgBondProperty);
 
@@ -115,6 +117,11 @@ export class NgBondContainer {
       this.dragContainerContentChildren().forEach((c) => c.updatePosition());
       this.dragViewChildren().forEach((c) => c.updatePosition());
       console.log('drag view children ', this.dragViewChildren());
+      console.log(
+        'drag content children ',
+        this.dragContainerContentChildren(),
+      );
+      console.log('drag content children ', this.draggableContentChildren());
 
       this.positionUpdated.emit({ x, y });
     };

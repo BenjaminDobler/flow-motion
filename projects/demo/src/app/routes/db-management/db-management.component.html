@@ -1,0 +1,59 @@
+<ng-bond-world>
+  <div class="card" bondcontainer="users">
+    <div class="card-header">
+      <div class="tx"><span class="tx-muted">/</span><span>orders</span></div>
+    </div>
+    <div class="card-content">
+      <div class="list-item">
+        <span>id</span>
+        <span class="tx-muted">int</span>
+      </div>
+      <div class="list-item">
+        <span>order_id</span>
+        <span class="tx-muted">int</span>
+      </div>
+      <div class="list-item">
+        <span>product_id</span>
+        <span class="tx-muted">int</span>
+        <div
+          class="connection-indicator left"
+          bondproperty="product_id_left"
+        ></div>
+        <div
+          class="connection-indicator right"
+          bondproperty="product_id_right"
+        ></div>
+      </div>
+      <div class="list-item">
+        <span>quantity</span>
+        <span class="tx-muted">int</span>
+      </div>
+    </div>
+  </div>
+
+  @for (table of tables; track $index) {
+    <div class="card" [bondcontainer]="table.name">
+      <div class="card-header">
+        <div class="tx">
+          <span class="tx-muted">/</span><span>{{ table.name }}</span>
+        </div>
+      </div>
+      <div class="card-content">
+        @for (field of table.fields; track $index) {
+          <div class="list-item">
+            <span>{{ field.name }}</span>
+            <span class="tx-muted">{{ field.type }}</span>
+            <div
+              class="connection-indicator left"
+              [bondproperty]="table.name + '_' + field.name + '_left'"
+            ></div>
+            <div
+              class="connection-indicator right"
+              [bondproperty]="field.name + '_right'"
+            ></div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</ng-bond-world>

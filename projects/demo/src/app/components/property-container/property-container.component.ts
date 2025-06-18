@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NgBondContainer } from '../../../components/ng-bond-container/ng-bond-container';
-import { NgBondProperty } from '../../../components/ng-bond-property/ng-bond-property';
+import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
+import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
+
 
 @Component({
   selector: 'app-property-container',

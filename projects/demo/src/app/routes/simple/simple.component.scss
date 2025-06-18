@@ -1,18 +1,5 @@
 :host {
-  display: flex;
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  flex-direction: column;
-  .header {
-    height: 50px;
-  }
-  .content {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-  }
-
 }
 
 .drag-container {
