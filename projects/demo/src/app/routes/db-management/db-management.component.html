@@ -92,23 +92,24 @@
           </select>
         </label>
 
+        @if (bondService.defaultProperties().curveType === "bezier") {
+          <label>
+            Connection Smoothness
+            <input
+              type="number"
+              [value]="bondService.defaultProperties().curveRadius"
+              (input)="
+                updateProperty(
+                  bondService.defaultProperties,
+                  'curveRadius',
+                  $any($event.target).value
+                )
+              "
+            />
+          </label>
+        }
+
         <label>
-          Connection Type
-          <input
-            type="number"
-            [value]="bondService.defaultProperties().curveRadius"
-            (input)="
-              updateProperty(
-                bondService.defaultProperties,
-                'curveRadius',
-                $any($event.target).value
-              )
-            "
-          />
-        </label>
-
-
-         <label>
           Stroke Width
           <input
             type="number"
@@ -122,8 +123,6 @@
             "
           />
         </label>
-
-        
       </fieldset>
     </form>
   </div>
