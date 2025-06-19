@@ -4,7 +4,7 @@ import {
   ElementRef,
   inject,
 } from '@angular/core';
-import { NgBondService } from '../../services/ngbond.service';
+import { Link, NgBondService } from '../../services/ngbond.service';
 
 @Component({
   selector: 'ng-bond-world',
@@ -16,4 +16,8 @@ import { NgBondService } from '../../services/ngbond.service';
 export class NgBondWorld {
   public el: ElementRef<HTMLElement> = inject(ElementRef);
   protected dragService: NgBondService = inject(NgBondService);
+
+  onConnectionClick(link: Link) {
+    console.log('Connection clicked', link);
+  }
 }

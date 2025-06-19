@@ -75,12 +75,8 @@ export class NgBondContainer {
   ngAfterViewInit() {
     const itemElement = this.el?.nativeElement;
     let parentElement = itemElement.parentElement;
-    console.log(itemElement, parentElement);
     let parentRect = parentElement.getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
-
-    console.log('init dragger directive ', this.id());
-
     let worldRect = parentRect;
     if (this.dragWorld) {
       let worldEl = this.dragWorld.el.nativeElement;
@@ -116,12 +112,6 @@ export class NgBondContainer {
       this.draggableContentChildren().forEach((c) => c.updatePosition());
       this.dragContainerContentChildren().forEach((c) => c.updatePosition());
       this.dragViewChildren().forEach((c) => c.updatePosition());
-      console.log('drag view children ', this.dragViewChildren());
-      console.log(
-        'drag content children ',
-        this.dragContainerContentChildren(),
-      );
-      console.log('drag content children ', this.draggableContentChildren());
 
       this.positionUpdated.emit({ x, y });
     };

@@ -1,59 +1,130 @@
-<ng-bond-world>
-  <div class="card" bondcontainer="users">
-    <div class="card-header">
-      <div class="tx"><span class="tx-muted">/</span><span>orders</span></div>
-    </div>
-    <div class="card-content">
-      <div class="list-item">
-        <span>id</span>
-        <span class="tx-muted">int</span>
-      </div>
-      <div class="list-item">
-        <span>order_id</span>
-        <span class="tx-muted">int</span>
-      </div>
-      <div class="list-item">
-        <span>product_id</span>
-        <span class="tx-muted">int</span>
-        <div
-          class="connection-indicator left"
-          bondproperty="product_id_left"
-        ></div>
-        <div
-          class="connection-indicator right"
-          bondproperty="product_id_right"
-        ></div>
-      </div>
-      <div class="list-item">
-        <span>quantity</span>
-        <span class="tx-muted">int</span>
-      </div>
-    </div>
-  </div>
-
-  @for (table of tables; track $index) {
-    <div class="card" [bondcontainer]="table.name">
-      <div class="card-header">
-        <div class="tx">
-          <span class="tx-muted">/</span><span>{{ table.name }}</span>
+<div style="display: flex; height: 100%">
+  <ng-bond-world>
+    @for (table of tables; track $index) {
+      <div class="card" [bondcontainer]="table.name">
+        <div class="card-header">
+          <div class="tx">
+            <span class="tx-muted">/</span><span>{{ table.name }}</span>
+          </div>
+        </div>
+        <div class="card-content">
+          @for (field of table.fields; track $index) {
+            <div class="list-item">
+              <span>{{ field.name }}</span>
+              <span class="tx-muted">{{ field.type }}</span>
+              <div
+                class="connection-indicator left"
+                [bondproperty]="table.name + '_' + field.name + '_left'"
+              ></div>
+              <div
+                class="connection-indicator right"
+                [bondproperty]="field.name + '_right'"
+              ></div>
+            </div>
+          }
         </div>
       </div>
-      <div class="card-content">
-        @for (field of table.fields; track $index) {
-          <div class="list-item">
-            <span>{{ field.name }}</span>
-            <span class="tx-muted">{{ field.type }}</span>
-            <div
-              class="connection-indicator left"
-              [bondproperty]="table.name + '_' + field.name + '_left'"
-            ></div>
-            <div
-              class="connection-indicator right"
-              [bondproperty]="field.name + '_right'"
-            ></div>
-          </div>
-        }
-      </div>
-    </div>
-  }
-</ng-bond-world>
+    }
+  </ng-bond-world>
+
+  <div class="sidebar">
+    <form>
+      <fieldset>
+        <label>
+          Stroke Color
+          <input
+            type="color"
+            placeholder="Table Name"
+            [value]="bondService.defaultProperties().stroke"
+            (input)="
+              updateProperty(
+                bondService.defaultProperties,
+                'stroke',
+                $any($event.target).value
+              )
+            "
+          />
+        </label>
+        <label>
+          Stroke Width
+          <input
+            type="number"
+            [value]="bondService.defaultProperties().strokeWidth"
+            (input)="
+              updateProperty(
+                bondService.defaultProperties,
+                'strokeWidth',
+                $any($event.target).value
+              )
+            "
+          />
+        </label>
+
+        <label>
+          Stroke Dasharray
+          <input
+            type="string"
+            [value]="bondService.defaultProperties().strokeDasharray"
+            (input)="
+              updateProperty(
+                bondService.defaultProperties,
+                'strokeDasharray',
+                $any($event.target).value
+              )
+            "
+          />
+        </label>
+        <label>
+          Connection Type
+          <select
+            (change)="
+              updateProperty(
+                bondService.defaultProperties,
+                'curveType',
+                $any($event.target).value
+              )
+            "
+            [value]="bondService.defaultProperties().curveType"
+          >
+            <option value="bezier">bezier</option>
+            <option value="multi-line">multi-line</option>
+            <option value="straight">straight</option>
+          </select>
+        </label>
+
+        <label>
+          Connection Type
+          <input
+            type="number"
+            [value]="bondService.defaultProperties().curveRadius"
+            (input)="
+              updateProperty(
+                bondService.defaultProperties,
+                'curveRadius',
+                $any($event.target).value
+              )
+            "
+          />
+        </label>
+
+
+         <label>
+          Stroke Width
+          <input
+            type="number"
+            [value]="bondService.defaultProperties().curveRadius"
+            (input)="
+              updateProperty(
+                bondService.defaultProperties,
+                'curveRadius',
+                $any($event.target).value
+              )
+            "
+          />
+        </label>
+
+        
+      </fieldset>
+    </form>
+  </div>
+</div>

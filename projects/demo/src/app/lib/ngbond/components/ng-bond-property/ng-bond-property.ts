@@ -13,16 +13,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 import { Link, NgBondService } from '../../services/ngbond.service';
 
+export type LinkPosition = 'Left' | 'Right' | 'Top' | 'Bottom';
+
 @Directive({
   selector: '[bondproperty]',
   standalone: true,
   exportAs: 'bondproperty',
   host: {
-    '[class.has-link]': 'this.hasLink()'
-  }
+    '[class.has-link]': 'this.hasLink()',
+  },
 })
 export class NgBondProperty {
-
   hasLink = signal<boolean>(false);
   isStartOfLink = signal<boolean>(false);
   isEndOfLink = signal<boolean>(false);
@@ -31,10 +32,10 @@ export class NgBondProperty {
   id = input<string>('', { alias: 'bondproperty' });
 
   bondcolor = input<string>('');
-  bondstrokewidth = input<number>(2);
+  bondstrokewidth = input<number>();
 
   // Positions within the parent
-  x = model(0); 
+  x = model(0);
   y = model(0);
 
   // global positions within the bond world
@@ -55,8 +56,6 @@ export class NgBondProperty {
     const itemElement = this.el.nativeElement;
     const drag = makeDraggable(itemElement);
 
-    
-
     const dragPreview = {
       gX: signal<number>(0),
       gY: signal<number>(0),
@@ -70,7 +69,6 @@ export class NgBondProperty {
     let isFirstMove = true;
 
     drag.dragStart$.pipe(takeUntilDestroyed()).subscribe((evt) => {
-      console.log('drag start');
       itemRect = itemElement.getBoundingClientRect();
       parentRect = parentElement.getBoundingClientRect();
       worldRect = parentRect;
@@ -82,12 +80,10 @@ export class NgBondProperty {
     });
 
     drag.dragMove$.subscribe((move) => {
-      console.log('move ', this.id());
       if (isFirstMove && this.id()) {
-        currentPreview = this.ngBondService.createPreviewLink(
+        currentPreview = this.ngBondService.createLink(
           this.id(),
           dragPreview,
-          '#dedede',
         ) as any;
         isFirstMove = false;
       }
@@ -117,6 +113,29 @@ export class NgBondProperty {
         this.ngBondService.removePreview(currentPreview);
       }
     });
+  }
+
+  position(): LinkPosition {
+    const itemElement = this.el?.nativeElement;
+    const parentElement = itemElement.parentElement;
+    const parentRect = parentElement.getBoundingClientRect();
+    const centerX = parentRect.width / 2;
+    const centerY = parentRect.height / 2;
+    const angleDeg =
+      (Math.atan2(centerY - this.y(), centerX - this.x()) * 180) / Math.PI;
+    let heading = (360 + angleDeg) % 360;
+
+    let position: LinkPosition;
+    if (heading < 40 || heading > 320) {
+      position = 'Left';
+    } else if (heading < 140) {
+      position = 'Top';
+    } else if (heading < 220) {
+      position = 'Right';
+    } else {
+      position = 'Bottom';
+    }
+    return position;
   }
 
   updatePosition() {

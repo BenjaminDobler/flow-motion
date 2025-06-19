@@ -63,6 +63,10 @@
       opacity: 0;
       transition: opacity 0.3s ease-in-out;
 
+      &.has-link {
+        opacity: 1;
+      }
+
       &.right {
         right: -12px;
       }
@@ -83,3 +87,5 @@
 .tx-muted {
   color: oklab(0.705 0.00415142 -0.0144141 / 0.6);
 }
+
+

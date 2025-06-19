@@ -7,7 +7,7 @@
 }
 
 .draw {
-  stroke-dasharray: 10;
+  //stroke-dasharray: 10;
   animation: dashdraw 4s linear infinite;
 }
 @keyframes dashdraw {

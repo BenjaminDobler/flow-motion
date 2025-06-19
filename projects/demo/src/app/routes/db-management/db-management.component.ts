@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, Signal, WritableSignal } from '@angular/core';
 import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
 import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
 import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
 import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
+import { FormsModule } from '@angular/forms';
 
 const dbData = [
   {
@@ -41,7 +42,7 @@ const dbData = [
 
 @Component({
   selector: 'app-db-management',
-  imports: [NgBondContainer, NgBondWorld, NgBondProperty],
+  imports: [NgBondContainer, NgBondWorld, NgBondProperty, FormsModule],
   templateUrl: './db-management.component.html',
   styleUrl: './db-management.component.scss',
   providers: [NgBondService],
@@ -49,4 +50,12 @@ const dbData = [
 export class DbManagementComponent {
   tables = dbData;
 
+  bondService: NgBondService = inject(NgBondService);
+
+  updateProperty(s: WritableSignal<any>, property: string, value: any) {
+    s.update((x) => ({
+      ...x,
+      [property]: value,
+    }));
+  }
 }

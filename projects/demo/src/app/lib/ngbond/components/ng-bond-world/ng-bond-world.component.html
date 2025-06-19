@@ -15,18 +15,11 @@
   <rect id="canvas_bg" width="100%" height="100%" fill="url(#:S4:)"></rect>
 </svg>
 
-
-
 <div style="position: absolute; top: 0; left: 0">
   <ng-content></ng-content>
 </div>
 
-
-<svg
-  style="position: absolute; left: 0; top: 0"
-  width="100%"
-  height="100%"
->
+<svg style="position: absolute; left: 0; top: 0" width="100%" height="100%">
   <defs>
     <!-- A marker to be used as an arrowhead -->
     <marker
@@ -44,18 +37,15 @@
   </defs>
   @for (link of dragService.links(); track $index) {
     <path
+      style="pointer-events: all"
+      (click)="onConnectionClick(link)"
       class="draw"
-      [attr.stroke]="link().stroke"
-      [attr.stroke-width]="link().strokeWidth"
-      [attr.d]="link().path2"
+      [attr.stroke]="link().properties.stroke"
+      [attr.stroke-width]="link().properties.strokeWidth"
+      [attr.d]="link().path"
+      [attr.stroke-dasharray]="link().properties.strokeDasharray"
       fill="none"
-      stroke-dasharray="10"
-      marker-start="url(#arrow)"
-      marker-mid="url(#arrow)"
-      marker-end="url(#arrow)"
     />
     />
   }
 </svg>
-
-

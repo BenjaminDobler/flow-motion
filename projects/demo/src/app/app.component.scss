@@ -5,14 +5,16 @@
   height: 100vh;
   flex-direction: column;
   .header {
-    height: 50px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-bottom: 1px solid #313131;
+    background: #111111;
   }
   .content {
     flex: 1;
     position: relative;
     overflow: hidden;
   }
-
 }
 
 .drag-container {
