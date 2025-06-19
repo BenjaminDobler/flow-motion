@@ -18,12 +18,11 @@ jobs:
           node-version: 23
 
       - name: Build Angular app to prod
-        working-directory: ng-bond
         run: npm install && npm run build:prod
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ng-bond/dist/demo/browser
+          folder: dist/demo/browser
           branch: prod
           token: ${{ secrets.GH_TOKEN }}
