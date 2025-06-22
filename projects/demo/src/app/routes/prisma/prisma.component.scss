@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  height: 100%;
+  display: flex;
+}
+
+
+.spaninput {
+  background: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  height: initial;
+  field-sizing: content;
+  font-family: "Geist Mono", "Geist Mono Fallback", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}

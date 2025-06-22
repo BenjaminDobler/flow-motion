@@ -1,0 +1,102 @@
+<div style="height: 100%; width: 100%">
+  <ngx-monaco-editor
+    style="height: 100%; width: 100%"
+    [options]="options"
+    [(ngModel)]="code"
+    (onInit)="onInit($event)"
+    (ngModelChange)="onCodeChange($event)"
+    [model]="model()"
+  ></ngx-monaco-editor>
+</div>
+
+<div style="width: 100%">
+  <ng-bond-world>
+    @let schemaAst = ast();
+
+    @if (schemaAst && schemaAst.declarations) {
+      @for (declaration of schemaAst.declarations; track $index) {
+        @if (declaration.kind === "model") {
+          @let name = declaration.name.value;
+          <div class="card" [bondcontainer]="name">
+            <div class="card-header">
+              <div class="tx">
+                <span class="tx-muted">/</span
+                ><input
+                  class="spaninput"
+                  [value]="name"
+                  (keyup)="
+                    onFieldNameChanged(
+                      schemaAst,
+                      $event,
+                      declaration.name,
+                      'name'
+                    )
+                  "
+                />
+              </div>
+            </div>
+            <div class="card-content">
+              @for (member of declaration.members; track $index) {
+                @if (member.kind === "field") {
+                  <div class="list-item">
+                    <input
+                      class="spaninput"
+                      [value]="member.name.value"
+                      (keyup)="
+                        onFieldNameChanged(
+                          schemaAst,
+                          $event,
+                          member.name,
+                          'name'
+                        )
+                      "
+                    />
+
+                    @if (member.type.kind === "typeId") {
+                      <span class="tx-muted">{{ member.type.name.value }}</span>
+                    } @else if (member.type.kind === "optional") {
+                      <span class="tx-muted">{{
+                        $any(member).type.type.name.value
+                      }}</span>
+                    } @else if (member.type.type.kind === "typeId") {
+                      <span class="tx-muted">{{
+                        member.type.type.name.value
+                      }}</span>
+                    } @else {}
+                  </div>
+                }
+              }
+              <!--  -->
+            </div>
+          </div>
+        }
+      }
+    }
+
+    <!-- @for (model of models(); track $index) {
+      <div class="card" [bondcontainer]="model.name">
+        <div class="card-header">
+          <div class="tx">
+            <span class="tx-muted">/</span><span>{{ model.name }}</span>
+          </div>
+        </div>
+        <div class="card-content">
+          @for (field of model.fields; track $index) {
+            <div class="list-item">
+              <span contenteditable (keydown)="onFieldNameChanged()">{{ field.name }}</span>
+              <span class="tx-muted">{{ field.type }}</span>
+              <div
+                class="connection-indicator left"
+                [bondproperty]="field.name + '_' + field.name + '_left'"
+              ></div>
+              <div
+                class="connection-indicator right"
+                [bondproperty]="field.name + '_right'"
+              ></div>
+            </div>
+          }
+        </div>
+      </div>
+    } -->
+  </ng-bond-world>
+</div>
