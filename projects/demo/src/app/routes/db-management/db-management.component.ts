@@ -1,7 +1,7 @@
 import { Component, inject, Signal, WritableSignal } from '@angular/core';
 import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
 import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
-import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
+import { Link, NgBondService } from '../../lib/ngbond/services/ngbond.service';
 import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
 import { FormsModule } from '@angular/forms';
 
@@ -57,5 +57,12 @@ export class DbManagementComponent {
       ...x,
       [property]: value,
     }));
+  }
+
+  updateAnimateLink(link: Link, evt: any) {
+    console.log(evt.target.checked);
+    this.bondService
+      .getBrondPropertyById(link().inputId)
+      .animatedLink.set(evt.target.checked);
   }
 }

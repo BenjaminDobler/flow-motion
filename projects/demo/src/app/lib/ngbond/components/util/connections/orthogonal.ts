@@ -53,6 +53,6 @@ export function getOrhogonalConnection(
   });
   console.log('path ', path);
 
-  const orthoPath = pointToPath(path, 6);
+  const orthoPath = pointToPath(path, curveRadius);
   return orthoPath;
 }

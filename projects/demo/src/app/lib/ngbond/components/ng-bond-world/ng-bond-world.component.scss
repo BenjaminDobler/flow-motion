@@ -9,6 +9,7 @@
 .draw {
   //stroke-dasharray: 10;
   animation: dashdraw 4s linear infinite;
+  animation-direction: reverse;
 }
 @keyframes dashdraw {
   to {

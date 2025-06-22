@@ -46,50 +46,52 @@
       fill="none"
     />
 
-    <!-- Animate along path-->
-    <!-- 
-    <circle r="5" fill="red">
-      <animateMotion
-        dur="4s"
-        repeatCount="indefinite"
-        [attr.path]="link().path"
-      />
-    </circle>
+    @if (link().properties.animate) {
 
-    <circle r="5" fill="red">
-      <animateMotion
-        dur="4s"
-        repeatCount="indefinite"
-        [attr.path]="link().path"
-      />
-    </circle>
+      <!-- Animate along path-->
 
-    <circle r="5" fill="red">
-      <animateMotion
-        begin="1s"
-        dur="4s"
-        repeatCount="indefinite"
-        [attr.path]="link().path"
-      />
-    </circle>
+      <circle r="5" fill="red">
+        <animateMotion
+          dur="4s"
+          repeatCount="indefinite"
+          [attr.path]="link().path"
+        />
+      </circle>
 
-    <circle r="5" fill="red">
-      <animateMotion
-        begin="2s"
-        dur="4s"
-        repeatCount="indefinite"
-        [attr.path]="link().path"
-      />
-    </circle>
+      <circle r="5" fill="red">
+        <animateMotion
+          dur="4s"
+          repeatCount="indefinite"
+          [attr.path]="link().path"
+        />
+      </circle>
 
-    <circle r="5" fill="red">
-      <animateMotion
-        begin="3s"
-        dur="4s"
-        repeatCount="indefinite"
-        [attr.path]="link().path"
-      />
-    </circle>
-         -->
+      <circle r="5" fill="red">
+        <animateMotion
+          begin="1s"
+          dur="4s"
+          repeatCount="indefinite"
+          [attr.path]="link().path"
+        />
+      </circle>
+
+      <circle r="5" fill="red">
+        <animateMotion
+          begin="2s"
+          dur="4s"
+          repeatCount="indefinite"
+          [attr.path]="link().path"
+        />
+      </circle>
+
+      <circle r="5" fill="red">
+        <animateMotion
+          begin="3s"
+          dur="4s"
+          repeatCount="indefinite"
+          [attr.path]="link().path"
+        />
+      </circle>
+    }
   }
 </svg>

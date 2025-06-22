@@ -1,11 +1,9 @@
-import { computed, effect, model, Signal, signal } from '@angular/core';
+import { computed, Signal, signal } from '@angular/core';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
 import {
   LinkPosition,
   NgBondProperty,
 } from '../components/ng-bond-property/ng-bond-property';
-import { getBend, pointToPath } from '../components/util/connections.util';
-import { OrthogonalConnector } from '../components/util/orthoconnector';
 import { getSimpleBezierPath } from '../components/util/connections/simple-bezier';
 import { getLinePath } from '../components/util/connections/simple.line';
 import { getOrhogonalConnection } from '../components/util/connections/orthogonal';
@@ -33,6 +31,7 @@ export interface LinkProperties {
   strokeDasharray?: string;
   curveType?: 'bezier' | 'straight' | 'multi-line' | 'orthogonal';
   curveRadius?: number;
+  animate?: boolean;
 }
 
 const defaultLinkProperties: LinkProperties = {
@@ -60,23 +59,24 @@ export class NgBondService {
     this.dragElements.update((x) => x.filter((e) => e !== el));
   }
 
+  getBrondPropertyById(id: string) {
+    const p1 = this.dragElements().find((d) => d.id() === id) as NgBondProperty;
+    return p1;
+  }
+
   createLink(
     id1: string,
     id2: string | DragPoint,
     linkProperties?: LinkProperties,
   ) {
-    const p1 = this.dragElements().find(
-      (d) => d.id() === id1,
-    ) as NgBondProperty;
+    const p1 = this.getBrondPropertyById(id1);
 
     const p1Position = p1.position();
     let p2Position: LinkPosition = 'left';
 
     let p2: NgBondProperty | DragPoint;
     if (typeof id2 === 'string') {
-      const p2Property = this.dragElements().find(
-        (d) => d.id() === id2,
-      ) as NgBondProperty;
+      const p2Property = this.getBrondPropertyById(id2);
       p2Property.hasLink.set(true);
       p2Property.isEndOfLink.set(true);
       p2 = p2Property;
@@ -98,6 +98,9 @@ export class NgBondService {
         const y2 = p2?.gY();
         const defProps = this.defaultProperties();
 
+        const animate = p1.animatedLink();
+        console.log('animated changed', animate);
+
         let pathFunction;
         if (defProps?.curveType === 'bezier') {
           pathFunction = getSimpleBezierPath;
@@ -108,6 +111,7 @@ export class NgBondService {
         } else {
           pathFunction = getMultiLinePath;
         }
+
         return {
           x1,
           y1,
@@ -123,6 +127,7 @@ export class NgBondService {
           stroke:
             p1.bondcolor() || linkProperties?.stroke || defProps.stroke || '',
           properties: {
+            animate,
             strokeWidth:
               p1.bondstrokewidth() ||
               linkProperties?.strokeWidth ||

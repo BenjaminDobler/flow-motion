@@ -11,7 +11,7 @@ import {
 import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
-import { Link, NgBondService } from '../../services/ngbond.service';
+import { Link, LinkProperties, NgBondService } from '../../services/ngbond.service';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 
 export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -35,6 +35,7 @@ export class NgBondProperty {
   bondcolor = input<string>('');
   bondstrokewidth = input<number>();
 
+  animatedLink = model<boolean>(false);
   // Positions within the parent
   x = model(0);
   y = model(0);
@@ -53,7 +54,7 @@ export class NgBondProperty {
 
   dragWorld: NgBondWorld = inject(NgBondWorld);
 
-  container? = inject(NgBondContainer, {optional: true});
+  container? = inject(NgBondContainer, { optional: true });
 
   constructor() {
     const itemElement = this.el.nativeElement;
@@ -64,7 +65,7 @@ export class NgBondProperty {
       gY: signal<number>(0),
     };
 
-    let parentElement = itemElement.parentElement;
+    let parentElement = this.parent();
     let parentRect = parentElement.getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
     let worldRect = parentRect;
@@ -119,9 +120,7 @@ export class NgBondProperty {
   }
 
   position(): LinkPosition {
-    const itemElement = this.el?.nativeElement;
-    const parentElement = itemElement.parentElement;
-    const parentRect = parentElement.getBoundingClientRect();
+    const parentRect = this.parent().getBoundingClientRect();
     const centerX = parentRect.width / 2;
     const centerY = parentRect.height / 2;
     const angleDeg =
@@ -143,15 +142,13 @@ export class NgBondProperty {
 
   updatePosition() {
     const itemElement = this.el?.nativeElement;
-    let parentElement = itemElement.parentElement;
-
     let worldRect = { left: 0, top: 0 };
     if (this.dragWorld) {
       const worldElement = this.dragWorld.el.nativeElement;
       worldRect = worldElement.getBoundingClientRect();
     }
 
-    let parentRect = parentElement.getBoundingClientRect();
+    let parentRect = this.parent().getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
     const x = itemRect.left - parentRect.left;
     const y = itemRect.top - parentRect.top;
@@ -163,6 +160,15 @@ export class NgBondProperty {
 
     this.gX.set(gX);
     this.gY.set(gY);
+  }
+
+  private parent() {
+    const itemElement = this.el?.nativeElement;
+    let parentElement = itemElement.parentElement;
+    if (this.container) {
+      parentElement = this.container.el.nativeElement;
+    }
+    return parentElement;
   }
 
   ngOnInit() {
