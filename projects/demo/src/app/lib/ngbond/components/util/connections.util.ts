@@ -31,3 +31,26 @@ export function getBend(
   const yDir = a.y < c.y ? -1 : 1;
   return `L ${x},${y + bendSize * yDir}Q ${x},${y} ${x + bendSize * xDir},${y}`;
 }
+
+export function pointToPath(
+  points: { x: number; y: number }[],
+  curveRadius: number = 0,
+) {
+  const segments: any[] = [];
+
+  for (let i = 0; i <= points.length - 1; i++) {
+    if (i === 0) {
+      segments.push(`M ${points[i].x} ${points[i].y}`);
+    } else if (i === points.length - 1) {
+      segments.push(`L ${points[i].x} ${points[i].y}`);
+    } else {
+      const prevPoint = points[i - 1];
+      const currentPoint = points[i];
+      const nextPoint = points[i + 1];
+      segments.push(getBend(prevPoint, currentPoint, nextPoint, curveRadius));
+    }
+  }
+
+  const path = segments.join(' ');
+  return path;
+}

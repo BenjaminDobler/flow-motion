@@ -20,4 +20,8 @@ import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
 })
 export class SimpleComponent {
   protected ngBondService: NgBondService = inject(NgBondService);
+
+  constructor() {
+    this.ngBondService.defaultProperties.update(x=>({...x, curveType: 'orthogonal'}));
+  }
 }

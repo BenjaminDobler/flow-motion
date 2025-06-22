@@ -4,7 +4,12 @@ import {
   LinkPosition,
   NgBondProperty,
 } from '../components/ng-bond-property/ng-bond-property';
-import { getBend } from '../components/util/connections.util';
+import { getBend, pointToPath } from '../components/util/connections.util';
+import { OrthogonalConnector } from '../components/util/orthoconnector';
+import { getSimpleBezierPath } from '../components/util/connections/simple-bezier';
+import { getLinePath } from '../components/util/connections/simple.line';
+import { getOrhogonalConnection } from '../components/util/connections/orthogonal';
+import { getMultiLinePath } from '../components/util/connections/multi-step';
 
 export type Link = Signal<{
   x1: number | undefined;
@@ -17,7 +22,7 @@ export type Link = Signal<{
   outputId: string;
 }>;
 
-interface DragPoint {
+export interface DragPoint {
   gX: Signal<number>;
   gY: Signal<number>;
 }
@@ -26,7 +31,7 @@ export interface LinkProperties {
   strokeWidth?: number;
   stroke?: string;
   strokeDasharray?: string;
-  curveType?: 'bezier' | 'straight' | 'multi-line';
+  curveType?: 'bezier' | 'straight' | 'multi-line' | 'orthogonal';
   curveRadius?: number;
 }
 
@@ -65,7 +70,7 @@ export class NgBondService {
     ) as NgBondProperty;
 
     const p1Position = p1.position();
-    let p2Position: LinkPosition = 'Left';
+    let p2Position: LinkPosition = 'left';
 
     let p2: NgBondProperty | DragPoint;
     if (typeof id2 === 'string') {
@@ -95,11 +100,13 @@ export class NgBondService {
 
         let pathFunction;
         if (defProps?.curveType === 'bezier') {
-          pathFunction = this.getSimpleBezierPath;
+          pathFunction = getSimpleBezierPath;
         } else if (defProps?.curveType === 'straight') {
-          pathFunction = this.getLinePath;
+          pathFunction = getLinePath;
+        } else if (defProps?.curveType === 'orthogonal') {
+          pathFunction = getOrhogonalConnection;
         } else {
-          pathFunction = this.getMultiLinePath;
+          pathFunction = getMultiLinePath;
         }
         return {
           x1,
@@ -136,6 +143,8 @@ export class NgBondService {
             p1Position,
             p2Position,
             defProps?.curveRadius || 10,
+            p1,
+            p2,
           ),
         };
       });
@@ -144,83 +153,6 @@ export class NgBondService {
       return link;
     }
     return null;
-  }
-
-  getMultiLinePath(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    p1Position: LinkPosition,
-    p2Position: LinkPosition,
-    curveRadius = 10,
-  ) {
-    let offset = 20;
-    let path = `M ${x1} ${y1}`;
-
-    const points = [];
-
-    if (p1Position === 'Right' && p2Position === 'Left' && x2 > x1) {
-      const dist = x2 - x1;
-      offset = dist / 2;
-
-      points.push({ x: x1, y: y1 });
-      points.push({ x: x1 + offset, y: y1 });
-      points.push({ x: x2 - offset, y: y2 });
-      points.push({ x: x2, y: y2 });
-    } else if (p1Position === 'Right' && p2Position === 'Left' && x2 < x1) {
-      const ydist = y1 - y2;
-      points.push({ x: x1, y: y1 });
-      points.push({ x: x1 + offset, y: y1 });
-      points.push({ x: x1 + offset, y: y1 - ydist / 2 });
-      points.push({ x: x2 - offset, y: y1 - ydist / 2 });
-      points.push({ x: x2 - offset, y: y2 });
-      points.push({ x: x2, y: y2 });
-    }
-
-    const segments: any[] = [];
-
-    for (let i = 0; i <= points.length - 1; i++) {
-      if (i === 0) {
-        segments.push(`M ${points[i].x} ${points[i].y}`);
-      } else if (i === points.length - 1) {
-        segments.push(`L ${points[i].x} ${points[i].y}`);
-      } else {
-        const prevPoint = points[i - 1];
-        const currentPoint = points[i];
-        const nextPoint = points[i + 1];
-        segments.push(getBend(prevPoint, currentPoint, nextPoint, curveRadius));
-      }
-    }
-
-    path = segments.join(' ');
-
-    return path;
-  }
-
-  getLinePath(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    p1Position: LinkPosition,
-    p2Position: LinkPosition,
-    curveRadius = 10,
-  ) {
-    return `M ${x1} ${y1} L ${x2} ${y2}`;
-  }
-
-  getSimpleBezierPath(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    p1Position: LinkPosition,
-    p2Position: LinkPosition,
-    curveRadius = 10,
-  ) {
-    const yOffset = 7;
-    return `M ${x1} ${y1} C ${x2} ${y1 + yOffset} ${x1} ${y2 + yOffset} ${x2} ${y2 + yOffset}`;
   }
 
   removePreview(link: any) {

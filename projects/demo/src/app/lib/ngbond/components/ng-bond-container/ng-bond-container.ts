@@ -60,7 +60,9 @@ export class NgBondContainer {
 
   public resizeOffset = 5;
 
-  draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty, {descendants: true});
+  draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty, {
+    descendants: true,
+  });
   dragContainerContentChildren = contentChildren<NgBondContainer>(
     NgBondContainer,
     { descendants: true },
@@ -71,6 +73,16 @@ export class NgBondContainer {
   ngBondService: NgBondService = inject(NgBondService);
 
   dragWorld: NgBondWorld = inject(NgBondWorld);
+
+  get bounds() {
+    const rect = this.el.nativeElement.getBoundingClientRect();
+    return {
+      left: this.gX(),
+      top: this.gY(),
+      width: rect.width,
+      height: rect.height,
+    };
+  }
 
   ngAfterViewInit() {
     const itemElement = this.el?.nativeElement;

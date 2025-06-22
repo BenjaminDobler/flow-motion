@@ -12,8 +12,9 @@ import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 import { Link, NgBondService } from '../../services/ngbond.service';
+import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 
-export type LinkPosition = 'Left' | 'Right' | 'Top' | 'Bottom';
+export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
 
 @Directive({
   selector: '[bondproperty]',
@@ -51,6 +52,8 @@ export class NgBondProperty {
   ngBondService: NgBondService = inject(NgBondService);
 
   dragWorld: NgBondWorld = inject(NgBondWorld);
+
+  container? = inject(NgBondContainer, {optional: true});
 
   constructor() {
     const itemElement = this.el.nativeElement;
@@ -127,13 +130,13 @@ export class NgBondProperty {
 
     let position: LinkPosition;
     if (heading < 40 || heading > 320) {
-      position = 'Left';
+      position = 'left';
     } else if (heading < 140) {
-      position = 'Top';
+      position = 'top';
     } else if (heading < 220) {
-      position = 'Right';
+      position = 'right';
     } else {
-      position = 'Bottom';
+      position = 'bottom';
     }
     return position;
   }

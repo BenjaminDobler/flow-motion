@@ -37,7 +37,6 @@
   </defs>
   @for (link of dragService.links(); track $index) {
     <path
-      style="pointer-events: all"
       (click)="onConnectionClick(link)"
       class="draw"
       [attr.stroke]="link().properties.stroke"
@@ -46,6 +45,51 @@
       [attr.stroke-dasharray]="link().properties.strokeDasharray"
       fill="none"
     />
-    />
+
+    <!-- Animate along path-->
+    <!-- 
+    <circle r="5" fill="red">
+      <animateMotion
+        dur="4s"
+        repeatCount="indefinite"
+        [attr.path]="link().path"
+      />
+    </circle>
+
+    <circle r="5" fill="red">
+      <animateMotion
+        dur="4s"
+        repeatCount="indefinite"
+        [attr.path]="link().path"
+      />
+    </circle>
+
+    <circle r="5" fill="red">
+      <animateMotion
+        begin="1s"
+        dur="4s"
+        repeatCount="indefinite"
+        [attr.path]="link().path"
+      />
+    </circle>
+
+    <circle r="5" fill="red">
+      <animateMotion
+        begin="2s"
+        dur="4s"
+        repeatCount="indefinite"
+        [attr.path]="link().path"
+      />
+    </circle>
+
+    <circle r="5" fill="red">
+      <animateMotion
+        begin="3s"
+        dur="4s"
+        repeatCount="indefinite"
+        [attr.path]="link().path"
+      />
+    </circle>
+         -->
   }
 </svg>
