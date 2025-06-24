@@ -2,6 +2,7 @@ import {
   fromEvent,
   last,
   map,
+  share,
   startWith,
   switchMap,
   takeUntil,
@@ -14,7 +15,6 @@ const mouseUp$ = fromEvent<MouseEvent>(document, 'mouseup');
 export function makeDraggable(element: HTMLElement) {
   const mouseDown$ = fromEvent<MouseEvent>(element, 'mousedown').pipe(
     tap((e: MouseEvent) => {
-      console.log('mousedown', e);
       if (e.target instanceof HTMLInputElement) {
         console.log('yes it is an input!');
       } else {
@@ -22,6 +22,14 @@ export function makeDraggable(element: HTMLElement) {
         e.stopPropagation();
       }
     }),
+    map((evt) => ({
+      pageY: evt.pageY,
+      pageX: evt.pageX,
+      offsetX: evt.offsetX,
+      offsetY: evt.offsetY,
+      target: evt.target
+    })),
+    share(),
   );
 
   const dragStart$ = mouseDown$;
@@ -34,18 +42,13 @@ export function makeDraggable(element: HTMLElement) {
           deltaY: moveEvent.pageY - start.pageY,
           startOffsetX: start.offsetX,
           startOffsetY: start.offsetY,
+
         })),
         takeUntil(mouseUp$),
       ),
     ),
+    share(),
   );
-
-  // dragMove$.subscribe((move) => {
-  //   const offsetX = move.originalEvent.x - move.startOffsetX;
-  //   const offsetY = move.originalEvent.y - move.startOffsetY;
-  //   element.style.left = offsetX + 'px';
-  //   element.style.top = offsetY + 'px';
-  // });
 
   const dragEnd$ = dragStart$.pipe(
     switchMap((start) =>
