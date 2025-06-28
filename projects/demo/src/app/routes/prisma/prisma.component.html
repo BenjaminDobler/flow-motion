@@ -67,36 +67,11 @@
                 }
               }
               <!--  -->
+
             </div>
           </div>
         }
       }
     }
-
-    <!-- @for (model of models(); track $index) {
-      <div class="card" [bondcontainer]="model.name">
-        <div class="card-header">
-          <div class="tx">
-            <span class="tx-muted">/</span><span>{{ model.name }}</span>
-          </div>
-        </div>
-        <div class="card-content">
-          @for (field of model.fields; track $index) {
-            <div class="list-item">
-              <span contenteditable (keydown)="onFieldNameChanged()">{{ field.name }}</span>
-              <span class="tx-muted">{{ field.type }}</span>
-              <div
-                class="connection-indicator left"
-                [bondproperty]="field.name + '_' + field.name + '_left'"
-              ></div>
-              <div
-                class="connection-indicator right"
-                [bondproperty]="field.name + '_right'"
-              ></div>
-            </div>
-          }
-        </div>
-      </div>
-    } -->
   </ng-bond-world>
 </div>

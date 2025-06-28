@@ -11,7 +11,11 @@ import {
 import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
-import { Link, LinkProperties, NgBondService } from '../../services/ngbond.service';
+import {
+  Link,
+  LinkProperties,
+  NgBondService,
+} from '../../services/ngbond.service';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 
 export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -52,7 +56,7 @@ export class NgBondProperty {
 
   ngBondService: NgBondService = inject(NgBondService);
 
-  dragWorld: NgBondWorld = inject(NgBondWorld);
+  dragWorld: NgBondWorld | null = inject(NgBondWorld, { optional: true });
 
   container? = inject(NgBondContainer, { optional: true });
 

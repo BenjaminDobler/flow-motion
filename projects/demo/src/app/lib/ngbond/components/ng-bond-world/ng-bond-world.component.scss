@@ -1,5 +1,5 @@
 :host {
-  display: block; 
+  display: block;
   position: relative;
   background: #00ff00;
   width: 100%;
@@ -19,4 +19,11 @@
 
 svg {
   pointer-events: none;
+}
+
+.content-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
 }

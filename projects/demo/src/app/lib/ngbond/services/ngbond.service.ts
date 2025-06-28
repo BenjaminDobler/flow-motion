@@ -1,4 +1,4 @@
-import { computed, Signal, signal } from '@angular/core';
+import { computed, model, Signal, signal } from '@angular/core';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
 import {
   LinkPosition,
@@ -46,6 +46,7 @@ export class NgBondService {
   dragElements = signal<(NgBondContainer | NgBondProperty)[]>([]);
 
   links = signal<Link[]>([]);
+  scale = signal<number>(1);
 
   constructor() {}
 
