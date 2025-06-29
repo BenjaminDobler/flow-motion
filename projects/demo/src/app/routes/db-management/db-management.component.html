@@ -23,7 +23,7 @@
 </ng-template>
 
 <div style="display: flex; height: 100%">
-  <ng-bond-world [animationBubbleCount]="animationBubbleCount()" [animationBubbleDuration]="animationBubbleDuration()">
+  <ng-bond-world [animationBubbleCount]="inspector.animationBubbleCount()" [animationBubbleDuration]="inspector.animationBubbleDuration()">
     @for (table of tables; track $index) {
       <div class="card" [bondcontainer]="table.name">
         <div class="card-header">
@@ -45,79 +45,5 @@
     }
   </ng-bond-world>
 
-  <div class="sidebar">
-    <h3>Properties</h3>
-
-    <form>
-      <fieldset>
-        <label>
-          Stroke Color
-          <input type="color" placeholder="Table Name" [value]="bondService.defaultProperties().stroke" (input)="updateProperty(bondService.defaultProperties, 'stroke', $any($event.target).value)" />
-        </label>
-        <label>
-          Stroke Width
-          <input type="number" [value]="bondService.defaultProperties().strokeWidth" (input)="updateProperty(bondService.defaultProperties, 'strokeWidth', $any($event.target).value)" />
-        </label>
-
-        <label>
-          Stroke Dasharray
-          <input type="string" [value]="bondService.defaultProperties().strokeDasharray" (input)="updateProperty(bondService.defaultProperties, 'strokeDasharray', $any($event.target).value)" />
-        </label>
-        <label>
-          Connection Type
-          <select (change)="updateProperty(bondService.defaultProperties, 'curveType', $any($event.target).value)" [value]="bondService.defaultProperties().curveType">
-            <option value="bezier">bezier</option>
-            <option value="multi-line">multi-line</option>
-            <option value="straight">straight</option>
-            <option value="orthogonal">orthogonal</option>
-          </select>
-        </label>
-
-        <label>
-          Snap
-          <input name="snap" type="checkbox" [(ngModel)]="bondService.snap" />
-        </label>
-
-        <label>
-          Snap Distance
-          <input name="snapdist" type="number" [(ngModel)]="bondService.snapDistance" />
-        </label>
-
-        @if (bondService.defaultProperties().curveType === 'multi-line' || bondService.defaultProperties().curveType === 'orthogonal') {
-          <label>
-            Connection Smoothness
-            <input type="number" [value]="bondService.defaultProperties().curveRadius" (input)="updateProperty(bondService.defaultProperties, 'curveRadius', $any($event.target).value)" />
-          </label>
-        }
-      </fieldset>
-    </form>
-
-    <label>
-      Animation Bubble Count
-      <input type="number" [(ngModel)]="animationBubbleCount" />
-    </label>
-
-    <label>
-      Animation Bubble Duration
-      <input type="number" [(ngModel)]="animationBubbleDuration" />
-    </label>
-
-    <h3>Links</h3>
-    @for (link of bondService.links(); track $index) {
-      <div>
-        {{ link().inputId }} > {{ link().outputId }}
-        <div style="display: flex; align-items: center">
-          <label>
-            Animate
-            <input type="checkbox" [value]="link().properties.animate" (change)="updateAnimateLink(link, $event)" />
-          </label>
-          <button (click)="bondService.removeLink(link)">Remove</button>
-        </div>
-      </div>
-    }
-
-    <br />
-    <br />
-    <input type="number" [value]="bondService.scale()" step="0.1" (change)="bondService.scale.set($any($event).target.value)" />
-  </div>
+  <bond-inspector #inspector></bond-inspector>
 </div>
