@@ -16,5 +16,5 @@ export function getSimpleBezierPath(
   p2: NgBondProperty | DragPoint,
 ) {
   const yOffset = 7;
-  return `M ${x1} ${y1} C ${x2} ${y1 + yOffset} ${x1} ${y2 + yOffset} ${x2} ${y2 + yOffset}`;
+  return `M ${x1} ${y1} C ${x2} ${y1} ${x1} ${y2} ${x2} ${y2}`;
 }

@@ -55,7 +55,6 @@ enum Role {
     EditorComponent,
     FormsModule,
     NgBondContainer,
-    NgBondProperty,
     NgBondWorld,
   ],
   templateUrl: './prisma.component.html',

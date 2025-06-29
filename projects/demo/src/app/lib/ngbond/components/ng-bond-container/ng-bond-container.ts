@@ -1,16 +1,4 @@
-import {
-  contentChildren,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  inject,
-  input,
-  Input,
-  model,
-  Output,
-  signal,
-  viewChildren,
-} from '@angular/core';
+import { contentChildren, Directive, effect, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, viewChildren } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
@@ -67,10 +55,7 @@ export class NgBondContainer {
   draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty, {
     descendants: true,
   });
-  dragContainerContentChildren = contentChildren<NgBondContainer>(
-    NgBondContainer,
-    { descendants: true },
-  );
+  dragContainerContentChildren = contentChildren<NgBondContainer>(NgBondContainer, { descendants: true });
 
   dragViewChildren = viewChildren<NgBondProperty>(NgBondProperty);
 
@@ -98,7 +83,6 @@ export class NgBondContainer {
       let worldEl = this.dragWorld.el.nativeElement;
       worldRect = worldEl.getBoundingClientRect();
     }
-
     const setWidth = (width: number) => {
       this.positioning !== 'none' && (itemElement.style.width = `${width}px`);
       this.widthUpdated.emit(width);
@@ -137,6 +121,8 @@ export class NgBondContainer {
       this.positionUpdated.emit({ x, y });
     };
 
+    pos(this.x(), this.y());
+
     const drag = makeDraggable(itemElement);
 
     drag.dragStart$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
@@ -146,19 +132,12 @@ export class NgBondContainer {
     drag.dragMove$.pipe(takeUntil(this.onDestroy$)).subscribe((move) => {
       this.resizeOffset = this.resizable ? this.resizeOffset : 0;
 
-      const isBottomHeightDrag =
-        move.startOffsetY > itemRect.height - this.resizeOffset;
+      const isBottomHeightDrag = move.startOffsetY > itemRect.height - this.resizeOffset;
       const isLeftWidthDrag = move.startOffsetX < this.resizeOffset;
-      const isRightWidthDrag =
-        move.startOffsetX > itemRect.width - this.resizeOffset;
+      const isRightWidthDrag = move.startOffsetX > itemRect.width - this.resizeOffset;
       const isTopHeightDrag = move.startOffsetY < this.resizeOffset;
 
-      if (
-        !isBottomHeightDrag &&
-        !isLeftWidthDrag &&
-        !isRightWidthDrag &&
-        !isTopHeightDrag
-      ) {
+      if (!isBottomHeightDrag && !isLeftWidthDrag && !isRightWidthDrag && !isTopHeightDrag) {
         const offsetX = move.originalEvent.x - move.startOffsetX;
         const offsetY = move.originalEvent.y - move.startOffsetY;
         let x = offsetX - parentRect.left;
@@ -168,19 +147,11 @@ export class NgBondContainer {
         y = y / this.ngBondService.scale();
         pos(x, y);
       } else if (isBottomHeightDrag) {
-        let height =
-          move.originalEvent.y -
-          itemRect.top +
-          itemRect.height -
-          move.startOffsetY;
+        let height = move.originalEvent.y - itemRect.top + itemRect.height - move.startOffsetY;
         height = Math.max(height, this.minHeight);
         setHeight(height);
       } else if (isRightWidthDrag) {
-        let width =
-          move.originalEvent.x -
-          itemRect.left +
-          itemRect.width -
-          move.startOffsetX;
+        let width = move.originalEvent.x - itemRect.left + itemRect.width - move.startOffsetX;
         width = Math.max(width, this.minWidth);
 
         setWidth(width);

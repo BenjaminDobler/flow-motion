@@ -115,4 +115,15 @@
       </g>
     } -->
   }
+
+  @if(dragService.snapLink) {
+    <path
+      class="draw"
+      [attr.stroke]="dragService.snapLink().properties.stroke"
+      [attr.stroke-width]="dragService.snapLink().properties.strokeWidth"
+      [attr.d]="dragService.snapLink().path"
+      [attr.stroke-dasharray]="dragService.snapLink().properties.strokeDasharray"
+      fill="none"
+    />
+  }
 </svg>

@@ -1,6 +1,6 @@
 <div style="display: flex; height: 100%">
   <ng-bond-world>
-    <div bondcontainer="container1" class="drag-container">
+    <div bondcontainer="container1" class="drag-container" positioning="transform" style="transform: translate(200px,200px)" [x]="200" [y]="200">
       <div
         bondproperty="property1"
         bondcolor="#00ff00"
@@ -18,7 +18,7 @@
       <div bondproperty="property3" class="drag-prop drag-child"></div>
     </div>
 
-    <div bondcontainer="container2" class="drag-container">
+    <div bondcontainer="container2" class="drag-container"  [x]="200" [y]="200">
       <div
         bondproperty="property4"
         style="top: 30px; right: 0"

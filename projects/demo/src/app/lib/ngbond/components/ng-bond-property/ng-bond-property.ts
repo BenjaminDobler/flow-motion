@@ -1,21 +1,8 @@
-import {
-  Directive,
-  ElementRef,
-  inject,
-  input,
-  model,
-  output,
-  Signal,
-  signal,
-} from '@angular/core';
+import { Directive, ElementRef, inject, input, model, output, Signal, signal } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
-import {
-  Link,
-  LinkProperties,
-  NgBondService,
-} from '../../services/ngbond.service';
+import { Link, LinkProperties, NgBondService } from '../../services/ngbond.service';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 
 export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -44,6 +31,9 @@ export class NgBondProperty {
   x = model(0);
   y = model(0);
 
+  width = model(0);
+  height = model(0);
+
   // global positions within the bond world
   gX = model(0);
   gY = model(0);
@@ -67,6 +57,8 @@ export class NgBondProperty {
     const dragPreview = {
       gX: signal<number>(0),
       gY: signal<number>(0),
+      width: signal(0),
+      height: signal(0),
     };
 
     let parentElement = this.parent();
@@ -89,10 +81,8 @@ export class NgBondProperty {
 
     drag.dragMove$.subscribe((move) => {
       if (isFirstMove && this.id()) {
-        currentPreview = this.ngBondService.createLink(
-          this.id(),
-          dragPreview,
-        ) as any;
+        this.ngBondService.currentDragSource = this;
+        currentPreview = this.ngBondService.createLink(this.id(), dragPreview) as any;
         isFirstMove = false;
       }
       const offsetX = move.originalEvent.x - move.startOffsetX;
@@ -104,18 +94,16 @@ export class NgBondProperty {
       const gX = x + parentRect.left - worldRect.left;
       const gY = y + parentRect.top - worldRect.top;
 
+      this.ngBondService.updateDragPreview(gX, gY);
+
       dragPreview.gX.set(gX);
       dragPreview.gY.set(gY);
     });
 
     drag.dragEnd$.subscribe((e) => {
-      const targetComp = this.ngBondService.getComponent(
-        e.originalEvent.target,
-      );
+      const targetComp = this.ngBondService.getComponent(e.originalEvent.target);
 
-      if (this.id() && targetComp?.id()) {
-        this.ngBondService.createLink(this.id(), targetComp.id());
-      }
+      this.ngBondService.endDragPreview(this.id(), targetComp?.id());
 
       if (currentPreview) {
         this.ngBondService.removePreview(currentPreview);
@@ -127,8 +115,7 @@ export class NgBondProperty {
     const parentRect = this.parent().getBoundingClientRect();
     const centerX = parentRect.width / 2;
     const centerY = parentRect.height / 2;
-    const angleDeg =
-      (Math.atan2(centerY - this.y(), centerX - this.x()) * 180) / Math.PI;
+    const angleDeg = (Math.atan2(centerY - this.y(), centerX - this.x()) * 180) / Math.PI;
     let heading = (360 + angleDeg) % 360;
 
     let position: LinkPosition;
@@ -154,6 +141,8 @@ export class NgBondProperty {
 
     let parentRect = this.parent().getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
+    this.width.set(itemRect.width);
+    this.height.set(itemRect.height);
     const x = itemRect.left - parentRect.left;
     const y = itemRect.top - parentRect.top;
     this.x.set(x);

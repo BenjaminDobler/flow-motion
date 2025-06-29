@@ -26,6 +26,7 @@ export class NgBondWorld {
 
 
 
+
   onConnectionClick(link: Link) {
     console.log('Connection clicked', link);
   }
