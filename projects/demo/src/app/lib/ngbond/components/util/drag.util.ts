@@ -1,22 +1,14 @@
-import {
-  fromEvent,
-  last,
-  map,
-  share,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { fromEvent, last, map, share, startWith, switchMap, takeUntil, tap } from 'rxjs';
 
-const mouseMove$ = fromEvent<MouseEvent>(document, 'mousemove');
-const mouseUp$ = fromEvent<MouseEvent>(document, 'mouseup');
+const mouseMove$ = fromEvent<PointerEvent>(document, 'pointermove').pipe(
+  share()
+);
+const mouseUp$ = fromEvent<PointerEvent>(document, 'pointerup').pipe(share());
 
 export function makeDraggable(element: HTMLElement) {
-  const mouseDown$ = fromEvent<MouseEvent>(element, 'mousedown').pipe(
-    tap((e: MouseEvent) => {
+  const mouseDown$ = fromEvent<PointerEvent>(element, 'pointerdown').pipe(
+    tap((e: PointerEvent) => {
       if (e.target instanceof HTMLInputElement) {
-        console.log('yes it is an input!');
       } else {
         e.preventDefault();
         e.stopPropagation();
@@ -27,9 +19,9 @@ export function makeDraggable(element: HTMLElement) {
       pageX: evt.pageX,
       offsetX: evt.offsetX,
       offsetY: evt.offsetY,
-      target: evt.target
+      target: evt.target,
     })),
-    share(),
+    share()
   );
 
   const dragStart$ = mouseDown$;
@@ -42,12 +34,11 @@ export function makeDraggable(element: HTMLElement) {
           deltaY: moveEvent.pageY - start.pageY,
           startOffsetX: start.offsetX,
           startOffsetY: start.offsetY,
-
         })),
-        takeUntil(mouseUp$),
-      ),
+        takeUntil(mouseUp$)
+      )
     ),
-    share(),
+    share()
   );
 
   const dragEnd$ = dragStart$.pipe(
@@ -62,9 +53,9 @@ export function makeDraggable(element: HTMLElement) {
           startOffsetY: start.offsetY,
         })),
         takeUntil(mouseUp$),
-        last(),
-      ),
-    ),
+        last()
+      )
+    )
   );
 
   return { dragStart$, dragMove$, dragEnd$ };

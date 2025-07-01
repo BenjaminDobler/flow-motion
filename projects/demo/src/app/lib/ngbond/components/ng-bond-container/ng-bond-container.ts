@@ -9,6 +9,9 @@ import { NgBondService } from '../../services/ngbond.service';
   selector: '[bondcontainer]',
   standalone: true,
   exportAs: 'bondcontainer',
+  host: {
+    '[style.touchAction]': "'none'",
+  },
 })
 export class NgBondContainer {
   el: ElementRef = inject(ElementRef);
