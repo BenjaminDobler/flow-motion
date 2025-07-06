@@ -11,6 +11,9 @@ import { KeyManager } from '../../services/key.manager';
   styleUrl: './ng-bond-world.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [],
+  host: {
+    '(click)': 'onClick($event)',
+  },
 })
 export class NgBondWorld {
   public el: ElementRef<HTMLElement> = inject(ElementRef);
@@ -28,5 +31,10 @@ export class NgBondWorld {
 
   protected countToArray(count: number) {
     return Array(count).fill(0);
+  }
+
+  onClick(evt: MouseEvent) {
+    console.log(evt);
+    // this.selectionManager.unselectAll();
   }
 }
