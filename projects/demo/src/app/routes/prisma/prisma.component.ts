@@ -4,6 +4,8 @@ import { EditorComponent, NgxEditorModel } from 'ngx-monaco-editor-v2';
 import { formatAst, parsePrismaSchema, PrismaSchema } from '@loancrate/prisma-schema-parser';
 import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
 import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
+import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
+import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
 declare let monaco: any;
 const examplePrismaSchema = `
 datasource db {
@@ -54,6 +56,7 @@ interface Model {
   imports: [EditorComponent, FormsModule, NgBondContainer, NgBondWorld],
   templateUrl: './prisma.component.html',
   styleUrl: './prisma.component.scss',
+  providers: [SelectionManager, NgBondService]
 })
 export class PrismaComponent {
   editor: any;
