@@ -12,23 +12,18 @@ export class SelectionManager {
 
   select(target: NgBondContainer | NgBondProperty) {
     if (this.selectionMap.has(target)) {
-      console.log('already has target Shift Down?', this.keyManager.keydownMap.has('Shift'));
       if (!this.keyManager.keydownMap.has('Shift')) {
-        console.log('delete other');
-         this.selectionTargets().forEach((t) => {
+        this.selectionTargets().forEach((t) => {
           this.selectionMap.delete(t);
         });
         this.selectionMap.set(target, true);
-      this.selectionTargets.set([target]);
+        this.selectionTargets.set([target]);
       }
-      
-      
     } else if (this.keyManager.keydownMap.has('Shift')) {
       this.selectionMap.set(target, true);
       this.selectionTargets.update((selections) => [...selections, target]);
     } else {
       if (this.selectionTargets().length > 0) {
-        console.log('delete others2');
         this.selectionTargets().forEach((t) => {
           this.selectionMap.delete(t);
         });
@@ -45,12 +40,15 @@ export class SelectionManager {
     }
   }
 
+  unselectAll() {
+    this.selectionTargets().forEach((t) => this.unselect(t));
+  }
+
   isSelected(target: NgBondContainer | NgBondProperty) {
     return this.selectionMap.get(target);
   }
 
   moveBy(x: number, y: number, source: NgBondContainer) {
-    console.log('move by ', x, y);
     this.selectionTargets().forEach((t) => {
       if (t !== source && t.type === 'container') {
         (t as NgBondContainer).moveBy(x, y);
