@@ -43,6 +43,8 @@ export class NgBondProperty implements OnInit, OnDestroy {
   widthUpdated = output<number>();
   heightUpdated = output<number>();
 
+  public type = 'propertys';
+
   public resizeOffset = 5;
 
   ngBondService: NgBondService = inject(NgBondService);

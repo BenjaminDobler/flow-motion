@@ -6,13 +6,14 @@ import { PropertyContainerComponent } from '../../components/property-container/
 import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
 import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
+import { KeyManager } from '../../lib/ngbond/services/key.manager';
 
 @Component({
   selector: 'app-root',
   imports: [NgBondContainer, NgBondProperty, NgBondWorld, PropertyContainerComponent, InspectorComponent],
   templateUrl: './simple.component.html',
   styleUrl: './simple.component.scss',
-  providers: [NgBondService, SelectionManager],
+  providers: [NgBondService, SelectionManager, KeyManager],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleComponent {
