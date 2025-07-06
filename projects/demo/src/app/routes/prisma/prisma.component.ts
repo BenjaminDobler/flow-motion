@@ -6,6 +6,7 @@ import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/n
 import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
 import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
 import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
+import { KeyManager } from '../../lib/ngbond/services/key.manager';
 declare let monaco: any;
 const examplePrismaSchema = `
 datasource db {
@@ -56,7 +57,7 @@ interface Model {
   imports: [EditorComponent, FormsModule, NgBondContainer, NgBondWorld],
   templateUrl: './prisma.component.html',
   styleUrl: './prisma.component.scss',
-  providers: [SelectionManager, NgBondService]
+  providers: [NgBondService, SelectionManager, KeyManager],
 })
 export class PrismaComponent {
   editor: any;
