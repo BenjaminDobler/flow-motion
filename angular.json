@@ -21,7 +21,9 @@
             "index": "projects/demo/src/index.html",
             "browser": "projects/demo/src/main.ts",
             "tsConfig": "projects/demo/tsconfig.app.json",
-            "externalDependencies": ["fs"],
+            "externalDependencies": [
+              "fs"
+            ],
             "inlineStyleLanguage": "scss",
             "assets": [
               {
@@ -39,7 +41,9 @@
                 "output": "./assets/monaco/min-maps"
               }
             ],
-            "styles": ["projects/demo/src/styles.scss"],
+            "styles": [
+              "projects/demo/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -92,8 +96,20 @@
                 "input": "projects/demo/public"
               }
             ],
-            "styles": ["projects/demo/src/styles.scss"],
+            "styles": [
+              "projects/demo/src/styles.scss"
+            ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/demo/**/*.ts",
+              "projects/demo/**/*.html"
+            ],
+            "eslintConfig": "projects/demo/eslint.config.js"
           }
         }
       }
@@ -124,5 +140,10 @@
     "@schematics/angular:resolver": {
       "typeSeparator": "."
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

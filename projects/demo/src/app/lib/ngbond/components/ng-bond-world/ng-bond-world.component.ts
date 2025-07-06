@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { NgTemplateOutlet } from '@angular/common';
+import { SelectionManager } from '../../services/selection.manager';
 
 @Component({
   selector: 'ng-bond-world',
@@ -19,7 +20,8 @@ import { NgTemplateOutlet } from '@angular/common';
 export class NgBondWorld {
   public el: ElementRef<HTMLElement> = inject(ElementRef);
   protected dragService: NgBondService = inject(NgBondService);
-  public pathanimation = input<TemplateRef<any>>();
+  protected selectionManager: SelectionManager = inject(SelectionManager);
+  public pathanimation = input<TemplateRef<unknown>>();
 
   animationBubbleCount = input<number>(10);
   animationBubbleDuration = input<number>(4);

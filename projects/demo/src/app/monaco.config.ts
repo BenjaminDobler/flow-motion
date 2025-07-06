@@ -1,7 +1,7 @@
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 import { config, language } from './routes/prisma/util/prisma.lang';
 
-declare var monaco: any;
+declare let monaco: any;
 
 export function onMonacoLoad() {
   console.log((window as any).monaco);

@@ -104,12 +104,7 @@ class Rectangle {
     return new Rectangle(r.left, r.top, r.width, r.height);
   }
 
-  static fromLTRB(
-    left: number,
-    top: number,
-    right: number,
-    bottom: number,
-  ): Rectangle {
+  static fromLTRB(left: number, top: number, right: number, bottom: number): Rectangle {
     return new Rectangle(left, top, right - left, bottom - top);
   }
 
@@ -117,53 +112,33 @@ class Rectangle {
     readonly left: number,
     readonly top: number,
     readonly width: number,
-    readonly height: number,
+    readonly height: number
   ) {}
 
   contains(p: Point): boolean {
-    return (
-      p.x >= this.left &&
-      p.x <= this.right &&
-      p.y >= this.top &&
-      p.y <= this.bottom
-    );
+    return p.x >= this.left && p.x <= this.right && p.y >= this.top && p.y <= this.bottom;
   }
 
   inflate(horizontal: number, vertical: number): Rectangle {
-    return Rectangle.fromLTRB(
-      this.left - horizontal,
-      this.top - vertical,
-      this.right + horizontal,
-      this.bottom + vertical,
-    );
+    return Rectangle.fromLTRB(this.left - horizontal, this.top - vertical, this.right + horizontal, this.bottom + vertical);
   }
 
   intersects(rectangle: Rectangle): boolean {
-    let thisX = this.left;
-    let thisY = this.top;
-    let thisW = this.width;
-    let thisH = this.height;
-    let rectX = rectangle.left;
-    let rectY = rectangle.top;
-    let rectW = rectangle.width;
-    let rectH = rectangle.height;
-    return (
-      rectX < thisX + thisW &&
-      thisX < rectX + rectW &&
-      rectY < thisY + thisH &&
-      thisY < rectY + rectH
-    );
+    const thisX = this.left;
+    const thisY = this.top;
+    const thisW = this.width;
+    const thisH = this.height;
+    const rectX = rectangle.left;
+    const rectY = rectangle.top;
+    const rectW = rectangle.width;
+    const rectH = rectangle.height;
+    return rectX < thisX + thisW && thisX < rectX + rectW && rectY < thisY + thisH && thisY < rectY + rectH;
   }
 
   union(r: Rectangle): Rectangle {
     const x = [this.left, this.right, r.left, r.right];
     const y = [this.top, this.bottom, r.top, r.bottom];
-    return Rectangle.fromLTRB(
-      Math.min(...x),
-      Math.min(...y),
-      Math.max(...x),
-      Math.max(...y),
-    );
+    return Rectangle.fromLTRB(Math.min(...x), Math.min(...y), Math.max(...x), Math.max(...y));
   }
 
   get center(): Point {
@@ -228,7 +203,7 @@ class Rectangle {
 class PointNode {
   public distance = Number.MAX_SAFE_INTEGER;
   public shortestPath: PointNode[] = [];
-  public adjacentNodes: Map<PointNode, number> = new Map();
+  public adjacentNodes = new Map<PointNode, number>();
   constructor(public data: Point) {}
 }
 
@@ -236,7 +211,7 @@ class PointNode {
  * Represents a Graph of Point nodes
  */
 class PointGraph {
-  private index: { [x: string]: { [y: string]: PointNode } } = {};
+  private index: Record<string, Record<string, PointNode>> = {};
 
   add(p: Point) {
     const { x, y } = p;
@@ -269,20 +244,14 @@ class PointGraph {
       return null;
     }
 
-    return this.directionOfNodes(
-      node.shortestPath[node.shortestPath.length - 1],
-      node,
-    );
+    return this.directionOfNodes(node.shortestPath[node.shortestPath.length - 1], node);
   }
 
-  calculateShortestPathFromSource(
-    graph: PointGraph,
-    source: PointNode,
-  ): PointGraph {
+  calculateShortestPathFromSource(graph: PointGraph, source: PointNode): PointGraph {
     source.distance = 0;
 
-    const settledNodes: Set<PointNode> = new Set();
-    const unsettledNodes: Set<PointNode> = new Set();
+    const settledNodes = new Set<PointNode>();
+    const unsettledNodes = new Set<PointNode>();
 
     unsettledNodes.add(source);
 
@@ -302,16 +271,11 @@ class PointGraph {
     return graph;
   }
 
-  private calculateMinimumDistance(
-    evaluationNode: PointNode,
-    edgeWeigh: number,
-    sourceNode: PointNode,
-  ) {
+  private calculateMinimumDistance(evaluationNode: PointNode, edgeWeigh: number, sourceNode: PointNode) {
     const sourceDistance = sourceNode.distance;
     const comingDirection = this.inferPathDirection(sourceNode);
     const goingDirection = this.directionOfNodes(sourceNode, evaluationNode);
-    const changingDirection =
-      comingDirection && goingDirection && comingDirection != goingDirection;
+    const changingDirection = comingDirection && goingDirection && comingDirection != goingDirection;
     const extraWeigh = changingDirection ? Math.pow(edgeWeigh + 1, 2) : 0;
 
     if (sourceDistance + edgeWeigh + extraWeigh < evaluationNode.distance) {
@@ -418,11 +382,7 @@ function isVerticalSide(side: Side): boolean {
  * @param horizontals
  * @param bounds
  */
-function rulersToGrid(
-  verticals: number[],
-  horizontals: number[],
-  bounds: Rectangle,
-): Grid {
+function rulersToGrid(verticals: number[], horizontals: number[], bounds: Rectangle): Grid {
   const result: Grid = new Grid();
 
   verticals.sort((a, b) => a - b);
@@ -451,20 +411,12 @@ function rulersToGrid(
 
   // Last fow of cells
   for (const x of verticals) {
-    result.set(
-      row,
-      column++,
-      Rectangle.fromLTRB(lastX, lastY, x, bounds.bottom),
-    );
+    result.set(row, column++, Rectangle.fromLTRB(lastX, lastY, x, bounds.bottom));
     lastX = x;
   }
 
   // Last cell of last row
-  result.set(
-    row,
-    column,
-    Rectangle.fromLTRB(lastX, lastY, bounds.right, bounds.bottom),
-  );
+  result.set(row, column, Rectangle.fromLTRB(lastX, lastY, bounds.right, bounds.bottom));
 
   return result;
 }
@@ -479,7 +431,7 @@ function reducePoints(points: Point[]): Point[] {
 
   points.forEach((p) => {
     const { x, y } = p;
-    let arr: number[] = map.get(y) || map.set(y, []).get(y)!;
+    const arr: number[] = map.get(y) || map.set(y, []).get(y)!;
 
     if (arr.indexOf(x) < 0) {
       arr.push(x);
@@ -501,8 +453,7 @@ function reducePoints(points: Point[]): Point[] {
  * @param obstacles
  */
 function gridToSpots(grid: Grid, obstacles: Rectangle[]): Point[] {
-  const obstacleCollision = (p: Point) =>
-    obstacles.filter((o) => o.contains(p)).length > 0;
+  const obstacleCollision = (p: Point) => obstacles.filter((o) => o.contains(p)).length > 0;
 
   const gridPoints: Point[] = [];
 
@@ -529,17 +480,7 @@ function gridToSpots(grid: Grid, obstacles: Rectangle[]): Point[] {
       } else if (lastCol) {
         gridPoints.push(r.northEast, r.east, r.southEast);
       } else {
-        gridPoints.push(
-          r.northWest,
-          r.north,
-          r.northEast,
-          r.east,
-          r.southEast,
-          r.south,
-          r.southWest,
-          r.west,
-          r.center,
-        );
+        gridPoints.push(r.northWest, r.north, r.northEast, r.east, r.southEast, r.south, r.southWest, r.west, r.center);
       }
     }
   }
@@ -616,11 +557,7 @@ function createGraph(spots: Point[]): {
  * @param origin
  * @param destination
  */
-function shortestPath(
-  graph: PointGraph,
-  origin: Point,
-  destination: Point,
-): Point[] {
+function shortestPath(graph: PointGraph, origin: Point, destination: Point): Point[] {
   const originNode = graph.get(origin);
   const destinationNode = graph.get(destination);
 
@@ -658,10 +595,7 @@ function getBend(a: Point, b: Point, c: Point): BendDirection {
     return 'none';
   }
 
-  if (
-    !(segment1Vertical || segment1Horizontal) ||
-    !(segment2Vertical || segment2Horizontal)
-  ) {
+  if (!(segment1Vertical || segment1Horizontal) || !(segment2Vertical || segment2Horizontal)) {
     return 'unknown';
   }
 
@@ -710,16 +644,13 @@ class Grid {
   private _rows = 0;
   private _cols = 0;
 
-  readonly data: Map<number, Map<number, Rectangle>> = new Map();
-
-  constructor() {}
+  readonly data = new Map<number, Map<number, Rectangle>>();
 
   set(row: number, column: number, rectangle: Rectangle) {
     this._rows = Math.max(this.rows, row + 1);
     this._cols = Math.max(this.columns, column + 1);
 
-    const rowMap: Map<number, Rectangle> =
-      this.data.get(row) || this.data.set(row, new Map()).get(row)!;
+    const rowMap: Map<number, Rectangle> = this.data.get(row) || this.data.set(row, new Map()).get(row)!;
 
     rowMap.set(column, rectangle);
   }
@@ -792,16 +723,14 @@ export class OrthogonalConnector {
       inflatedB = shapeB;
     }
 
-    const inflatedBounds = inflatedA
-      .union(inflatedB)
-      .inflate(globalBoundsMargin, globalBoundsMargin);
+    const inflatedBounds = inflatedA.union(inflatedB).inflate(globalBoundsMargin, globalBoundsMargin);
 
     // Curated bounds to stick to
     const bounds = Rectangle.fromLTRB(
       Math.max(inflatedBounds.left, bigBounds.left),
       Math.max(inflatedBounds.top, bigBounds.top),
       Math.min(inflatedBounds.right, bigBounds.right),
-      Math.min(inflatedBounds.bottom, bigBounds.bottom),
+      Math.min(inflatedBounds.bottom, bigBounds.bottom)
     );
 
     // Add edges to rulers
@@ -813,18 +742,13 @@ export class OrthogonalConnector {
     }
 
     // Rulers at origins of shapes
-    (sideAVertical ? verticals : horizontals).push(
-      sideAVertical ? originA.x : originA.y,
-    );
-    (sideBVertical ? verticals : horizontals).push(
-      sideBVertical ? originB.x : originB.y,
-    );
+    (sideAVertical ? verticals : horizontals).push(sideAVertical ? originA.x : originA.y);
+    (sideBVertical ? verticals : horizontals).push(sideBVertical ? originB.x : originB.y);
 
     // Points of shape antennas
     for (const connectorPt of [pointA, pointB]) {
       const p = computePt(connectorPt);
-      const add = (dx: number, dy: number) =>
-        spots.push(makePt(p.x + dx, p.y + dy));
+      const add = (dx: number, dy: number) => spots.push(makePt(p.x + dx, p.y + dy));
 
       switch (connectorPt.side) {
         case 'top':
@@ -872,11 +796,7 @@ export class OrthogonalConnector {
     const path = shortestPath(graph, origin, destination);
 
     if (path.length > 0) {
-      return simplifyPath([
-        start,
-        ...shortestPath(graph, origin, destination),
-        end,
-      ]);
+      return simplifyPath([start, ...shortestPath(graph, origin, destination), end]);
     } else {
       return [];
     }

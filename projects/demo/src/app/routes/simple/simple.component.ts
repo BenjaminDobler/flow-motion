@@ -4,18 +4,15 @@ import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-
 import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
 import { PropertyContainerComponent } from '../../components/property-container/property-container.component';
 import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
+import { InspectorComponent } from '../../components/inspector/inspector.component';
+import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    NgBondContainer,
-    NgBondProperty,
-    NgBondWorld,
-    PropertyContainerComponent,
-  ],
+  imports: [NgBondContainer, NgBondProperty, NgBondWorld, PropertyContainerComponent, InspectorComponent],
   templateUrl: './simple.component.html',
   styleUrl: './simple.component.scss',
-  providers: [NgBondService],
+  providers: [NgBondService, SelectionManager],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleComponent {
@@ -24,6 +21,6 @@ export class SimpleComponent {
   cX = signal(200);
 
   constructor() {
-    this.ngBondService.defaultProperties.update(x=>({...x, curveType: 'orthogonal'}));
+    this.ngBondService.defaultProperties.update((x) => ({ ...x, curveType: 'orthogonal' }));
   }
 }

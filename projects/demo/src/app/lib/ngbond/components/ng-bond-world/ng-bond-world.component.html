@@ -127,3 +127,13 @@
     />
   }
 </svg>
+
+
+
+<svg style="position: absolute; left: 0; top: 0; pointer-events: none" width="100%" height="100%">
+
+  @for(selection of selectionManager.selectionTargets(); track $index) {
+    <rect [attr.x]="selection.gX()" [attr.y]="selection.gY()" [attr.width]="selection.width()" [attr.height]="selection.height()" fill="none" stroke="#fff" stroke-width="1" ></rect>
+  }
+
+</svg>

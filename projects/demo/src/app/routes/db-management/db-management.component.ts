@@ -4,6 +4,7 @@ import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-w
 import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
 import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
+import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
 
 const dbData = [
   {
@@ -45,7 +46,7 @@ const dbData = [
   imports: [NgBondContainer, NgBondWorld, NgBondProperty, InspectorComponent],
   templateUrl: './db-management.component.html',
   styleUrl: './db-management.component.scss',
-  providers: [NgBondService],
+  providers: [NgBondService, SelectionManager],
 })
 export class DbManagementComponent {
   tables = dbData;

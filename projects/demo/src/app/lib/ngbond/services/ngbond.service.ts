@@ -1,4 +1,4 @@
-import { computed, model, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, Signal, signal } from '@angular/core';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
 import { LinkPosition, NgBondProperty } from '../components/ng-bond-property/ng-bond-property';
 import { getSimpleBezierPath } from '../components/util/connections/simple-bezier';
@@ -50,8 +50,6 @@ export class NgBondService {
   snap = signal<boolean>(true);
   snapDistance = signal<number>(60);
 
-  constructor() {}
-
   defaultProperties = signal<LinkProperties>(defaultLinkProperties);
 
   registerDraggableElement(el: NgBondContainer | NgBondProperty) {
@@ -67,7 +65,7 @@ export class NgBondService {
     return p1;
   }
 
-  createLink(id1: string, id2: string | DragPoint, linkProperties?: LinkProperties, add: boolean = true) {
+  createLink(id1: string, id2: string | DragPoint, linkProperties?: LinkProperties, add = true) {
     const p1 = this.getBrondPropertyById(id1);
 
     const p1Position = p1.position();
@@ -90,8 +88,6 @@ export class NgBondService {
       p1.hasLink.set(true);
       p1.isStartOfLink.set(true);
     }
-
-    const yOffset = 7;
 
     if (p1 && p2) {
       const link = computed(() => {
@@ -158,7 +154,7 @@ export class NgBondService {
     if (this.snap()) {
       let smalledDist = Number.POSITIVE_INFINITY;
       let smallestEl;
-      for (let el of this.dragElements()) {
+      for (const el of this.dragElements()) {
         if (el instanceof NgBondProperty) {
           const dist = getDistance({ x, y }, { x: el.gX(), y: el.gY() });
           if (dist < smalledDist) {

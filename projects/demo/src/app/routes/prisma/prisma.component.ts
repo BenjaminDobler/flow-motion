@@ -1,19 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EditorComponent, NgxEditorModel } from 'ngx-monaco-editor-v2';
-import {
-  formatAst,
-  parsePrismaSchema,
-  PrismaSchema,
-  getModelAttributes
-} from '@loancrate/prisma-schema-parser';
+import { formatAst, parsePrismaSchema, PrismaSchema } from '@loancrate/prisma-schema-parser';
 import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
-import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
 import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
-import { config, language } from './util/prisma.lang';
-
-declare var monaco: any;
-
+declare let monaco: any;
 const examplePrismaSchema = `
 datasource db {
   provider = "postgresql"
@@ -49,21 +40,25 @@ enum Role {
 }
 `;
 
+interface Field {
+  type: string;
+}
+
+interface Model {
+  name: string;
+  fields: Field[];
+}
+
 @Component({
   selector: 'app-prisma',
-  imports: [
-    EditorComponent,
-    FormsModule,
-    NgBondContainer,
-    NgBondWorld,
-  ],
+  imports: [EditorComponent, FormsModule, NgBondContainer, NgBondWorld],
   templateUrl: './prisma.component.html',
   styleUrl: './prisma.component.scss',
 })
 export class PrismaComponent {
   editor: any;
 
-  models = signal<any[]>([]);
+  models = signal<Model[]>([]);
   options = {
     theme: 'vs-dark',
   };
@@ -77,32 +72,23 @@ export class PrismaComponent {
   ast = signal<PrismaSchema | undefined>(undefined);
 
   onInit(editor: any) {
+    console.log('editor ', editor);
     this.editor = editor;
   }
 
   async onCodeChange(code: string) {
-    console.log('Code changed:', code);
-
     const ast = parsePrismaSchema(code);
-    console.log('AST:', ast);
-
     this.ast.set(ast);
-
     const declarations = ast.declarations;
-
-    console.log(JSON.stringify(ast, null,2));
 
     const models: any[] = [];
     declarations.map((declaration) => {
-      console.log(declaration.kind);
       if (declaration.kind === 'model') {
-        const model: any = {
+        const model: Partial<Model> = {
           fields: [],
         };
-        console.log('Model Declaration:', declaration.name.value);
         model.name = declaration.name.value;
         declaration.members.map((member) => {
-          console.log(member.kind);
           if (member.kind === 'field') {
             const field: any = {};
             field.name = member.name.value;
@@ -111,10 +97,6 @@ export class PrismaComponent {
               field.type = member.type.name.value;
             } else if (member.type.kind === 'optional') {
               field.type = (member as any).type.type.name.value;
-              console.log(
-                'optional member ',
-                (member as any).type.type.name.value,
-              );
             } else if (member.type.type.kind === 'typeId') {
               field.type = member.type.type.name.value;
             } else {
@@ -124,7 +106,7 @@ export class PrismaComponent {
             //field.type = (member as any).type.type.name.value;
             //field.type = member.type.value;
             //field.attributes = member.attributes.map((attr: any) => attr.value);
-            model.fields.push(field);
+            model.fields?.push(field);
           }
         });
 
@@ -143,27 +125,20 @@ export class PrismaComponent {
   }
 
   onFieldNameChanged(fullModel: any, evt: any, obj: any, name: string) {
-    console.log('evt ', evt);
-
     const previousValue = obj[name];
     obj[name] = evt.target.value;
     obj.value = evt.target.value;
 
     let declaration;
-    for(declaration of fullModel.declarations) {
+    for (declaration of fullModel.declarations) {
       if (declaration.kind === 'model') {
         let member;
-        for(member of declaration.members) {
-          console.log(member);
-          // console.log('TypeKind', member.type.kind,'   ', previousValue);
+        for (member of declaration.members) {
           if (member.type.kind === 'list' && member.type.type.kind === 'typeId') {
-            console.log(member.type.type.name.value);
             if (member.type.type.name.value === previousValue) {
-              console.log('Update value ',member);
               member.type.type.name.value = evt.target.value;
             }
-          } else if(member.type?.name?.value === previousValue) {
-            console.log('prev val found ', member);
+          } else if (member.type?.name?.value === previousValue) {
             member.type.name.value = evt.target.value;
           }
         }
@@ -171,8 +146,6 @@ export class PrismaComponent {
     }
 
     //member.type.type.name.value
-
-
 
     if (this.ast()) {
       const newCode = formatAst(fullModel as any);

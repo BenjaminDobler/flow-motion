@@ -7,6 +7,6 @@ export const getDistance = (p1: Point, p2: Point) => {
 };
 
 
-export type Rect = { x: number; y: number; height: number; width: number };
-export type Point = { x: number; y: number; adjacent?: Point[]; gridX?: number; gridY?: number };
-export type Line = { from: Point; to: Point };
+export interface Rect { x: number; y: number; height: number; width: number }
+export interface Point { x: number; y: number; adjacent?: Point[]; gridX?: number; gridY?: number }
+export interface Line { from: Point; to: Point }

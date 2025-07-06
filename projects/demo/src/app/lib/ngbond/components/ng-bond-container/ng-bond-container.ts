@@ -1,4 +1,4 @@
-import { contentChildren, Directive, effect, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, viewChildren } from '@angular/core';
+import { contentChildren, Directive, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, viewChildren, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
@@ -13,7 +13,7 @@ import { NgBondService } from '../../services/ngbond.service';
     '[style.touchAction]': "'none'",
   },
 })
-export class NgBondContainer {
+export class NgBondContainer implements AfterViewInit, OnInit, OnDestroy {
   el: ElementRef = inject(ElementRef);
 
   @Input()
@@ -78,23 +78,25 @@ export class NgBondContainer {
 
   ngAfterViewInit() {
     const itemElement = this.el?.nativeElement;
-    let parentElement = itemElement.parentElement;
+    const parentElement = itemElement.parentElement;
     let parentRect = parentElement.getBoundingClientRect();
     let itemRect = itemElement.getBoundingClientRect();
     let worldRect = parentRect;
     if (this.dragWorld) {
-      let worldEl = this.dragWorld.el.nativeElement;
+      const worldEl = this.dragWorld.el.nativeElement;
       worldRect = worldEl.getBoundingClientRect();
     }
     const setWidth = (width: number) => {
       this.positioning !== 'none' && (itemElement.style.width = `${width}px`);
       this.widthUpdated.emit(width);
       this.width.set(width);
+      this.updateChildren();
     };
     const setHeight = (height: number) => {
       this.positioning !== 'none' && (itemElement.style.height = `${height}px`);
       this.heightUpdated.emit(height);
       this.height.set(height);
+      this.updateChildren();
     };
 
     setWidth(itemRect.width);
@@ -117,9 +119,7 @@ export class NgBondContainer {
       this.gX.set(gX);
       this.gY.set(gY);
 
-      this.draggableContentChildren().forEach((c) => c.updatePosition());
-      this.dragContainerContentChildren().forEach((c) => c.updatePosition());
-      this.dragViewChildren().forEach((c) => c.updatePosition());
+      this.updateChildren();
 
       this.positionUpdated.emit({ x, y });
     };
@@ -160,7 +160,6 @@ export class NgBondContainer {
         setWidth(width);
       } else if (isLeftWidthDrag) {
         const x = move.originalEvent.x - move.startOffsetX - parentRect.left;
-        const y = move.originalEvent.y - move.startOffsetY - parentRect.top;
         const width = itemRect.left - parentRect.left + itemRect.width - x;
 
         if (width > this.minWidth) {
@@ -168,8 +167,6 @@ export class NgBondContainer {
           setWidth(width);
         }
       } else if (isTopHeightDrag) {
-        const x = move.originalEvent.x - move.startOffsetX - parentRect.left;
-
         const y = move.originalEvent.y - move.startOffsetY - parentRect.top;
         const height = itemRect.top - parentRect.top + itemRect.height - y;
         if (height > this.minHeight) {
@@ -180,11 +177,15 @@ export class NgBondContainer {
     });
   }
 
-  constructor() {}
+  private updateChildren() {
+    this.draggableContentChildren().forEach((c) => c.updatePosition());
+    this.dragContainerContentChildren().forEach((c) => c.updatePosition());
+    this.dragViewChildren().forEach((c) => c.updatePosition());
+  }
 
   updatePosition() {
     const itemElement = this.el?.nativeElement;
-    let parentElement = itemElement.parentElement;
+    const parentElement = itemElement.parentElement;
 
     let worldRect = { left: 0, top: 0 };
     if (this.dragWorld) {
@@ -192,8 +193,8 @@ export class NgBondContainer {
       worldRect = worldElement.getBoundingClientRect();
     }
 
-    let parentRect = parentElement.getBoundingClientRect();
-    let itemRect = itemElement.getBoundingClientRect();
+    const parentRect = parentElement.getBoundingClientRect();
+    const itemRect = itemElement.getBoundingClientRect();
     const x = itemRect.left - parentRect.left;
     const y = itemRect.top - parentRect.top;
     this.x.set(x);

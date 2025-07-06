@@ -1,8 +1,8 @@
-import { Directive, ElementRef, inject, input, model, output, Signal, signal } from '@angular/core';
+import { Directive, ElementRef, inject, input, model, output, Signal, signal, OnInit, OnDestroy } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
-import { Link, LinkProperties, NgBondService } from '../../services/ngbond.service';
+import { Link, NgBondService } from '../../services/ngbond.service';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 
 export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -13,9 +13,10 @@ export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
   exportAs: 'bondproperty',
   host: {
     '[class.has-link]': 'this.hasLink()',
+    '[style.touchAction]': "'none'",
   },
 })
-export class NgBondProperty {
+export class NgBondProperty implements OnInit, OnDestroy {
   hasLink = signal<boolean>(false);
   isStartOfLink = signal<boolean>(false);
   isEndOfLink = signal<boolean>(false);
@@ -61,20 +62,18 @@ export class NgBondProperty {
       height: signal(0),
     };
 
-    let parentElement = this.parent();
+    const parentElement = this.parent();
     let parentRect = parentElement.getBoundingClientRect();
-    let itemRect = itemElement.getBoundingClientRect();
     let worldRect = parentRect;
     let currentPreview: Signal<Link> | null;
     let isFirstMove = true;
 
-    drag.dragStart$.pipe(takeUntilDestroyed()).subscribe((evt) => {
-      itemRect = itemElement.getBoundingClientRect();
+    drag.dragStart$.pipe(takeUntilDestroyed()).subscribe(() => {
       parentRect = parentElement.getBoundingClientRect();
       worldRect = parentRect;
       isFirstMove = true;
       if (this.dragWorld) {
-        let worldEl = this.dragWorld.el.nativeElement;
+        const worldEl = this.dragWorld.el.nativeElement;
         worldRect = worldEl.getBoundingClientRect();
       }
     });
@@ -116,7 +115,7 @@ export class NgBondProperty {
     const centerX = parentRect.width / 2;
     const centerY = parentRect.height / 2;
     const angleDeg = (Math.atan2(centerY - this.y(), centerX - this.x()) * 180) / Math.PI;
-    let heading = (360 + angleDeg) % 360;
+    const heading = (360 + angleDeg) % 360;
 
     let position: LinkPosition;
     if (heading < 40 || heading > 320) {
@@ -139,8 +138,8 @@ export class NgBondProperty {
       worldRect = worldElement.getBoundingClientRect();
     }
 
-    let parentRect = this.parent().getBoundingClientRect();
-    let itemRect = itemElement.getBoundingClientRect();
+    const parentRect = this.parent().getBoundingClientRect();
+    const itemRect = itemElement.getBoundingClientRect();
     this.width.set(itemRect.width);
     this.height.set(itemRect.height);
     const x = itemRect.left - parentRect.left;

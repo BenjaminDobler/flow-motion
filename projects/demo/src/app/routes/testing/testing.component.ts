@@ -2,21 +2,17 @@ import { Component, effect, signal, viewChild } from '@angular/core';
 import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
 import { getDistance, Line, Point, Rect } from '../../lib/ngbond/components/util/geo';
 
-
-
-
-
 const key = (point: Point) => {
   return point.x + '_' + point.y;
 };
 
-const clonePoint = (p: Point): Point => {
+export function clonePoint(p: Point): Point {
   return {
     x: p.x,
     y: p.y,
     adjacent: p.adjacent,
   };
-};
+}
 
 const getAllXYValues = (rect: Rect) => {
   const allX = [];
@@ -42,7 +38,7 @@ const expandRect = (rect: Rect, margin: number) => {
   return r;
 };
 
-const rectToPointArray = (rect: Rect) => {
+export function rectToPointArray(rect: Rect) {
   const points: Point[] = [];
 
   // draw edges
@@ -61,7 +57,7 @@ const rectToPointArray = (rect: Rect) => {
   points.push({ x: rect.x + rect.width / 2, y: rect.y + rect.height });
 
   return points;
-};
+}
 
 @Component({
   selector: 'app-testing',
@@ -240,7 +236,7 @@ export class TestingComponent {
 
     // visit points neigbours
     const visited: Map<string, Point> = new Map<string, Point>();
-    const unvisited: Map<string, Point> = new Map(this.pointMap);
+    const unvisited = new Map<string, Point>(this.pointMap);
     const shortestDistances = new Map<string, { previous?: Point; distance: number }>();
 
     this.pointMap.forEach((p, key) => {

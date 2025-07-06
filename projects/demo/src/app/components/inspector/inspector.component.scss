@@ -1,9 +1,33 @@
 :host {
   display: block;
   width: 300px;
-  padding: 10px;
   width: 300px;
-  padding: 10px;
   background: #111111;
   border-left: 1px solid #313131;
+}
+
+
+.navigation {
+  width: 100%;
+  display: flex;
+  justify-items: stretch;
+  div {
+    flex-grow: 1;
+    text-align: center;
+    padding: 5px;
+    &.selected {
+      background: blue;
+    }
+  }
+}
+
+.content {
+  padding: 10px;
+}
+
+.bond-item {
+  cursor: pointer;
+  &.selected {
+  background: #2558ce;
+  }
 }

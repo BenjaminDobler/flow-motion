@@ -27,7 +27,7 @@ export function getOrhogonalConnection(
   }
   let rect2 = { width: 20, height: 20, left: x2, top: y2 };
 
-  if (p2.hasOwnProperty('container')) {
+  if ('container' in p2) {
     rect2 = (p2 as NgBondProperty).container?.bounds as any;
 
     if (p2Position === 'bottom' || p2Position === 'top') {
@@ -43,7 +43,7 @@ export function getOrhogonalConnection(
     pointA: { shape: rect1 as any, side: p1Position, distance: distance1 },
     pointB: { shape: rect2 as any, side: p2Position, distance: distance2 },
     shapeMargin: 10,
-    globalBoundsMargin: 100,
+    globalBoundsMargin: 10,
     globalBounds: { left: 0, top: 0, width: 2000, height: 2000 },
   });
   const orthoPath = pointToPath(path, curveRadius);

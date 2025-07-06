@@ -34,9 +34,9 @@ export function getBend(
 
 export function pointToPath(
   points: { x: number; y: number }[],
-  curveRadius: number = 0,
+  curveRadius = 0,
 ) {
-  const segments: any[] = [];
+  const segments: string[] = [];
 
   for (let i = 0; i <= points.length - 1; i++) {
     if (i === 0) {
