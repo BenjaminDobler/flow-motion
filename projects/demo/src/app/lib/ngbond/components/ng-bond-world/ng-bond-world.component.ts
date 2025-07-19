@@ -34,7 +34,22 @@ export class NgBondWorld {
   }
 
   onClick(evt: MouseEvent) {
-    console.log(evt);
     // this.selectionManager.unselectAll();
+
+    let hasComponent = false;
+    let target = evt.target as HTMLElement;
+    while (target && target !== this.el.nativeElement) {
+      const targetComp = this.dragService.getComponent(target);
+      if (targetComp) {
+        // If the target is a component, do not unselect
+        hasComponent = true;
+        break;
+      }
+      target = target.parentElement as HTMLElement;
+    }
+    if (!hasComponent) {
+      console.log('NO COMPONENT FOUND, UNSELECTING');
+      this.selectionManager.unselectAll();
+    }
   }
 }

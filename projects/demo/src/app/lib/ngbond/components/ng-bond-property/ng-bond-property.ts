@@ -165,6 +165,16 @@ export class NgBondProperty implements OnInit, OnDestroy {
     return parentElement;
   }
 
+  get bounds() {
+    const rect = this.el.nativeElement.getBoundingClientRect();
+    return {
+      left: this.gX(),
+      top: this.gY(),
+      width: rect.width,
+      height: rect.height,
+    };
+  }
+
   ngOnInit() {
     this.ngBondService.registerDraggableElement(this);
     this.updatePosition();

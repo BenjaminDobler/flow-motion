@@ -133,12 +133,22 @@ export class NgBondContainer implements AfterViewInit, OnInit, OnDestroy {
     }
     const drag = makeDraggable(this.itemElement);
 
-    drag.dragStart$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+    drag.click$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
       if (this.selectionManager) {
         this.selectionManager.select(this);
       }
       this.updateBounds();
     });
+
+    drag.dragStart$.pipe(takeUntil(this.onDestroy$)).subscribe((start) => {
+      if (this.selectionManager) {
+        if (!this.selectionManager.isSelected(this)) {
+          this.selectionManager.unselectAll();
+          this.selectionManager.select(this);
+        }
+      }
+    });
+
     drag.dragMove$.pipe(takeUntil(this.onDestroy$)).subscribe((move) => {
       this.resizeOffset = this.resizable ? this.resizeOffset : 0;
 
@@ -229,7 +239,6 @@ export class NgBondContainer implements AfterViewInit, OnInit, OnDestroy {
   }
 
   moveBy(x: number, y: number) {
-    console.log('move by');
     this.pos(this.x() + x, this.y() + y, false);
   }
 

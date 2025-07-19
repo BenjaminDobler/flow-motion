@@ -13,7 +13,7 @@ import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-
 })
 export class InspectorComponent {
   protected bondService: NgBondService = inject(NgBondService);
-  protected selected = signal<'properties' | 'children'>('properties');
+  protected selected = signal<'properties' | 'children' | 'selection'>('properties');
   protected selectionManager: SelectionManager = inject(SelectionManager);
 
   animationBubbleCount = signal(5);

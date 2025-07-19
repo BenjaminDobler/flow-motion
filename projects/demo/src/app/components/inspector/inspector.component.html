@@ -1,6 +1,7 @@
 <div class="navigation">
   <div (click)="selected.set('properties')" [class.selected]="selected() === 'properties'">Properties</div>
   <div (click)="selected.set('children')" [class.selected]="selected() === 'children'">Children</div>
+  <div (click)="selected.set('selection')" [class.selected]="selected() === 'children'">Selection</div>
 </div>
 
 <div class="content">
@@ -85,15 +86,34 @@
       <br />
       <input type="number" [value]="bondService.scale()" step="0.1" (change)="bondService.scale.set($any($event).target.value)" />
     </div>
-  } @else {
+  } @else if (selected() === 'children') {
     <!-- Children -->
     <div>
       <div>
         <h3>Targets</h3>
         @for (drag of bondService.dragElements(); track $index) {
-          <div class="bond-item" [class.selected]="selectionManager.isSelected(drag)" (click)="toggleSelection(drag)" style="white-space: nowrap">ID: {{ drag.id() }} G: {{ drag.gX() }}x{{ drag.gY() }} L: {{ drag.x() }}x{{ drag.y() }}</div>
+          <div class="bond-item" [class.selected]="selectionManager.isSelected(drag)" (click)="toggleSelection(drag)" style="white-space: nowrap">
+            ID: {{ drag.id() }} G: {{ drag.gX() }}x{{ drag.gY() }} L: {{ drag.x() }}x{{ drag.y() }}
+          </div>
         }
       </div>
+    </div>
+  } @else if (selected() === 'selection') {
+    <!-- Selection -->
+    <div>
+      <h3>Selection</h3>
+      @for (selection of selectionManager.selectionTargets(); track $index) {
+        <div class="bond-item" [class.selected]="selectionManager.isSelected(selection)" (click)="toggleSelection(selection)" style="white-space: nowrap">
+          ID: {{ selection.id() }}
+          <button (click)="selectionManager.unselect(selection)">Remove</button>
+        </div>
+      }
+
+      <button (click)="selectionManager.alignHorizontal()">Align horizontal</button>
+      <button (click)="selectionManager.alignVertical()">Align verticak</button>
+
+      <button (click)="selectionManager.alignCenter()">Align center</button>
+      <button (click)="selectionManager.alignVerticalCenter()">Align vertical center</button>
     </div>
   }
 </div>

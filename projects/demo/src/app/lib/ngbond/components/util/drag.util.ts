@@ -1,4 +1,4 @@
-import { fromEvent, last, map, share, startWith, switchMap, takeUntil, tap } from 'rxjs';
+import { fromEvent, race, last, map, share, startWith, switchMap, take, takeUntil, tap } from 'rxjs';
 
 const mouseMove$ = fromEvent<PointerEvent>(document, 'pointermove').pipe(share());
 const mouseUp$ = fromEvent<PointerEvent>(document, 'pointerup').pipe(share());
@@ -21,7 +21,8 @@ export function makeDraggable(element: HTMLElement) {
     share()
   );
 
-  const dragStart$ = mouseDown$;
+  const dragStart$ = mouseDown$.pipe(switchMap((start) => mouseMove$.pipe(tap(x=>console.log(x)),take(1)).pipe(takeUntil(mouseUp$))));
+
   const dragMove$ = dragStart$.pipe(
     switchMap((start) =>
       mouseMove$.pipe(
@@ -55,5 +56,8 @@ export function makeDraggable(element: HTMLElement) {
     )
   );
 
-  return { dragStart$, dragMove$, dragEnd$ };
+  // Create a click event that is emitted when the mouse is released without moving
+  const click$ = mouseDown$.pipe(switchMap((start) => mouseUp$.pipe(takeUntil(mouseMove$))));
+
+  return { dragStart$, dragMove$, dragEnd$, click$: click$ };
 }

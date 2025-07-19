@@ -16,17 +16,12 @@ export class KeyManager {
     const keyDown$ = fromEvent<KeyboardEvent>(this.document, 'keydown');
 
     keyUp$.subscribe((evt) => {
-      console.log(evt);
       this.keydownMap.delete(evt.key);
     });
 
     keyDown$.subscribe((evt) => {
-      console.log(evt);
       this.keydownMap.set(evt.key, true);
-      this.keysDown.update(x=>[...x, evt.key])
+      this.keysDown.update((x) => [...x, evt.key]);
     });
-    
-
-
   }
 }
