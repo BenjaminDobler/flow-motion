@@ -104,6 +104,7 @@
     />
   }
 </svg>
+@let group = selectionManager.selectedGroup();
 
 <!--draw selection hightlights-->
 <svg style="position: absolute; left: 0; top: 0; pointer-events: none" width="100%" height="100%">
@@ -111,8 +112,12 @@
     <rect [attr.x]="selection.gX()" [attr.y]="selection.gY()" [attr.width]="selection.width()" [attr.height]="selection.height()" fill="none" stroke="#2558ce" stroke-width="1"></rect>
   } -->
 
-  @let group = selectionManager.selectedGroup();
   @if (group) {
-    <rect style="pointer-events: none;" [attr.x]="group.x" [attr.y]="group.y" [attr.width]="group.width" [attr.height]="group.height" fill="none" stroke="#2558ce" stroke-width="1"></rect>
+    <rect style="pointer-events: none" [attr.x]="group.x" [attr.y]="group.y" [attr.width]="group.width" [attr.height]="group.height" fill="none" stroke="#2558ce" stroke-width="1"></rect>
   }
 </svg>
+@if (group) {
+  <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x + group.width/2}px, ${group.y + group.height + 5}px)`">
+    <div style="transform: translateX(-50%); background: #2558ce; border-radius: 4px;padding: 3px">{{ group.width | number: '1.0-0' }} x {{ group.height | number: '1.0-0' }}</div>
+  </div>
+}

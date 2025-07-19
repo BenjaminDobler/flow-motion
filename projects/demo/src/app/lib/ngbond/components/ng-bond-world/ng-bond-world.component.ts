@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, input, TemplateRef } from '@angular/core';
 import { Link, NgBondService } from '../../services/ngbond.service';
-import { NgTemplateOutlet } from '@angular/common';
+import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { SelectionManager } from '../../services/selection.manager';
 import { KeyManager } from '../../services/key.manager';
-
 @Component({
   selector: 'ng-bond-world',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, DecimalPipe],
   templateUrl: './ng-bond-world.component.html',
   styleUrl: './ng-bond-world.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
