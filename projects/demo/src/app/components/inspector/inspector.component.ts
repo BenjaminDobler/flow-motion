@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
 import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
 import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'bond-inspector',
-  imports: [FormsModule],
+  imports: [FormsModule, DecimalPipe],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
 })

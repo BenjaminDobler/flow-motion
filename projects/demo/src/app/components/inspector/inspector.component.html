@@ -1,7 +1,7 @@
 <div class="navigation">
   <div (click)="selected.set('properties')" [class.selected]="selected() === 'properties'">Properties</div>
   <div (click)="selected.set('children')" [class.selected]="selected() === 'children'">Children</div>
-  <div (click)="selected.set('selection')" [class.selected]="selected() === 'children'">Selection</div>
+  <div (click)="selected.set('selection')" [class.selected]="selected() === 'selection'">Selection</div>
 </div>
 
 <div class="content">
@@ -92,8 +92,8 @@
       <div>
         <h3>Targets</h3>
         @for (drag of bondService.dragElements(); track $index) {
-          <div class="bond-item" [class.selected]="selectionManager.isSelected(drag)" (click)="toggleSelection(drag)" style="white-space: nowrap">
-            ID: {{ drag.id() }} G: {{ drag.gX() }}x{{ drag.gY() }} L: {{ drag.x() }}x{{ drag.y() }}
+          <div class="bond-item" [class.container]="drag.type === 'container'" [style]="'margin-top: 5px'" [class.selected]="selectionManager.isSelected(drag)" (click)="toggleSelection(drag)" style="white-space: nowrap">
+            ID: {{ drag.id() }} G: <span style="background: #2558ce;padding: 2px; border-radius: 3px;">{{ drag.gX() | number: '1.0-0'}}x{{ drag.gY() | number: '1.0-0' }}</span>
           </div>
         }
       </div>
@@ -102,12 +102,14 @@
     <!-- Selection -->
     <div>
       <h3>Selection</h3>
+      <div style="margin-bottom: 10px;">
       @for (selection of selectionManager.selectionTargets(); track $index) {
-        <div class="bond-item" [class.selected]="selectionManager.isSelected(selection)" (click)="toggleSelection(selection)" style="white-space: nowrap">
+        <div class="bond-item"  style="white-space: nowrap">
           ID: {{ selection.id() }}
           <button (click)="selectionManager.unselect(selection)">Remove</button>
         </div>
       }
+      </div>
 
 
       <button (click)="selectionManager.align('left')"><svg width="24" height="24" fill="#fff" viewBox="0 0 24 24"><path fill="var(--color-icon)" fill-rule="evenodd" d="M17.25 10a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-8.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75zm-4 5a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75z" clip-rule="evenodd"></path><path fill="var(--color-icon-tertiary)" d="M6 17.5a.5.5 0 0 1-1 0v-12a.5.5 0 0 1 1 0z"></path></svg></button>

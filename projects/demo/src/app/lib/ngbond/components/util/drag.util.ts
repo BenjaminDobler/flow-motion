@@ -11,28 +11,55 @@ export function makeDraggable(element: HTMLElement) {
         e.stopPropagation();
       }
     }),
-    map((evt) => ({
-      pageY: evt.pageY,
-      pageX: evt.pageX,
-      offsetX: evt.offsetX,
-      offsetY: evt.offsetY,
-      target: evt.target,
-    })),
+    map((evt) => {
+      const rect = element.getBoundingClientRect();
+      const offsetX = evt.pageX - rect.left;
+      const offsetY = evt.pageY - rect.top;
+
+      return {
+        pageY: evt.pageY,
+        pageX: evt.pageX,
+        offsetX,
+        offsetY,
+        calcOffsetX: offsetX,
+        calcOffsetY: offsetY,
+        target: element,
+      };
+    }),
     share()
   );
 
-  const dragStart$ = mouseDown$.pipe(switchMap((start) => mouseMove$.pipe(tap(x=>console.log(x)),take(1)).pipe(takeUntil(mouseUp$))));
+  const dragStart$ = mouseDown$.pipe(
+    switchMap((start) =>
+      mouseMove$
+        .pipe(
+          map((moveEvent) => {
+            return {
+              ...start,
+              ...moveEvent,
+              offsetX: start.offsetX,
+              offsetY: start.offsetY,
+            };
+          }),
+          take(1)
+        )
+        .pipe(takeUntil(mouseUp$))
+    ),
+    share()
+  );
 
   const dragMove$ = dragStart$.pipe(
-    switchMap((start) =>
+    switchMap((start: any) =>
       mouseMove$.pipe(
-        map((moveEvent) => ({
-          originalEvent: moveEvent,
-          deltaX: moveEvent.pageX - start.pageX,
-          deltaY: moveEvent.pageY - start.pageY,
-          startOffsetX: start.offsetX,
-          startOffsetY: start.offsetY,
-        })),
+        map((moveEvent) => {
+          return {
+            originalEvent: moveEvent,
+            deltaX: moveEvent.pageX - start.pageX,
+            deltaY: moveEvent.pageY - start.pageY,
+            startOffsetX: start.offsetX,
+            startOffsetY: start.offsetY,
+          };
+        }),
         takeUntil(mouseUp$)
       )
     ),

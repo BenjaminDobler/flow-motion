@@ -1,13 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 
-
-
 body {
-    margin: 0;
-    background: #000;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  background: #000;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
 }
-
 
 .sidebar {
   width: 300px;
@@ -16,26 +24,19 @@ body {
   padding: 10px;
   background: #111111;
   border-left: 1px solid #313131;
-} 
-
-
+}
 
 .card {
   position: absolute;
   width: 300px;
   background-color: oklch(0.274 0.006 286.033);
   border-radius: 12px;
-  font-family:
-    "Geist Mono", "Geist Mono Fallback", ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 13px;
+  overflow: hidden;
 
   .card-header {
-    background-image: linear-gradient(
-      to top,
-      oklab(0.141 0.00136333 -0.00481054 / 0.3) 0px,
-      rgba(0, 0, 0, 0) 100%
-    );
+    background-image: linear-gradient(to top, oklab(0.141 0.00136333 -0.00481054 / 0.3) 0px, rgba(0, 0, 0, 0) 100%);
     height: 45px;
     width: 100%;
     color: oklch(0.985 0 0);
@@ -50,7 +51,6 @@ body {
   }
 
   .card-content {
-
     padding-top: 8px;
     padding-bottom: 8px;
   }
@@ -105,13 +105,11 @@ body {
   color: oklab(0.705 0.00415142 -0.0144141 / 0.6);
 }
 
-
-
 :root,
 :host {
-  --pico-font-family-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --pico-font-family-sans-serif: system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
-  --pico-font-family-monospace: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace, var(--pico-font-family-emoji);
+  --pico-font-family-emoji: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --pico-font-family-sans-serif: system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, 'Helvetica Neue', sans-serif, var(--pico-font-family-emoji);
+  --pico-font-family-monospace: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace, var(--pico-font-family-emoji);
   --pico-font-family: var(--pico-font-family-sans-serif);
   --pico-line-height: 1.2;
   --pico-font-weight: 400;
@@ -137,7 +135,7 @@ body {
   --pico-nav-element-spacing-horizontal: 0.5rem;
   --pico-nav-link-spacing-vertical: 0.5rem;
   --pico-nav-link-spacing-horizontal: 0.5rem;
-  --pico-nav-breadcrumb-divider: ">";
+  --pico-nav-breadcrumb-divider: '>';
   --pico-icon-checkbox: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(255, 255, 255)' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
   --pico-icon-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(255, 255, 255)' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='5' y1='12' x2='19' y2='12'%3E%3C/line%3E%3C/svg%3E");
   --pico-icon-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(136, 145, 164)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -181,7 +179,8 @@ body {
 a {
   --pico-text-decoration: underline;
 }
-a.secondary, a.contrast {
+a.secondary,
+a.contrast {
   --pico-text-decoration: underline;
 }
 
@@ -253,30 +252,25 @@ kbd {
   --pico-font-weight: bolder;
 }
 
-input:not([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]),
+input:not([type='submit'], [type='button'], [type='reset'], [type='checkbox'], [type='radio'], [type='file']),
 :where(select, textarea) {
   --pico-outline-width: 0.0625rem;
 }
 
-[type=search] {
+[type='search'] {
   --pico-border-radius: 5rem;
 }
 
-[type=checkbox],
-[type=radio] {
+[type='checkbox'],
+[type='radio'] {
   --pico-border-width: 0.125rem;
 }
 
-[type=checkbox][role=switch] {
+[type='checkbox'][role='switch'] {
   --pico-border-width: 0.1875rem;
 }
 
-details.dropdown summary:not([role=button]) {
+details.dropdown summary:not([role='button']) {
   --pico-outline-width: 0.0625rem;
 }
 
@@ -284,45 +278,33 @@ nav details.dropdown summary:focus-visible {
   --pico-outline-width: 0.125rem;
 }
 
-[role=search] {
+[role='search'] {
   --pico-border-radius: 5rem;
 }
 
-[role=search]:has(button.secondary:focus,
-[type=submit].secondary:focus,
-[type=button].secondary:focus,
-[role=button].secondary:focus),
-[role=group]:has(button.secondary:focus,
-[type=submit].secondary:focus,
-[type=button].secondary:focus,
-[role=button].secondary:focus) {
+[role='search']:has(button.secondary:focus, [type='submit'].secondary:focus, [type='button'].secondary:focus, [role='button'].secondary:focus),
+[role='group']:has(button.secondary:focus, [type='submit'].secondary:focus, [type='button'].secondary:focus, [role='button'].secondary:focus) {
   --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width) var(--pico-secondary-focus);
 }
-[role=search]:has(button.contrast:focus,
-[type=submit].contrast:focus,
-[type=button].contrast:focus,
-[role=button].contrast:focus),
-[role=group]:has(button.contrast:focus,
-[type=submit].contrast:focus,
-[type=button].contrast:focus,
-[role=button].contrast:focus) {
+[role='search']:has(button.contrast:focus, [type='submit'].contrast:focus, [type='button'].contrast:focus, [role='button'].contrast:focus),
+[role='group']:has(button.contrast:focus, [type='submit'].contrast:focus, [type='button'].contrast:focus, [role='button'].contrast:focus) {
   --pico-group-box-shadow-focus-with-button: 0 0 0 var(--pico-outline-width) var(--pico-contrast-focus);
 }
-[role=search] button,
-[role=search] [type=submit],
-[role=search] [type=button],
-[role=search] [role=button],
-[role=group] button,
-[role=group] [type=submit],
-[role=group] [type=button],
-[role=group] [role=button] {
+[role='search'] button,
+[role='search'] [type='submit'],
+[role='search'] [type='button'],
+[role='search'] [role='button'],
+[role='group'] button,
+[role='group'] [type='submit'],
+[role='group'] [type='button'],
+[role='group'] [role='button'] {
   --pico-form-element-spacing-horizontal: 2rem;
 }
 
-details summary[role=button]:not(.outline)::after {
+details summary[role='button']:not(.outline)::after {
   filter: brightness(0) invert(1);
 }
 
-[aria-busy=true]:not(input, select, textarea):is(button, [type=submit], [type=button], [type=reset], [role=button]):not(.outline)::before {
+[aria-busy='true']:not(input, select, textarea):is(button, [type='submit'], [type='button'], [type='reset'], [role='button']):not(.outline)::before {
   filter: brightness(0) invert(1);
 }

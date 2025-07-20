@@ -26,8 +26,15 @@
 }
 
 .bond-item {
+  margin-left: 20px;
   cursor: pointer;
   &.selected {
   background: #2558ce;
   }
+}
+
+.container {
+  margin-left: 5px;
+  margin-top: 10px!important;
+  font-weight: bold;
 }

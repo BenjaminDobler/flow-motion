@@ -9,7 +9,9 @@ export class SelectionManager {
   selectionMap = new Map<NgBondContainer | NgBondProperty, boolean>();
 
   selectedGroup = computed(() => {
+    const selectionTargets = this.selectionTargets();
     if (this.selectionTargets().length === 0) {
+      console.warn('No selection targets available to compute group bounds');
       return null;
     }
 
@@ -38,8 +40,16 @@ export class SelectionManager {
 
   constructor() {}
 
+  setAll(targets: (NgBondContainer | NgBondProperty)[]) {
+    this.selectionTargets.set(targets);
+    this.selectionMap.clear();
+    targets.forEach((target) => {
+      this.selectionMap.set(target, true);
+    });
+
+  }
+
   select(target: NgBondContainer | NgBondProperty) {
-    console.log('Selecting', target);
     if (this.selectionMap.has(target)) {
       if (!this.keyManager.keydownMap.has('Shift')) {
         this.selectionTargets().forEach((t) => {
