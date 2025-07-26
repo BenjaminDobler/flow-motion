@@ -1,12 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
-import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
-import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
+import { KeyManager, NgBondContainer, NgBondProperty, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 import { PropertyContainerComponent } from '../../components/property-container/property-container.component';
-import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
-import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
-import { KeyManager } from '../../lib/ngbond/services/key.manager';
 
 @Component({
   selector: 'app-root',

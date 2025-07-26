@@ -1,11 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
-import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
-import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
-import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
+import { NgBondContainer, NgBondWorld, NgBondService, NgBondProperty, SelectionManager, KeyManager } from '@richapps/ngx-bond';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
-import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
-import { KeyManager } from '../../lib/ngbond/services/key.manager';
 
 const dbData = [
   {

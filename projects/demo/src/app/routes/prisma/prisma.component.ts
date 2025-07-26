@@ -2,11 +2,8 @@ import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EditorComponent, NgxEditorModel } from 'ngx-monaco-editor-v2';
 import { formatAst, parsePrismaSchema, PrismaSchema } from '@loancrate/prisma-schema-parser';
-import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
-import { NgBondWorld } from '../../lib/ngbond/components/ng-bond-world/ng-bond-world.component';
-import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
-import { NgBondService } from '../../lib/ngbond/services/ngbond.service';
-import { KeyManager } from '../../lib/ngbond/services/key.manager';
+import { KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+
 declare let monaco: any;
 const examplePrismaSchema = `
 datasource db {

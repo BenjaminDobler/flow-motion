@@ -113,6 +113,46 @@
           }
         }
       }
+    },
+    "ngx-bond": {
+      "projectType": "library",
+      "root": "projects/ngx-bond",
+      "sourceRoot": "projects/ngx-bond/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-bond/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-bond/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/ngx-bond/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-bond/**/*.ts",
+              "projects/ngx-bond/**/*.html"
+            ],
+            "eslintConfig": "projects/ngx-bond/eslint.config.js"
+          }
+        }
+      }
     }
   },
   "schematics": {

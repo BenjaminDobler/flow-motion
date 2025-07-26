@@ -1,21 +1,33 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
-import { Link, NgBondService } from '../../lib/ngbond/services/ngbond.service';
 import { FormsModule } from '@angular/forms';
-import { SelectionManager } from '../../lib/ngbond/services/selection.manager';
-import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
-import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
+
 import { DecimalPipe } from '@angular/common';
+import { ElementInspectorComponent } from './element-inspector/element-inspector.component';
+import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager } from '@richapps/ngx-bond';
+
+type tabType = 'properties' | 'children' | 'selection' | 'element-inspector';
+type Tab = {
+  label: string;
+  value: tabType;
+};
 
 @Component({
   selector: 'bond-inspector',
-  imports: [FormsModule, DecimalPipe],
+  imports: [FormsModule, DecimalPipe, ElementInspectorComponent],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
 })
 export class InspectorComponent {
   protected bondService: NgBondService = inject(NgBondService);
-  protected selected = signal<'properties' | 'children' | 'selection'>('properties');
+  protected selected = signal<tabType>('properties');
   protected selectionManager: SelectionManager = inject(SelectionManager);
+
+  protected tabs = signal<Tab[]>([
+    { label: 'Properties', value: 'properties' },
+    { label: 'Children', value: 'children' },
+    { label: 'Selection', value: 'selection' },
+    { label: 'Element', value: 'element-inspector' },
+  ]);
 
   animationBubbleCount = signal(5);
   animationBubbleDuration = signal(4);

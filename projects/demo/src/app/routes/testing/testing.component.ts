@@ -1,6 +1,6 @@
 import { Component, effect, signal, viewChild } from '@angular/core';
-import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
-import { getDistance, Line, Point, Rect } from '../../lib/ngbond/components/util/geo';
+import { NgBondContainer } from '@richapps/ngx-bond';
+import { getDistance, Line, Point, Rect } from '@richapps/ngx-bond';
 
 const key = (point: Point) => {
   return point.x + '_' + point.y;

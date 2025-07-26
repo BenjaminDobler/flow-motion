@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { NgBondProperty } from '../../lib/ngbond/components/ng-bond-property/ng-bond-property';
-import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
+import { NgBondContainer, NgBondProperty } from '@richapps/ngx-bond';
+ 
 
 
 @Component({

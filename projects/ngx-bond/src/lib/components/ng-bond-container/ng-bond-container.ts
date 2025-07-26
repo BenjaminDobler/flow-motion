@@ -1,4 +1,4 @@
-import { contentChildren, Directive, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, viewChildren, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
+import { contentChildren, Directive, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, viewChildren, AfterViewInit, OnInit, OnDestroy, effect } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
@@ -30,6 +30,11 @@ export class NgBondContainer implements AfterViewInit, OnInit, OnDestroy {
 
   @Input()
   minHeight = 0;
+
+  minX = input<number>(Number.NEGATIVE_INFINITY);
+  maxX = input<number>(Number.POSITIVE_INFINITY);
+  minY = input<number>(Number.NEGATIVE_INFINITY);
+  maxY = input<number>(Number.POSITIVE_INFINITY);
 
   x = model(0);
   y = model(0);
@@ -84,6 +89,50 @@ export class NgBondContainer implements AfterViewInit, OnInit, OnDestroy {
       width: rect.width,
       height: rect.height,
     };
+  }
+
+  constructor() {
+    effect(() => {
+      const x = this.x();
+      const y = this.y();
+
+      console.log('Updating position:', x, y);
+      if (!this.itemElement) {
+        return;
+      }
+      if (this.positioning === 'absolute') {
+        this.itemElement.style.left = `${x}px`;
+        this.itemElement.style.top = `${y}px`;
+      } else if (this.positioning === 'transform') {
+        this.itemElement.style.transform = `translate(${x}px, ${y}px)`;
+      }
+
+      this.x.set(x);
+      this.y.set(y);
+
+      const gX = x + this.parentRect.left - this.worldRect.left;
+      const gY = y + this.parentRect.top - this.worldRect.top;
+
+      const xBy = gX - this.gX();
+      const yBy = gY - this.gY();
+
+      this.bounds.left = x;
+      this.bounds.top = y;
+
+      this.gX.set(gX);
+      this.gY.set(gY);
+
+      // if (this.selectionManager && isSource) {
+      //   this.selectionManager.moveBy(xBy, yBy, this);
+      // }
+
+      // this.gX.set(gX);
+      // this.gY.set(gY);
+
+      this.updateChildren();
+
+      this.positionUpdated.emit({ x, y });
+    });
   }
 
   private updateBounds() {
@@ -212,7 +261,6 @@ export class NgBondContainer implements AfterViewInit, OnInit, OnDestroy {
         const isRightWidthDrag = x > this.bounds.width - this.resizeOffset;
         const isTopHeightDrag = y < this.resizeOffset;
 
-
         if (isRightWidthDrag) {
           el.style.cursor = 'ew-resize';
         } else if (isLeftWidthDrag) {
@@ -279,35 +327,17 @@ export class NgBondContainer implements AfterViewInit, OnInit, OnDestroy {
     if (!this.itemElement) {
       return;
     }
-    if (this.positioning === 'absolute') {
-      this.itemElement.style.left = `${x}px`;
-      this.itemElement.style.top = `${y}px`;
-    } else if (this.positioning === 'transform') {
-      this.itemElement.style.transform = `translate(${x}px, ${y}px)`;
-    }
 
-    this.x.set(x);
-    this.y.set(y);
+    x = Math.max(this.minX(), Math.min(x, this.maxX()));
+    y = Math.max(this.minY(), Math.min(y, this.maxY()));
 
-    const gX = x + this.parentRect.left - this.worldRect.left;
-    const gY = y + this.parentRect.top - this.worldRect.top;
-
-
-    const xBy = gX - this.gX();
-    const yBy = gY - this.gY();
-
-    this.bounds.left = x;
-    this.bounds.top = y;
-
+    const xBy = x - this.x();
+    const yBy = y - this.y();
     if (this.selectionManager && isSource) {
       this.selectionManager.moveBy(xBy, yBy, this);
     }
 
-    this.gX.set(gX);
-    this.gY.set(gY);
-
-    this.updateChildren();
-
-    this.positionUpdated.emit({ x, y });
+    this.x.set(x);
+    this.y.set(y);
   }
 }

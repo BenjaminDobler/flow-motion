@@ -38,3 +38,14 @@
   margin-top: 10px!important;
   font-weight: bold;
 }
+
+.tab-item {
+  padding: 5px;
+  cursor: pointer;
+  &:hover {
+    background: #2558ce;
+  }
+  &.selected {
+    background: #2558ce;
+  }
+}

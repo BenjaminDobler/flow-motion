@@ -21,13 +21,24 @@ export class SelectionManager {
     let yMin = first.gY();
     let xMax = first.gX() + first.width();
     let yMax = first.gY() + first.height();
+    console.log('first width and height:', first.width(), first.height());
 
     this.selectionTargets().forEach((target) => {
+
       const bounds = target.bounds;
+      console.log('Bounds for', target.id(), bounds);
       xMin = Math.min(xMin, bounds.left);
       yMin = Math.min(yMin, bounds.top);
       xMax = Math.max(xMax, bounds.left + bounds.width);
       yMax = Math.max(yMax, bounds.top + bounds.height);
+    });
+    console.log('xMin:', xMin, 'yMin:', yMin, 'xMax:', xMax, 'yMax:', yMax);
+
+    console.log('Computed group bounds:', {
+      x: xMin,
+      y: yMin,
+      width: xMax - xMin,
+      height: yMax - yMin,
     });
 
     return {
