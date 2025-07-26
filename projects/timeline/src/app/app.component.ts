@@ -1,8 +1,8 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, effect, EnvironmentInjector, inject, inputBinding, output, outputBinding, runInInjectionContext, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { TimelineComponent } from './lib/timeline/components/timeline/timeline.component';
 import { Timeline } from './lib/timeline/model/timeline';
 import { TestComponentComponent } from './components/test-component/test-component.component';
-import { KeyManager, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+import { KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +16,8 @@ export class AppComponent {
 
   @ViewChild('insert_slot', { read: ViewContainerRef })
   worldHost!: ViewContainerRef;
+
+  private injector: EnvironmentInjector = inject(EnvironmentInjector);
 
   timeline: Timeline = {
     millisecondsPerPixel: 10,
@@ -98,7 +100,49 @@ export class AppComponent {
     ],
   };
 
+  t = signal<Timeline>(this.timeline);
+
+  componentCount = 0;
   addComponent() {
-    this.worldHost.createComponent(TestComponentComponent);
+    const id = 'some-id-' + this.componentCount;
+    this.componentCount++;
+    const componentRef = this.worldHost.createComponent(TestComponentComponent, {
+      directives: [
+        {
+          type: NgBondContainer,
+          bindings: [
+            outputBinding('positionUpdated', (evt: any) => {
+              console.log('====== position changed for ', id, evt);
+            }),
+            outputBinding('widthUpdated', (evt: any) => {
+              console.log('====== width changed for ', id, evt);
+            }),
+            outputBinding('heightUpdated', (evt: any) => {
+              console.log('====== height changed for ', id, evt);
+            }),
+          ],
+        },
+      ],
+    });
+    componentRef.setInput('bondcontainer', id);
+
+    this.t.update((currentTimeline) => {
+      currentTimeline.groups.push({
+        name: id,
+        tracks: [
+          {
+            name: 'x',
+            keyframes: [],
+            tweens: [],
+          },
+          {
+            name: 'y',
+            keyframes: [],
+            tweens: [],
+          },
+        ],
+      });
+      return { ...currentTimeline };
+    });
   }
 }

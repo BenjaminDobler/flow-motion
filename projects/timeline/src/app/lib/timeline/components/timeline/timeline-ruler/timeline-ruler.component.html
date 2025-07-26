@@ -1,18 +1,7 @@
 <svg width="100%" height="100%" x="0" y="0">
   <defs>
-    <pattern
-      height="30"
-      [attr.width]="patternWidth()"
-      stroke-width="1"
-      stroke="#2d313c"
-      x="0"
-      id="pattern-timeline-ruler"
-      patternUnits="userSpaceOnUse"
-      y="0"
-    >
-      <path
-        [attr.d]="patternPath()"
-      ></path>
+    <pattern height="30" [attr.width]="patternWidth()" stroke-width="1" stroke="#2d313c" x="0" id="pattern-timeline-ruler" patternUnits="userSpaceOnUse" y="0">
+      <path [attr.d]="patternPath()"></path>
     </pattern>
   </defs>
   <!-- <rect
@@ -24,14 +13,7 @@
     height="61"
     width="308"
   ></rect> -->
-  <rect
-    width="100%"
-    height="100%"
-    fill="url(#pattern-timeline-ruler)"
-    pointer-events="all"
-    x="0"
-    y="0"
-  ></rect>
+  <rect width="100%" height="100%" fill="url(#pattern-timeline-ruler)" pointer-events="all" x="0" y="0"></rect>
   <!-- <text y="1" id="timeline-tick-text">
     <tspan x="0">0s</tspan>
     <tspan x="100">1s</tspan>
@@ -75,3 +57,5 @@
     transform="translate(8 51)"
   ></polygon> -->
 </svg>
+
+<div [bondcontainer]="`scrubber`" (positionUpdated)="onScrubberPositionUpdated($event)" [resizable]="false" [minY]="0" [maxY]="0" [minX]="0" class="scrubber"></div>

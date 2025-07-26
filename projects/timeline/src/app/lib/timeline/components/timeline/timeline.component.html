@@ -17,10 +17,7 @@
 
   <div class="tracks">
     <div class="header">
-      <timeline-ruler
-        [duration]="20000"
-        [millisecondsPerPixel]="timeline()?.millisecondsPerPixel"
-      ></timeline-ruler>
+      <timeline-ruler [duration]="20000" [millisecondsPerPixel]="timeline()?.millisecondsPerPixel"></timeline-ruler>
     </div>
 
     @for (group of timeline()?.groups; track $index) {
@@ -39,9 +36,7 @@
               [timeline]="timeline()"
               (dragEnd)="onTweenDragEnd()"
               (dragStart)="onTweenDragStart()"
-              (positionUpdated)="
-                onTweenPositionUpdated($event, tween, track, group)
-              "
+              (positionUpdated)="onTweenPositionUpdated($event, tween, track, group)"
             ></timeline-tween>
           }
           @for (keyframe of track.keyframes; track $index) {
@@ -55,9 +50,7 @@
               [resizable]="false"
               (tween)="onTween($event, group, track)"
               [keyframe]="keyframe"
-              (positionUpdated)="
-                onKeyframePositionUpdated($event, keyframe, track, group)
-              "
+              (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
               [timeline]="timeline()"
             ></timeline-keyframe>
           }

@@ -16,7 +16,7 @@ import {
 import { TimelineRulerComponent } from './timeline-ruler/timeline-ruler.component';
 import { TimelineKeyframeComponent } from './timeline-keyframe/timeline-keyframe.component';
 import { TimelineTweenComponent } from './timeline-tween/timeline-tween.component';
-import { NgBondContainer, NgBondService } from '@richapps/ngx-bond';
+import { KeyManager, NgBondContainer, NgBondService, SelectionManager } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'timeline',
@@ -28,7 +28,7 @@ import { NgBondContainer, NgBondService } from '@richapps/ngx-bond';
   ],
   templateUrl: './timeline.component.html',
   styleUrl: './timeline.component.scss',
-  providers: [NgBondService],
+  providers: [NgBondService, SelectionManager, KeyManager],
 })
 export class TimelineComponent {
   timeline = model<Timeline>();

@@ -1,8 +1,9 @@
 import { Component, computed, input } from '@angular/core';
+import { NgBondContainer } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'timeline-ruler',
-  imports: [],
+  imports: [NgBondContainer],
   templateUrl: './timeline-ruler.component.html',
   styleUrl: './timeline-ruler.component.scss',
 })
@@ -49,4 +50,14 @@ export class TimelineRulerComponent {
     }
     return pW;
   });
+
+  onScrubberPositionUpdated(event: { x: number; y: number }) {
+    console.log('Scrubber position updated:', event.x);
+    const mpp = this.millisecondsPerPixel();
+    if (mpp !== undefined) {
+      const pos = event.x * mpp;
+      console.log('Scrubber position in milliseconds:', pos);
+      // Handle the scrubber position update logic here
+    }
+  }
 }

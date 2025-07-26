@@ -5,7 +5,6 @@ import { NgBondContainer } from '@richapps/ngx-bond';
   selector: 'app-test-component',
   imports: [],
   templateUrl: './test-component.component.html',
-  styleUrl: './test-component.component.scss',
-  hostDirectives: [NgBondContainer]
+  styleUrl: './test-component.component.scss'
 })
 export class TestComponentComponent { }
