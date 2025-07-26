@@ -28,5 +28,13 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/timeline/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/timeline/tsconfig.spec.json"
+    }
+  ]
 }
