@@ -1,0 +1,54 @@
+:host {
+  display: block;
+  position: absolute;
+  height: 20px;
+}
+
+.bar {
+  pointer-events: none;
+  position: absolute;
+  height: 10px;
+  background-color: #C9A510;
+  left: 0;
+  top: 5px;
+  left: 15px;
+  right: 5px;
+  border-radius: 5px;
+}
+
+
+.info {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -25px;
+  height: 20px;
+  line-height: 20px;
+  color: #ffffff;
+  font-family: 'inter', sans-serif;
+  font-size: 12px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  visibility: hidden;
+  border-radius: 6px;
+  background: #272cc5;
+}
+
+
+.info2 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -20px;
+  height: 20px;
+  line-height: 20px;
+  color: #ffffff;
+  font-family: 'inter', sans-serif;
+  font-size: 12px;
+  padding-left: 5px;
+}
+
+.infovisible {
+  visibility: visible;
+}

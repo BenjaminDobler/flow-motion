@@ -1,0 +1,132 @@
+<svg #svg_canvas style="position: absolute; top: 0; left: 0" style="background: #111" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id=":S4:" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle r="1" cx="10" cy="10" fill="#313131"></circle>
+    </pattern>
+  </defs>
+
+  <rect id="canvas_bg" width="100%" height="100%" fill="url(#:S4:)"></rect>
+</svg>
+
+<div class="content-container" [style.transform]="`scale(${dragService.scale()})`">
+  <ng-content></ng-content>
+</div>
+
+<svg style="position: absolute; left: 0; top: 0" width="100%" height="100%">
+  <defs>
+    <!-- A marker to be used as an arrowhead -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" fill="#fff" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  @for (link of dragService.links(); track $index) {
+    <path
+      (click)="onConnectionClick(link)"
+      class="draw"
+      [attr.stroke]="link().properties.stroke"
+      [attr.stroke-width]="link().properties.strokeWidth"
+      [attr.d]="link().path"
+      [attr.stroke-dasharray]="link().properties.strokeDasharray"
+      fill="none"
+    />
+
+    @let animate = link().properties.animate;
+    @if (animate && pathanimation()) {
+      <ng-container *ngTemplateOutlet="pathanimation(); context: { path: link().path }"></ng-container>
+    } @else if (animate) {
+      @let duration = animationBubbleDuration();
+      @let count = animationBubbleCount();
+      @let step = duration / count;
+
+      @for (count of countToArray(animationBubbleCount()); track $index) {
+        <circle r="3" fill="red">
+          <animateMotion [attr.dur]="duration + 's'" [attr.begin]="$index * step + 's'" repeatCount="indefinite" [attr.path]="link().path" />
+        </circle>
+      }
+    }
+
+    <!-- @if (link().properties.animate) {
+      <g>
+        <circle r="3" fill="red">
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            begin="1s"
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            begin="2s"
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            begin="3s"
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+      </g>
+    } -->
+  }
+
+  @if (dragService.snapLink) {
+    <path
+      class="draw"
+      [attr.stroke]="dragService.snapLink().properties.stroke"
+      [attr.stroke-width]="dragService.snapLink().properties.strokeWidth"
+      [attr.d]="dragService.snapLink().path"
+      [attr.stroke-dasharray]="dragService.snapLink().properties.strokeDasharray"
+      fill="none"
+    />
+  }
+</svg>
+@let group = selectionManager.selectedGroup();
+
+<!--draw selection hightlights-->
+<svg style="position: absolute; left: 0; top: 0; pointer-events: none" width="100%" height="100%">
+  <!-- @for (selection of selectionManager.selectionTargets(); track $index) {
+    <rect [attr.x]="selection.gX()" [attr.y]="selection.gY()" [attr.width]="selection.width()" [attr.height]="selection.height()" fill="none" stroke="#2558ce" stroke-width="1"></rect>
+  } -->
+
+  @if (group) {
+    <rect style="pointer-events: none" [attr.x]="group.x" [attr.y]="group.y" [attr.width]="group.width" [attr.height]="group.height" fill="none" stroke="#2558ce" stroke-width="1"></rect>
+  }
+
+  @let rect = selectionRect();
+
+  @if (rect) {
+    <rect style="pointer-events: none" [attr.x]="rect.x" [attr.y]="rect.y" [attr.width]="rect.width" [attr.height]="rect.height" stroke-dasharray="4 4" fill="#0C8CE9" fill-opacity="0.2" stroke="#0C8CE9" stroke-width="1"></rect>
+  }
+</svg>
+@if (group) {
+  <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x}px, ${group.y - 30x}px)`">
+    <div style="transform: translateX(-50%); background: #2558ce; border-radius: 4px; padding: 3px">{{ group.x | number: '1.0-0' }} x {{ group.y | number: '1.0-0' }}</div>
+  </div>
+  <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x + group.width/2}px, ${group.y + group.height + 5}px)`">
+    <div style="transform: translateX(-50%); background: #2558ce; border-radius: 4px; padding: 3px">{{ group.width | number: '1.0-0' }} x {{ group.height | number: '1.0-0' }}</div>
+  </div>
+}

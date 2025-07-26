@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  position: relative;
+  background: #00ff00;
+  width: 100%;
+  height: 100%;
+}
+
+.draw {
+  //stroke-dasharray: 10;
+  animation: dashdraw 4s linear infinite;
+  animation-direction: reverse;
+}
+@keyframes dashdraw {
+  to {
+    stroke-dashoffset: 200;
+  }
+}
+
+svg {
+  pointer-events: none;
+}
+
+.content-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}

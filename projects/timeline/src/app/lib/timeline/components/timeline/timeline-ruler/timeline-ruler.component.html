@@ -1,0 +1,77 @@
+<svg width="100%" height="100%" x="0" y="0">
+  <defs>
+    <pattern
+      height="30"
+      [attr.width]="patternWidth()"
+      stroke-width="1"
+      stroke="#2d313c"
+      x="0"
+      id="pattern-timeline-ruler"
+      patternUnits="userSpaceOnUse"
+      y="0"
+    >
+      <path
+        [attr.d]="patternPath()"
+      ></path>
+    </pattern>
+  </defs>
+  <!-- <rect
+    stroke="none"
+    pointer-events="none"
+    x="0"
+    y="0"
+    fill="#2d313c"
+    height="61"
+    width="308"
+  ></rect> -->
+  <rect
+    width="100%"
+    height="100%"
+    fill="url(#pattern-timeline-ruler)"
+    pointer-events="all"
+    x="0"
+    y="0"
+  ></rect>
+  <!-- <text y="1" id="timeline-tick-text">
+    <tspan x="0">0s</tspan>
+    <tspan x="100">1s</tspan>
+    <tspan x="200">2s</tspan>
+    <tspan x="300">3s</tspan>
+    <tspan x="400">4s</tspan>
+    <tspan x="500">5s</tspan>
+    <tspan x="600">6s</tspan>
+    <tspan x="700">7s</tspan>
+    <tspan x="800">8s</tspan>
+    <tspan x="900">9s</tspan>
+  </text> -->
+  <!-- <g data-v-15222ff8="" class="">
+    <line
+      data-v-15222ff8=""
+      cursor="ew-resize"
+      x1="308"
+      y1="0"
+      x2="308"
+      y2="61"
+      stroke="transparent"
+      stroke-width="6"
+      class="end-time-guide"
+    ></line>
+    <line
+      data-v-15222ff8=""
+      cursor="ew-resize"
+      x1="308"
+      y1="0"
+      x2="308"
+      y2="61"
+      stroke="#FFF"
+      stroke-width="2"
+      class="end-time"
+    ></line>
+  </g>
+  <polygon
+    points="-5 -5, 5 -5, 5 5, 0 10, -5 5"
+    cursor="pointer"
+    fill="white"
+    transform="translate(8 51)"
+  ></polygon> -->
+</svg>

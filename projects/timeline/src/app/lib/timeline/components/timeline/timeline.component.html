@@ -1,0 +1,68 @@
+<div class="timeline">
+  <div class="labels">
+    <div class="header"></div>
+
+    @for (group of timeline()?.groups; track $index) {
+      <div class="group">
+        {{ group.name }}
+      </div>
+
+      @for (track of group.tracks; track $index) {
+        <div class="track">
+          {{ track.name }}
+        </div>
+      }
+    }
+  </div>
+
+  <div class="tracks">
+    <div class="header">
+      <timeline-ruler
+        [duration]="20000"
+        [millisecondsPerPixel]="timeline()?.millisecondsPerPixel"
+      ></timeline-ruler>
+    </div>
+
+    @for (group of timeline()?.groups; track $index) {
+      <div class="group"></div>
+
+      @for (track of group.tracks; track $index) {
+        <div class="track">
+          @for (tween of track.tweens; track $index) {
+            <timeline-tween
+              [minY]="0"
+              [maxY]="0"
+              [minX]="0"
+              positioning="transform"
+              [resizable]="false"
+              [tween]="tween"
+              [timeline]="timeline()"
+              (dragEnd)="onTweenDragEnd()"
+              (dragStart)="onTweenDragStart()"
+              (positionUpdated)="
+                onTweenPositionUpdated($event, tween, track, group)
+              "
+            ></timeline-tween>
+          }
+          @for (keyframe of track.keyframes; track $index) {
+            <timeline-keyframe
+              [minY]="0"
+              [maxY]="0"
+              [minX]="0"
+              [x]="keyframe.time / (timeline()?.millisecondsPerPixel ?? 1)"
+              [bondcontainer]="`keyframe`"
+              [positioning]="'transform'"
+              [resizable]="false"
+              (tween)="onTween($event, group, track)"
+              [keyframe]="keyframe"
+              (positionUpdated)="
+                onKeyframePositionUpdated($event, keyframe, track, group)
+              "
+              [timeline]="timeline()"
+            ></timeline-keyframe>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

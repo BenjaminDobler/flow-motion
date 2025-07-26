@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.timeline {
+  display: flex;
+  overflow: hidden;
+}
+
+
+
+.track {
+  width: 3000px;
+  height: 20px;
+  position: relative;
+  background-color: #353535;
+  border-bottom: solid 1px #4B4B4A;
+}
+
+.group {
+  width: 3000px;
+  height: 20px;
+  background-color: #555454;
+  border-bottom: solid 1px #4B4B4A;
+}
+.tracks {
+  overflow: scroll;
+    border: solid 1px #4B4B4A;
+
+}
+
+.header {
+  height: 30px;
+  background-color: #f0f0f0;
+  width: 2000px;
+}
+.labels {
+  color: #ffffff;
+  font-family: 'inter', sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  border: solid 1px #4B4B4A;
+  width: 200px;
+  flex-shrink: 0;
+  .track {
+    width: 100%;
+    background: #737273;
+  }
+}
+
+.keyframe {
+  width: 10px;
+  height: 10px;
+  background-color: #ff0000;
+}

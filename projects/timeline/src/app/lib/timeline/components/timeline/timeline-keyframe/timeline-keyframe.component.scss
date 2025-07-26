@@ -1,0 +1,70 @@
+:host {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.keyframe {
+  width: 10px;
+  height: 20px;
+  left: -5px;
+  position: absolute;
+  opacity: 0.8;
+  background-color: rgba(255, 0, 0, 0.1);
+  position: relative;
+}
+
+.example-menu {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 180px;
+  max-width: 280px;
+  background-color: rgb(255, 255, 255);
+  padding: 6px 0;
+}
+
+.example-menu-item {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+
+  user-select: none;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex: 1;
+}
+
+.example-menu-item:hover {
+  background-color: rgb(208, 208, 208);
+}
+
+.example-menu-item:active {
+  background-color: rgb(170, 170, 170);
+}
+
+.info {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -30px;
+  height: 20px;
+  line-height: 20px;
+  color: #ffffff;
+  font-family: "inter", sans-serif;
+  font-size: 12px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  visibility: hidden;
+  border-radius: 6px;
+  background: #272cc5;
+}
+.infovisible {
+  visibility: visible;
+}
