@@ -1,8 +1,8 @@
 import { Component, computed, effect, input, signal } from '@angular/core';
 import { Timeline, TimelineTween } from '../../../model/timeline';
-import { NgBondContainer } from '../../../../ngbond/components/ng-bond-container/ng-bond-container';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, Observable, of, switchMap, timer } from 'rxjs';
+import { NgBondContainer } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'timeline-tween',

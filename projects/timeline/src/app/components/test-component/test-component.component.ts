@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgBondContainer } from '../../lib/ngbond/components/ng-bond-container/ng-bond-container';
+import { NgBondContainer } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-test-component',

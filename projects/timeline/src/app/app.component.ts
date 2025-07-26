@@ -1,18 +1,12 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { TimelineComponent } from './lib/timeline/components/timeline/timeline.component';
 import { Timeline } from './lib/timeline/model/timeline';
-import { TestitDirective } from './testit.directive';
-import { NgBondContainer } from './lib/ngbond/components/ng-bond-container/ng-bond-container';
-import { NgBondWorld } from './lib/ngbond/components/ng-bond-world/ng-bond-world.component';
-import { NgBondService } from './lib/ngbond/services/ngbond.service';
-import { SelectionManager } from './lib/ngbond/services/selection.manager';
-import { KeyManager } from './lib/ngbond/services/key.manager';
 import { TestComponentComponent } from './components/test-component/test-component.component';
+import { KeyManager, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-root',
-  imports: [TimelineComponent, TestitDirective, NgBondContainer, NgBondWorld],
+  imports: [TimelineComponent, NgBondWorld],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [NgBondService, SelectionManager, KeyManager],
