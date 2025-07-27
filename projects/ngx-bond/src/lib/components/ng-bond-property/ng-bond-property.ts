@@ -142,6 +142,11 @@ export class NgBondProperty implements OnInit, OnDestroy {
 
     const parentRect = this.parent().getBoundingClientRect();
     const itemRect = itemElement.getBoundingClientRect();
+
+    this.bounds.height = itemRect.height;
+    this.bounds.width = itemRect.width;
+    this.bounds.left = itemRect.left - parentRect.left;
+    this.bounds.top = itemRect.top - parentRect.top;
     this.width.set(itemRect.width);
     this.height.set(itemRect.height);
     const x = itemRect.left - parentRect.left;
@@ -165,15 +170,22 @@ export class NgBondProperty implements OnInit, OnDestroy {
     return parentElement;
   }
 
-  get bounds() {
-    const rect = this.el.nativeElement.getBoundingClientRect();
-    return {
-      left: this.gX(),
-      top: this.gY(),
-      width: rect.width,
-      height: rect.height,
-    };
+  bounds = {
+    left: this.gX(),
+    top: this.gY(),
+    width: 0,
+    height: 0,
   }
+
+  // get bounds() {
+  //   const rect = this.el.nativeElement.getBoundingClientRect();
+  //   return {
+  //     left: this.gX(),
+  //     top: this.gY(),
+  //     width: rect.width,
+  //     height: rect.height,
+  //   };
+  // }
 
   ngOnInit() {
     this.ngBondService.registerDraggableElement(this);

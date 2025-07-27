@@ -1,5 +1,6 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { NgBondContainer } from '@richapps/ngx-bond';
+import { TimelineService } from '../../../services/timeline.service';
 
 @Component({
   selector: 'timeline-ruler',
@@ -10,6 +11,8 @@ import { NgBondContainer } from '@richapps/ngx-bond';
 export class TimelineRulerComponent {
   duration = input<number>();
   millisecondsPerPixel = input<number>();
+
+  timelineService = inject(TimelineService);
 
   height = 30;
 
@@ -29,13 +32,12 @@ export class TimelineRulerComponent {
       for (let i = 0; i < 10; i++) {
         const x = i * stepW;
         let h = this.height * 0.7;
-        if (i % 5 === 0) {  
+        if (i % 5 === 0) {
           h = this.height * 0.5;
         }
-        path += `M ${x+0.5} ${this.height} L ${x+0.5} ${h}`;
+        path += `M ${x + 0.5} ${this.height} L ${x + 0.5} ${h}`;
       }
       path += `M ${width1S + 0.5} ${this.height} L ${width1S + 0.5} 0`;
-
     }
     return path;
   });
@@ -52,12 +54,18 @@ export class TimelineRulerComponent {
   });
 
   onScrubberPositionUpdated(event: { x: number; y: number }) {
-    console.log('Scrubber position updated:', event.x);
     const mpp = this.millisecondsPerPixel();
     if (mpp !== undefined) {
       const pos = event.x * mpp;
-      console.log('Scrubber position in milliseconds:', pos);
-      // Handle the scrubber position update logic here
+      this.timelineService.setPosition(Math.round(pos));
     }
+  }
+  onScrubberDragStart(event: any) {
+    console.log('Scrubber drag started', event);
+    this.timelineService.setScrubbing(true);
+  }
+  onScrubberDragEnd(event: any) {
+    console.log('Scrubber drag ended', event);
+    this.timelineService.setScrubbing(false);
   }
 }

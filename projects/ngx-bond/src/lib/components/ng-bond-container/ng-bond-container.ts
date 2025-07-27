@@ -1,27 +1,11 @@
-import {
-  contentChildren,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  inject,
-  input,
-  Input,
-  model,
-  Output,
-  signal,
-  viewChildren,
-  AfterViewInit,
-  OnInit,
-  OnDestroy,
-  effect,
-  output,
-} from '@angular/core';
+import { contentChildren, Directive, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, viewChildren, AfterViewInit, OnInit, OnDestroy, effect, output } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
 import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
-import { fromEvent, race, Subject, switchMap, takeUntil } from 'rxjs';
+import { distinctUntilChanged, fromEvent, race, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { NgBondService } from '../../services/ngbond.service';
 import { SelectionManager } from '../../services/selection.manager';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Directive({
   selector: '[bondcontainer]',
@@ -48,6 +32,8 @@ export class NgBondContainer implements OnInit, OnDestroy {
   @Input()
   minHeight = 0;
 
+  showCursor = input<boolean>(true);
+
   minX = input<number>(Number.NEGATIVE_INFINITY);
   maxX = input<number>(Number.POSITIVE_INFINITY);
   minY = input<number>(Number.NEGATIVE_INFINITY);
@@ -61,6 +47,14 @@ export class NgBondContainer implements OnInit, OnDestroy {
 
   width = signal<number>(0);
   height = signal<number>(0);
+
+  _widthChanged = toSignal(
+    toObservable(this.width).pipe(
+      tap((x) => console.log('=========0 WWWW', x)),
+      distinctUntilChanged()
+    )
+  );
+  _heightChanged = toSignal(toObservable(this.height).pipe(distinctUntilChanged()));
 
   dragStart = output<void>();
   dragEnd = output<void>();
@@ -84,10 +78,7 @@ export class NgBondContainer implements OnInit, OnDestroy {
   draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty, {
     descendants: true,
   });
-  dragContainerContentChildren = contentChildren<NgBondContainer>(
-    NgBondContainer,
-    { descendants: true },
-  );
+  dragContainerContentChildren = contentChildren<NgBondContainer>(NgBondContainer, { descendants: true });
 
   dragViewChildren = viewChildren<NgBondProperty>(NgBondProperty);
 
@@ -136,15 +127,22 @@ export class NgBondContainer implements OnInit, OnDestroy {
     toJSON: () => {},
   };
 
-  get bounds() {
-    const rect = this.el.nativeElement.getBoundingClientRect();
-    return {
-      left: this.gX(),
-      top: this.gY(),
-      width: rect.width,
-      height: rect.height,
-    };
-  }
+  public bounds = {
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  };
+
+  // get bounds() {
+  //   const rect = this.el.nativeElement.getBoundingClientRect();
+  //   return {
+  //     left: this.gX(),
+  //     top: this.gY(),
+  //     width: rect.width,
+  //     height: rect.height,
+  //   };
+  // }
 
   constructor() {
     effect(() => {
@@ -188,6 +186,29 @@ export class NgBondContainer implements OnInit, OnDestroy {
 
       this.positionUpdated.emit({ x, y });
     });
+
+    console.log('========= create width effect');
+    effect(() => {
+      const w = this._widthChanged();
+      console.log('========= Width updated:', w);
+      if (this.itemElement) {
+        this.positioning !== 'none' && (this.itemElement.style.width = `${w}px`);
+        console.log('========= Width updated:', w);
+        this.widthUpdated.emit(w);
+        this.bounds.width = w || 0;
+        this.updateChildren();
+      }
+    });
+
+    effect(() => {
+      const h = this._heightChanged();
+      if (this.itemElement) {
+        this.positioning !== 'none' && (this.itemElement.style.height = `${h}px`);
+        this.heightUpdated.emit(h);
+        this.bounds.height = h || 0;
+        this.updateChildren();
+      }
+    });
   }
 
   private updateBounds() {
@@ -207,23 +228,13 @@ export class NgBondContainer implements OnInit, OnDestroy {
   }
 
   setWidth = (width: number) => {
-    if (this.itemElement) {
-      this.positioning !== 'none' &&
-        (this.itemElement.style.width = `${width}px`);
-      this.widthUpdated.emit(width);
+    if (width !== this.width()) {
       this.width.set(width);
-      this.bounds.width = width;
-      this.updateChildren();
     }
   };
   setHeight = (height: number) => {
-    if (this.itemElement) {
-      this.positioning !== 'none' &&
-        (this.itemElement.style.height = `${height}px`);
-      this.heightUpdated.emit(height);
+    if (height !== this.height()) {
       this.height.set(height);
-      this.bounds.height = height;
-      this.updateChildren();
     }
   };
 
@@ -240,6 +251,15 @@ export class NgBondContainer implements OnInit, OnDestroy {
     if (!this.itemElement) {
       return;
     }
+
+    const rect = this.el.nativeElement.getBoundingClientRect();
+    this.bounds = {
+      left: this.gX() || 0,
+      top: this.gY() || 0,
+      width: rect.width || 0,
+      height: rect.height || 0,
+    };
+
     const drag = makeDraggable(this.itemElement);
 
     drag.click$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
@@ -267,19 +287,12 @@ export class NgBondContainer implements OnInit, OnDestroy {
     drag.dragMove$.pipe(takeUntil(this.onDestroy$)).subscribe((move) => {
       this.resizeOffset = this.resizable ? this.resizeOffset : 0;
 
-      const isBottomHeightDrag =
-        move.startOffsetY > this.itemRect.height - this.resizeOffset;
+      const isBottomHeightDrag = move.startOffsetY > this.itemRect.height - this.resizeOffset;
       const isLeftWidthDrag = move.startOffsetX < this.resizeOffset;
-      const isRightWidthDrag =
-        move.startOffsetX > this.itemRect.width - this.resizeOffset;
+      const isRightWidthDrag = move.startOffsetX > this.itemRect.width - this.resizeOffset;
       const isTopHeightDrag = move.startOffsetY < this.resizeOffset;
 
-      if (
-        !isBottomHeightDrag &&
-        !isLeftWidthDrag &&
-        !isRightWidthDrag &&
-        !isTopHeightDrag
-      ) {
+      if (this.resizable === false || (!isBottomHeightDrag && !isLeftWidthDrag && !isRightWidthDrag && !isTopHeightDrag)) {
         const offsetX = move.originalEvent.x - move.startOffsetX;
         const offsetY = move.originalEvent.y - move.startOffsetY;
         let x = offsetX - this.parentRect.left;
@@ -291,37 +304,25 @@ export class NgBondContainer implements OnInit, OnDestroy {
         }
         this.pos(x, y);
       } else if (isBottomHeightDrag) {
-        let height =
-          move.originalEvent.y -
-          this.itemRect.top +
-          this.itemRect.height -
-          move.startOffsetY;
+        let height = move.originalEvent.y - this.itemRect.top + this.itemRect.height - move.startOffsetY;
         height = Math.max(height, this.minHeight);
         this.setHeight(height);
       } else if (isRightWidthDrag) {
-        let width =
-          move.originalEvent.x -
-          this.itemRect.left +
-          this.itemRect.width -
-          move.startOffsetX;
+        let width = move.originalEvent.x - this.itemRect.left + this.itemRect.width - move.startOffsetX;
         width = Math.max(width, this.minWidth);
 
         this.setWidth(width);
       } else if (isLeftWidthDrag) {
-        const x =
-          move.originalEvent.x - move.startOffsetX - this.parentRect.left;
-        const width =
-          this.itemRect.left - this.parentRect.left + this.itemRect.width - x;
+        const x = move.originalEvent.x - move.startOffsetX - this.parentRect.left;
+        const width = this.itemRect.left - this.parentRect.left + this.itemRect.width - x;
 
         if (width > this.minWidth) {
           this.pos(x, this.y());
           this.setWidth(width);
         }
       } else if (isTopHeightDrag) {
-        const y =
-          move.originalEvent.y - move.startOffsetY - this.parentRect.top;
-        const height =
-          this.itemRect.top - this.parentRect.top + this.itemRect.height - y;
+        const y = move.originalEvent.y - move.startOffsetY - this.parentRect.top;
+        const height = this.itemRect.top - this.parentRect.top + this.itemRect.height - y;
         if (height > this.minHeight) {
           this.pos(this.x(), y);
           this.setHeight(height);
@@ -333,10 +334,8 @@ export class NgBondContainer implements OnInit, OnDestroy {
     fromEvent<PointerEvent>(this.itemElement, 'pointerover')
       .pipe(
         switchMap(() => {
-          return fromEvent<PointerEvent>(el, 'pointermove').pipe(
-            takeUntil(race(fromEvent<PointerEvent>(el, 'pointerout'))),
-          );
-        }),
+          return fromEvent<PointerEvent>(el, 'pointermove').pipe(takeUntil(race(fromEvent<PointerEvent>(el, 'pointerout'))));
+        })
       )
       .subscribe((evt: PointerEvent) => {
         const x = evt.x - this.bounds.left - this.worldRect.left;
@@ -347,16 +346,18 @@ export class NgBondContainer implements OnInit, OnDestroy {
         const isRightWidthDrag = x > this.bounds.width - this.resizeOffset;
         const isTopHeightDrag = y < this.resizeOffset;
 
-        if (isRightWidthDrag) {
-          el.style.cursor = 'ew-resize';
-        } else if (isLeftWidthDrag) {
-          el.style.cursor = 'ew-resize';
-        } else if (isBottomHeightDrag) {
-          el.style.cursor = 'ns-resize';
-        } else if (isTopHeightDrag) {
-          el.style.cursor = 'ns-resize';
-        } else {
-          el.style.cursor = 'move';
+        if (this.showCursor()) {
+          if (isRightWidthDrag) {
+            el.style.cursor = 'ew-resize';
+          } else if (isLeftWidthDrag) {
+            el.style.cursor = 'ew-resize';
+          } else if (isBottomHeightDrag) {
+            el.style.cursor = 'ns-resize';
+          } else if (isTopHeightDrag) {
+            el.style.cursor = 'ns-resize';
+          } else {
+            el.style.cursor = 'move';
+          }
         }
       });
 

@@ -1,4 +1,5 @@
 import { DragPoint } from '../../../services/ngbond.service';
+import { NgBondContainer } from '../../ng-bond-container/ng-bond-container';
 import { LinkPosition, NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { pointToPath } from '../connections.util';
 import { OrthogonalConnector } from '../orthoconnector';
@@ -14,7 +15,7 @@ export function getOrhogonalConnection(
   p1: NgBondProperty,
   p2: NgBondProperty | DragPoint
 ) {
-  const rect1 = p1.container?.bounds;
+  const rect1 = ((p1.container) as NgBondContainer)?.bounds;
 
   let distance1 = 0;
   let distance2 = 0;
@@ -28,7 +29,7 @@ export function getOrhogonalConnection(
   let rect2 = { width: 20, height: 20, left: x2, top: y2 };
 
   if ('container' in p2) {
-    rect2 = (p2 as NgBondProperty).container?.bounds as any;
+    rect2 = (p2 as any).container?.bounds as any;
 
     if (p2Position === 'bottom' || p2Position === 'top') {
       distance2 = ((p2 as NgBondProperty).x() + (p2 as NgBondProperty).width() / 2) / rect2?.width;

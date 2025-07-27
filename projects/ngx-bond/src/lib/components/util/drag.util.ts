@@ -34,6 +34,7 @@ export function makeDraggable(element: HTMLElement) {
       mouseMove$
         .pipe(
           map((moveEvent) => {
+            console.log('Drag start', start.offsetX);
             return {
               ...start,
               ...moveEvent,

@@ -2,7 +2,7 @@
   <div class="labels">
     <div class="header"></div>
 
-    @for (group of timeline()?.groups; track $index) {
+    @for (group of timelineService.timeline().groups; track $index) {
       <div class="group">
         {{ group.name }}
       </div>
@@ -17,10 +17,10 @@
 
   <div class="tracks">
     <div class="header">
-      <timeline-ruler [duration]="20000" [millisecondsPerPixel]="timeline()?.millisecondsPerPixel"></timeline-ruler>
+      <timeline-ruler [duration]="20000" [millisecondsPerPixel]="timelineService.timeline().millisecondsPerPixel"></timeline-ruler>
     </div>
 
-    @for (group of timeline()?.groups; track $index) {
+    @for (group of timelineService.timeline().groups; track $index) {
       <div class="group"></div>
 
       @for (track of group.tracks; track $index) {
@@ -30,10 +30,11 @@
               [minY]="0"
               [maxY]="0"
               [minX]="0"
+              [showCursor]="false"
               positioning="transform"
               [resizable]="false"
               [tween]="tween"
-              [timeline]="timeline()"
+              [timeline]="timelineService.timeline()"
               (dragEnd)="onTweenDragEnd()"
               (dragStart)="onTweenDragStart()"
               (positionUpdated)="onTweenPositionUpdated($event, tween, track, group)"
@@ -44,14 +45,15 @@
               [minY]="0"
               [maxY]="0"
               [minX]="0"
-              [x]="keyframe.time / (timeline()?.millisecondsPerPixel ?? 1)"
+              [showCursor]="false"
+              [x]="keyframe.time / (timelineService.timeline().millisecondsPerPixel)"
               [bondcontainer]="`keyframe`"
               [positioning]="'transform'"
               [resizable]="false"
               (tween)="onTween($event, group, track)"
               [keyframe]="keyframe"
               (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
-              [timeline]="timeline()"
+              [timeline]="timelineService.timeline()"
             ></timeline-keyframe>
           }
         </div>

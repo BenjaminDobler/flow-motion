@@ -58,4 +58,4 @@
   ></polygon> -->
 </svg>
 
-<div [bondcontainer]="`scrubber`" (positionUpdated)="onScrubberPositionUpdated($event)" [resizable]="false" [minY]="0" [maxY]="0" [minX]="0" class="scrubber"></div>
+<div [bondcontainer]="`scrubber`" (dragStart)="onScrubberDragStart($event)" (dragEnd)="onScrubberDragEnd($event)" (positionUpdated)="onScrubberPositionUpdated($event)" [resizable]="false" [minY]="0" [maxY]="0" [minX]="0" class="scrubber"></div>

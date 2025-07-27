@@ -204,4 +204,9 @@ export class NgBondService {
     const c = this.dragElements().find((e) => e.el.nativeElement === targetElement);
     return c;
   }
+
+  getComponentById(id: string) {
+    return this.dragElements().find((e) => e.id() === id);
+  }
+
 }

@@ -17,6 +17,7 @@ import { TimelineRulerComponent } from './timeline-ruler/timeline-ruler.componen
 import { TimelineKeyframeComponent } from './timeline-keyframe/timeline-keyframe.component';
 import { TimelineTweenComponent } from './timeline-tween/timeline-tween.component';
 import { KeyManager, NgBondContainer, NgBondService, SelectionManager } from '@richapps/ngx-bond';
+import { TimelineService } from '../../services/timeline.service';
 
 @Component({
   selector: 'timeline',
@@ -31,7 +32,9 @@ import { KeyManager, NgBondContainer, NgBondService, SelectionManager } from '@r
   providers: [NgBondService, SelectionManager, KeyManager],
 })
 export class TimelineComponent {
-  timeline = model<Timeline>();
+
+
+  timelineService = inject(TimelineService);
 
   changeRef = inject(ChangeDetectorRef);
 
@@ -40,7 +43,7 @@ export class TimelineComponent {
     group: TimelineGroup,
     track: TimelineTrack,
   ) {
-    this.timeline.update((currentTimeline) => {
+    this.timelineService.timeline.update((currentTimeline) => {
       if (!currentTimeline) {
         return currentTimeline;
       }
@@ -104,8 +107,11 @@ export class TimelineComponent {
     }
     //this.changeRef.markForCheck();
 
-    const time = position.x * (this.timeline()?.millisecondsPerPixel || 1);
-    this.timeline.update((currentTimeline) => {
+    console.log('Keyframe position updated:', position, keyframe, track, group);
+
+    const time = position.x * (this.timelineService.timeline()?.millisecondsPerPixel || 1);
+    console.log('new time for keyframe:', time, keyframe.time);
+    this.timelineService.timeline.update((currentTimeline) => {
       if (!currentTimeline) {
         return currentTimeline;
       }
@@ -144,6 +150,7 @@ export class TimelineComponent {
         return g;
       });
       // Return the updated timeline
+      console.log('Updated timeline:', currentTimeline);
       return { ...currentTimeline };
     });
   }
@@ -159,11 +166,11 @@ export class TimelineComponent {
 
     const duration = end.time - start.time;
 
-    const newStart = position.x * (this.timeline()?.millisecondsPerPixel || 1);
+    const newStart = position.x * (this.timelineService.timeline()?.millisecondsPerPixel || 1);
 
     const startKeyframe = { ...tween.start, time: newStart };
     const endKeyframe = { ...tween.end, time: newStart + duration };
-    this.timeline.update((currentTimeline) => {
+    this.timelineService.timeline.update((currentTimeline) => {
       if (!currentTimeline) {
         return currentTimeline;
       }

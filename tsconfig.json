@@ -35,6 +35,12 @@
     },
     {
       "path": "./projects/timeline/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/gsap-demo/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/gsap-demo/tsconfig.spec.json"
     }
   ]
 }
