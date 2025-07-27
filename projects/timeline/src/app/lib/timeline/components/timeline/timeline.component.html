@@ -1,6 +1,9 @@
 <div class="timeline">
   <div class="labels">
-    <div class="header"></div>
+    <div class="header">
+      <button (click)="timelineService.play()">Play</button>
+      <button (click)="timelineService.pause()">Pause</button>
+    </div>
 
     @for (group of timelineService.timeline().groups; track $index) {
       <div class="group">
@@ -46,7 +49,7 @@
               [maxY]="0"
               [minX]="0"
               [showCursor]="false"
-              [x]="keyframe.time / (timelineService.timeline().millisecondsPerPixel)"
+              [x]="keyframe.time / timelineService.timeline().millisecondsPerPixel"
               [bondcontainer]="`keyframe`"
               [positioning]="'transform'"
               [resizable]="false"

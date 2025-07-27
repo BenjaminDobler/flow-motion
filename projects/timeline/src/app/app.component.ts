@@ -157,19 +157,23 @@ export class AppComponent {
       if (element) {
         group.tracks.forEach((track) => {
           track.keyframes.forEach((keyframe, index) => {
+            timeline.set(element, { [`signal_` + track.name]: keyframe.value }, keyframe.time / 1000);
+
             if (index < track.keyframes.length - 1) {
               const nextKeyframe = track.keyframes[index + 1];
               console.log('Creating GSAP timeline for track:', track.name, 'at keyframe:', keyframe);
-              timeline.set(element, { [`signal_` + track.name]: keyframe.value }, keyframe.time / 1000);
-              timeline.to(
-                element,
-                {
-                  [`signal_` + track.name]: nextKeyframe.value,
-                  duration: (nextKeyframe.time - keyframe.time) / 1000,
-                  ease: 'power1.inOut',
-                },
-                keyframe.time / 1000
-              );
+              const isStartFrame = track.tweens.some((tween) => tween.start === keyframe);
+              if (isStartFrame) {
+                timeline.to(
+                  element,
+                  {
+                    [`signal_` + track.name]: nextKeyframe.value,
+                    duration: (nextKeyframe.time - keyframe.time) / 1000,
+                    ease: 'power1.inOut',
+                  },
+                  keyframe.time / 1000
+                );
+              }
             }
           });
         });

@@ -29,4 +29,12 @@ export class TimelineService {
   setScrubbing(scrubbing: boolean) {
     this.scrubbing.set(scrubbing);
   }
+
+  play() {
+    this.animationTimeline.play();
+  }
+
+  pause() {
+    this.animationTimeline.pause();
+  }
 }
