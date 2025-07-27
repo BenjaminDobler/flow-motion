@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:prod": "ng build --configuration production --base-href=/ng-bond/",
+    "build:prod": "ng build demo --configuration production --base-href=/ng-bond/",
     "lint": "ng lint"
   },
   "private": true,
