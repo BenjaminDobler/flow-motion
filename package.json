@@ -25,6 +25,7 @@
     "gsap": "^3.13.0",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^19.0.2",
+    "path-data-polyfill": "^1.0.10",
     "prettier": "^3.5.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
