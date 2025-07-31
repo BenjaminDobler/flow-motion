@@ -14,6 +14,9 @@ svg {
     .point {
         &.control {
             fill: #2870bd;
+            &:hover {
+                fill: #0000ff;
+            }
         }
 
         &.edge {
