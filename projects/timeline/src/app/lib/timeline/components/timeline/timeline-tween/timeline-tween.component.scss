@@ -2,6 +2,10 @@
   display: block;
   position: absolute;
   height: 20px;
+
+  &.selected {
+    background-color: #272cc5;
+  }
 }
 
 .bar {

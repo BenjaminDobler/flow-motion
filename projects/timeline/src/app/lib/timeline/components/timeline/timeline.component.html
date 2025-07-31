@@ -19,46 +19,55 @@
   </div>
 
   <div class="tracks">
-    <div class="header">
-      <timeline-ruler [duration]="20000" [millisecondsPerPixel]="timelineService.timeline().millisecondsPerPixel"></timeline-ruler>
+    <div class="header" style="display: flex">
+      <div style="height: 20px; width: 10px; flex-shrink: 0"></div>
+      <timeline-ruler style="flex: 1" [duration]="20000" [millisecondsPerPixel]="timelineService.timeline().millisecondsPerPixel"></timeline-ruler>
     </div>
 
     @for (group of timelineService.timeline().groups; track $index) {
-      <div class="group"></div>
+      <div style="display: flex">
+        <div style="height: 20px; width: 10px; flex-shrink: 0; border-bottom: solid 1px #4b4b4a; background: #555454"></div>
+        <div class="group" style="flex: 1"></div>
+      </div>
 
       @for (track of group.tracks; track $index) {
-        <div class="track">
-          @for (tween of track.tweens; track $index) {
-            <timeline-tween
-              [minY]="0"
-              [maxY]="0"
-              [minX]="0"
-              [showCursor]="false"
-              positioning="transform"
-              [resizable]="false"
-              [tween]="tween"
-              [timeline]="timelineService.timeline()"
-              (dragEnd)="onTweenDragEnd()"
-              (dragStart)="onTweenDragStart()"
-              (positionUpdated)="onTweenPositionUpdated($event, tween, track, group)"
-            ></timeline-tween>
-          }
-          @for (keyframe of track.keyframes; track $index) {
-            <timeline-keyframe
-              [minY]="0"
-              [maxY]="0"
-              [minX]="0"
-              [showCursor]="false"
-              [x]="keyframe.time / timelineService.timeline().millisecondsPerPixel"
-              [bondcontainer]="`keyframe`"
-              [positioning]="'transform'"
-              [resizable]="false"
-              (tween)="onTween($event, group, track)"
-              [keyframe]="keyframe"
-              (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
-              [timeline]="timelineService.timeline()"
-            ></timeline-keyframe>
-          }
+        <div style="display: flex">
+          <div style="height: 20px; width: 10px; flex-shrink: 0; background: #353535; border-bottom: solid 1px #4b4b4a"></div>
+          <div class="track" style="flex: 1">
+            @for (tween of track.tweens; track $index) {
+              <timeline-tween
+              (click)="onTweenClick($event, tween, track, group)"
+                [minY]="0"
+                [maxY]="0"
+                [minX]="0"
+                [class.selected]="selectedTween() === tween"
+                [showCursor]="false"
+                positioning="transform"
+                [resizable]="false"
+                [tween]="tween"
+                [timeline]="timelineService.timeline()"
+                (dragEnd)="onTweenDragEnd()"
+                (dragStart)="onTweenDragStart()"
+                (positionUpdated)="onTweenPositionUpdated($event, tween, track, group)"
+              ></timeline-tween>
+            }
+            @for (keyframe of track.keyframes; track $index) {
+              <timeline-keyframe
+                [minY]="0"
+                [maxY]="0"
+                [minX]="0"
+                [showCursor]="false"
+                [x]="keyframe.time / timelineService.timeline().millisecondsPerPixel"
+                [bondcontainer]="`keyframe`"
+                [positioning]="'transform'"
+                [resizable]="false"
+                (tween)="onTween($event, group, track)"
+                [keyframe]="keyframe"
+                (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
+                [timeline]="timelineService.timeline()"
+              ></timeline-keyframe>
+            }
+          </div>
         </div>
       }
     }

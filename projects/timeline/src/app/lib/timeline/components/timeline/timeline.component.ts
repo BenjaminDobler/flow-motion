@@ -38,6 +38,15 @@ export class TimelineComponent {
 
   changeRef = inject(ChangeDetectorRef);
 
+  selectedTween = model<TimelineTween | null>(null);
+
+  onTweenClick(event: MouseEvent, tween: TimelineTween, track: TimelineTrack, group: TimelineGroup) {
+    // event.stopPropagation();
+    // console.log('Tween clicked:', tween, track, group);
+    this.selectedTween.set(tween);
+    console.log('Selected tween:', this.selectedTween());
+  }
+
   onTween(
     keyframe: TimelineKeyframe,
     group: TimelineGroup,

@@ -68,4 +68,17 @@ export class TimelineRulerComponent {
     console.log('Scrubber drag ended', event);
     this.timelineService.setScrubbing(false);
   }
+
+  onClick(event: MouseEvent) {
+    this.timelineService.setScrubbing(true);
+    const mpp = this.millisecondsPerPixel();
+    if (mpp !== undefined) {
+      const pos = event.offsetX * mpp;
+      this.timelineService.setPosition(Math.round(pos));
+      console.log('Clicked position:', pos);
+    }
+    setTimeout(() => {
+      this.timelineService.setScrubbing(false);
+    });
+  }
 }
