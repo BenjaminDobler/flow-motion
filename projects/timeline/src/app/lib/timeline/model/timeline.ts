@@ -19,6 +19,8 @@ export interface TimelineTrack {
 export interface TimelineTween {
   start: TimelineKeyframe;
   end: TimelineKeyframe;
+  easing?: string; // Easing function name, e.g., 'easeInOutQuad'
+  motionPath?: string; // Optional motion path for the tween
 }
 
 export interface TimelineKeyframe {

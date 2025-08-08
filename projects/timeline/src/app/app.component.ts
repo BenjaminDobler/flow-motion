@@ -1,10 +1,32 @@
-import { Component, effect, EnvironmentInjector, inject, inputBinding, output, outputBinding, runInInjectionContext, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  effect,
+  ElementRef,
+  EnvironmentInjector,
+  inject,
+  inputBinding,
+  output,
+  outputBinding,
+  runInInjectionContext,
+  signal,
+  viewChild,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { TimelineComponent } from './lib/timeline/components/timeline/timeline.component';
-import { Timeline } from './lib/timeline/model/timeline';
+import { Timeline, TimelineTween } from './lib/timeline/model/timeline';
 import { TestComponentComponent } from './components/test-component/test-component.component';
 import { KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 import { TimelineService } from './lib/timeline/services/timeline.service';
 import { gsap } from 'gsap';
+import { SVGEdit } from '@richapps/ngx-pentool';
+import { distinctUntilChanged } from 'rxjs';
+
+import { MotionPathHelper } from 'gsap/MotionPathHelper';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+
+gsap.registerPlugin(MotionPathHelper, MotionPathPlugin);
 
 const props = ['x', 'y', 'width', 'height'];
 
@@ -21,10 +43,44 @@ props.forEach((prop) => {
       data.interp = gsap.utils.interpolate(currentValue, endValue);
     },
     render(progress: any, data: any) {
+      console.log('rendering', prop, data.interp(progress));
       data.target[prop].set(data.interp(progress));
     },
   });
 });
+
+// gsap.registerPlugin({
+//   name: `x`,
+//   get(target: any) {
+//     return target.x();
+//   },
+//   init(target: any, endValue: any, b: any) {
+//     const currentValue = target.x() | 0;
+//     const data: any = this;
+//     data.target = target;
+//     data.interp = gsap.utils.interpolate(currentValue, endValue);
+//   },
+//   render(progress: any, data: any) {
+//     console.log('render x', progress, data.interp(progress));
+//     data.target.x.set(data.interp(progress));
+//   },
+// });
+
+// gsap.registerPlugin({
+//   name: `y`,
+//   get(target: any) {
+//     return target.y();
+//   },
+//   init(target: any, endValue: any, b: any) {
+//     const currentValue = target.y() | 0;
+//     const data: any = this;
+//     data.target = target;
+//     data.interp = gsap.utils.interpolate(currentValue, endValue);
+//   },
+//   render(progress: any, data: any) {
+//     data.target.y.set(data.interp(progress));
+//   },
+// });
 
 gsap.registerPlugin({
   name: `signal_position`,
@@ -61,127 +117,63 @@ export class AppComponent {
 
   @ViewChild('insert_slot', { read: ViewContainerRef })
   worldHost!: ViewContainerRef;
+  svgCanvas = viewChild<ElementRef>('svg_canvas');
 
   bondService = inject(NgBondService);
 
-  private injector: EnvironmentInjector = inject(EnvironmentInjector);
   timelineService = inject(TimelineService);
+  svgEdit?: SVGEdit;
 
-  componentCount = 0;
-  addComponent() {
-    const id = 'some-id-' + this.componentCount;
-    this.componentCount++;
-    const componentRef = this.worldHost.createComponent(TestComponentComponent, {
-      directives: [
-        {
-          type: NgBondContainer,
-          bindings: [
-            outputBinding('positionUpdated', (evt: any) => {
-              this.propertyChanged(id, 'position', evt);
-            }),
-            outputBinding('widthUpdated', (evt: any) => {
-              this.propertyChanged(id, 'width', evt);
-            }),
-            outputBinding('heightUpdated', (evt: any) => {
-              this.propertyChanged(id, 'height', evt);
-            }),
-          ],
-        },
-      ],
-    });
-    componentRef.setInput('bondcontainer', id);
+  selectedTween: TimelineTween | null = null;
 
-    this.timelineService.timeline.update((currentTimeline) => {
-      currentTimeline.groups.push({
-        name: id,
-        tracks: [],
-      });
-      return { ...currentTimeline };
+  constructor() {
+    afterNextRender(() => {
+      this.timelineService.setWorldHost(this.worldHost);
+      if (this.svgCanvas()) {
+        this.svgEdit = new SVGEdit();
+        this.svgEdit.svg = this.svgCanvas()?.nativeElement;
+        this.svgEdit.init();
+
+        this.svgEdit.pathChanged$.pipe(distinctUntilChanged()).subscribe((d) => {
+          console.log('Path changed:', d);
+          if (this.selectedTween) {
+            this.selectedTween.motionPath = d;
+            this.timelineService.createGsapTimeline();
+          }
+        });
+      }
     });
+
+
+    const animationTimeline = gsap.timeline();
+    let animatedObject = { x: 0, y: 0 };
+    animationTimeline.to(animatedObject, {
+      duration: 0.5,
+      motionPath: 'M222.15625 115.41015625 C446.046875 369.92304687499995 620.19453125 464.703125 802.6484375 431.34375',
+      onUpdate: () => console.log("YO", animatedObject),
+    }, 2);
   }
 
-  propertyChanged(id: string, property: string, value: any) {
-    if (this.gsapTimeline?.isActive() || this.timelineService.scrubbing()) {
-      console.warn('GSAP timeline is active, skipping property change:', id, property, value);
+  onTweenSelected(event: { tween: TimelineTween; track: any; group: any }) {
+    console.log('Tween selected:', event);
+    // Handle the tween selection logic here
+
+    if (this.selectedTween === event.tween) {
+      this.selectedTween = null;
+      this.svgEdit?.clearAll();
       return;
     }
-    console.log('Property changed:', id, property, value);
-    // Handle the property change logic here
-    // For example, update the timeline or perform some action based on the change
-    this.timelineService.timeline.update((currentTimeline) => {
-      const group = currentTimeline.groups.find((g) => g.name === id);
-      const track = group?.tracks.find((t) => t.name === property);
-      if (track) {
-        const keyframeIndex = track.keyframes.findIndex((kf) => kf.time === this.timelineService.position());
-        if (keyframeIndex !== -1) {
-          track.keyframes[keyframeIndex].value = value;
-        } else {
-          console.log(track.keyframes, this.timelineService.position());
-          // If no keyframe exists at the current position, create a new one
-          // console.log('Creating new keyframe for property:', property, 'at position:', this.timelineService.position());
-          track.keyframes.push({
-            value: value,
-            time: this.timelineService.position(),
-          });
-        }
+
+    this.selectedTween = event.tween;
+    this.svgEdit?.clearAll();
+    if (this.svgEdit) {
+      if (event.tween.motionPath) {
+        this.svgEdit.setPath(event.tween.motionPath);
       } else {
-        group?.tracks.push({
-          name: property,
-          keyframes: [
-            {
-              value: value,
-              time: this.timelineService.position(),
-            },
-          ],
-          tweens: [],
-        });
+        const d = `M ${event.tween.start.value.x} ${event.tween.start.value.y} L ${event.tween.end.value.x} ${event.tween.end.value.y}`;
+        console.log('Setting path:', d);
+        this.svgEdit.setPath(`M ${event.tween.start.value.x} ${event.tween.start.value.y} L ${event.tween.end.value.x} ${event.tween.end.value.y}`);
       }
-      return { ...currentTimeline };
-    });
-
-    this.createGsapTimeline();
-  }
-
-  gsapTimeline: any;
-
-  createGsapTimeline() {
-    const t = this.timelineService.timeline();
-
-    let timeline = this.timelineService.animationTimeline;
-    timeline.clear();
-    timeline.pause();
-
-    t.groups.forEach((group) => {
-      const element = this.bondService.getComponentById(group.name);
-      console.log('Element found for group:', element);
-      if (element) {
-        group.tracks.forEach((track) => {
-          track.keyframes.forEach((keyframe, index) => {
-            timeline.set(element, { [`signal_` + track.name]: keyframe.value }, keyframe.time / 1000);
-
-            if (index < track.keyframes.length - 1) {
-              const nextKeyframe = track.keyframes[index + 1];
-              console.log('Creating GSAP timeline for track:', track.name, 'at keyframe:', keyframe);
-              const isStartFrame = track.tweens.some((tween) => tween.start === keyframe);
-              if (isStartFrame) {
-                timeline.to(
-                  element,
-                  {
-                    [`signal_` + track.name]: nextKeyframe.value,
-                    duration: (nextKeyframe.time - keyframe.time) / 1000,
-                    ease: 'power1.inOut',
-                  },
-                  keyframe.time / 1000
-                );
-              }
-            }
-          });
-        });
-      }
-    });
-
-    this.gsapTimeline = timeline;
-
-    // timeline.play();
+    }
   }
 }

@@ -1,15 +1,20 @@
-import { fromEvent, race, last, map, share, startWith, switchMap, take, takeUntil, tap } from 'rxjs';
+import { fromEvent, race, last, map, share, startWith, switchMap, take, takeUntil, tap, filter } from 'rxjs';
 
 const mouseMove$ = fromEvent<PointerEvent>(document, 'pointermove').pipe(share());
 const mouseUp$ = fromEvent<PointerEvent>(document, 'pointerup').pipe(share());
 
 export function makeDraggable(element: HTMLElement) {
   const mouseDown$ = fromEvent<PointerEvent>(element, 'pointerdown').pipe(
+    filter((e: PointerEvent)=>{
+      console.log('pointer down',(e.target as any).attributes);
+      return !(e.target as any).attributes.preventselection;
+    }),
     tap((e: PointerEvent) => {
       if (!(e.target instanceof HTMLInputElement)) {
+        console.log('prevent me');
         e.preventDefault();
         e.stopPropagation();
-      }
+      } 
     }),
     map((evt) => {
       const rect = element.getBoundingClientRect();

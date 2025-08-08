@@ -8,23 +8,24 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:prod": "ng build demo --configuration production --base-href=/ng-bond/",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool"
   },
   "private": true,
   "dependencies": {
     "@angular-eslint/schematics": "^20.1.1",
-    "@angular/cdk": "^20.1.3",
-    "@angular/common": "^20.0.3",
-    "@angular/compiler": "^20.0.3",
-    "@angular/core": "^20.0.3",
-    "@angular/forms": "^20.0.3",
-    "@angular/platform-browser": "^20.0.3",
-    "@angular/platform-browser-dynamic": "^20.0.3",
-    "@angular/router": "^20.0.3",
+    "@angular/cdk": "^20.1.4",
+    "@angular/common": "^20.1.4",
+    "@angular/compiler": "^20.1.4",
+    "@angular/core": "^20.1.4",
+    "@angular/forms": "^20.1.4",
+    "@angular/platform-browser": "^20.1.4",
+    "@angular/platform-browser-dynamic": "^20.1.4",
+    "@angular/router": "^20.1.4",
     "@loancrate/prisma-schema-parser": "^3.0.0",
     "gsap": "^3.13.0",
     "monaco-editor": "^0.52.2",
-    "ngx-monaco-editor-v2": "^19.0.2",
+    "ngx-monaco-editor-v2": "^20.0.0",
     "path-data-polyfill": "^1.0.10",
     "prettier": "^3.5.3",
     "rxjs": "~7.8.0",
@@ -47,5 +48,11 @@
     "ng-packagr": "^20.0.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "8.34.1"
+  },
+  "overrides": {
+    "ngx-monaco-editor-v2": {
+      "@angular/common": "^20.1.4",
+      "@angular/core": "^20.1.4"
+    }
   }
 }

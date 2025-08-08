@@ -4,6 +4,7 @@ import {
   inject,
   input,
   model,
+  output,
   signal,
 } from '@angular/core';
 import {
@@ -18,6 +19,7 @@ import { TimelineKeyframeComponent } from './timeline-keyframe/timeline-keyframe
 import { TimelineTweenComponent } from './timeline-tween/timeline-tween.component';
 import { KeyManager, NgBondContainer, NgBondService, SelectionManager } from '@richapps/ngx-bond';
 import { TimelineService } from '../../services/timeline.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'timeline',
@@ -26,6 +28,7 @@ import { TimelineService } from '../../services/timeline.service';
     TimelineKeyframeComponent,
     TimelineTweenComponent,
     NgBondContainer,
+    CommonModule,
   ],
   templateUrl: './timeline.component.html',
   styleUrl: './timeline.component.scss',
@@ -40,11 +43,17 @@ export class TimelineComponent {
 
   selectedTween = model<TimelineTween | null>(null);
 
+  tweenSelected = output<{tween: TimelineTween, track: TimelineTrack, group: TimelineGroup}>();
+
   onTweenClick(event: MouseEvent, tween: TimelineTween, track: TimelineTrack, group: TimelineGroup) {
     // event.stopPropagation();
     // console.log('Tween clicked:', tween, track, group);
     this.selectedTween.set(tween);
     console.log('Selected tween:', this.selectedTween());
+    if (track.name === 'position') {
+      // show motion path
+      this.tweenSelected.emit({ tween, track, group });
+    }
   }
 
   onTween(
@@ -92,6 +101,10 @@ export class TimelineComponent {
       // Return the updated timeline
       return { ...currentTimeline };
     });
+
+    this.timelineService.createGsapTimeline();
+
+    
   }
 
   isTweenDragging = signal<boolean>(false);
@@ -191,5 +204,15 @@ export class TimelineComponent {
 
       return { ...currentTimeline };
     });
+  }
+
+  onKeyframeClick(
+    event: MouseEvent,
+    keyframe: TimelineKeyframe,
+    track: TimelineTrack,
+    group: TimelineGroup,
+  ) {
+    console.log('Keyframe clicked:', keyframe, track, group);
+    this.timelineService.setPosition(keyframe.time);
   }
 }

@@ -1,8 +1,27 @@
 <div class="timeline">
   <div class="labels">
     <div class="header">
-      <button (click)="timelineService.play()">Play</button>
-      <button (click)="timelineService.pause()">Pause</button>
+      <div class="control-btn stop" (click)="timelineService.stop()">
+        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 4.76758L13.25 0.00488281V12.9951L5 8.23145V13H0V0H5V4.76758Z" fill="#D9D9D9" />
+        </svg>
+      </div>
+      @if (timelineService.playing()) {
+        <div class="control-btn pause" (click)="timelineService.pause()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" width="5" height="13" fill="#D9D9D9" />
+            <rect width="5" height="13" fill="#D9D9D9" />
+          </svg>
+        </div>
+      } @else {
+        <div class="control-btn play" (click)="timelineService.play()">
+          <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 6.5L0.75 12.9952V0.00480938L12 6.5Z" fill="#D9D9D9" />
+          </svg>
+        </div>
+      }
+
+      <div class="time">{{ timelineService.position() }} ms</div>
     </div>
 
     @for (group of timelineService.timeline().groups; track $index) {
@@ -19,6 +38,7 @@
   </div>
 
   <div class="tracks">
+    <div [style.transform]="`translateX(${timelineService.position()/timelineService.timeline().millisecondsPerPixel + 10}px)`" class="pos-line"></div>
     <div class="header" style="display: flex">
       <div style="height: 20px; width: 10px; flex-shrink: 0"></div>
       <timeline-ruler style="flex: 1" [duration]="20000" [millisecondsPerPixel]="timelineService.timeline().millisecondsPerPixel"></timeline-ruler>
@@ -36,7 +56,7 @@
           <div class="track" style="flex: 1">
             @for (tween of track.tweens; track $index) {
               <timeline-tween
-              (click)="onTweenClick($event, tween, track, group)"
+                (click)="onTweenClick($event, tween, track, group)"
                 [minY]="0"
                 [maxY]="0"
                 [minX]="0"
@@ -65,6 +85,7 @@
                 [keyframe]="keyframe"
                 (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
                 [timeline]="timelineService.timeline()"
+                (click)="onKeyframeClick($event, keyframe, track, group)"
               ></timeline-keyframe>
             }
           </div>

@@ -47,6 +47,12 @@
     },
     {
       "path": "./projects/pentool/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ngx-pentool/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ngx-pentool/tsconfig.spec.json"
     }
   ]
 }
