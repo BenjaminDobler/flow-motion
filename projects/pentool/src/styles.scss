@@ -1,65 +1,71 @@
 /* You can add global styles to this file, and also import other style files */
 /* You can add global styles to this file, and also import other style files */
 
-.control_lines {
-    stroke: #2870bd;
-}
+//@import "~@richapps/ngx-pentool/src/styles/pentool.scss";
 
-.editorControls {
-    z-index: 2000;
-}
+@use '@richapps/ngx-pentool/theming';
 
 
-svg {
-    .point {
-        &.control {
-            fill: #2870bd;
-            &:hover {
-                fill: #0000ff;
-            }
-        }
 
-        &.edge {
-            &:hover {
-                cursor: move;
-            }
-        }
+// .control_lines {
+//     stroke: #2870bd;
+// }
 
-        &.nearest-point {
-            pointer-events: none;
-        }
+// .editorControls {
+//     z-index: 2000;
+// }
+
+
+// svg {
+//     .point {
+//         &.control {
+//             fill: #2870bd;
+//             &:hover {
+//                 fill: #0000ff;
+//             }
+//         }
+
+//         &.edge {
+//             &:hover {
+//                 cursor: move;
+//             }
+//         }
+
+//         &.nearest-point {
+//             pointer-events: none;
+//         }
         
-    }
+//     }
 
-    &.alt-down {
-        .point {
+//     &.alt-down {
+//         .point {
 
-            &:hover {
-                cursor: url('/assets/cursor/pen-minus.png'), auto;
-            }
-        }
-    }
+//             &:hover {
+//                 cursor: url('/assets/cursor/pen-minus.png'), auto;
+//             }
+//         }
+//     }
 
-}
+// }
 
-path {
-    &:hover {
-        stroke: #0000ff;
-        stroke-width: 4;
-    }
-}
+// path {
+//     &:hover {
+//         stroke: #0000ff;
+//         stroke-width: 4;
+//     }
+// }
 
 
-svg {
-    &.pen-cursor {
-        cursor: url('/assets/cursor/pen.png'), auto;
-    }
+// svg {
+//     &.pen-cursor {
+//         cursor: url('/assets/cursor/pen.png'), auto;
+//     }
 
-    &.curve-cursor {
-        cursor: url('/assets/cursor/pen-curve.png'), auto;
-    }
+//     &.curve-cursor {
+//         cursor: url('/assets/cursor/pen-curve.png'), auto;
+//     }
 
-    &.pen-minus {
-        cursor: url('/assets/cursor/pen-minus.png'), auto;
-    }
-}
+//     &.pen-minus {
+//         cursor: url('/assets/cursor/pen-minus.png'), auto;
+//     }
+// }

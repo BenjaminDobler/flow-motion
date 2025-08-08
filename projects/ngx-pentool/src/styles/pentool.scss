@@ -1,0 +1,57 @@
+.control_lines {
+  stroke: #2870bd;
+}
+
+.editorControls {
+  z-index: 2000;
+}
+
+svg {
+  .point {
+    &.control {
+      fill: #2870bd;
+      &:hover {
+        fill: #0000ff;
+      }
+    }
+
+    &.edge {
+      &:hover {
+        cursor: move;
+      }
+    }
+
+    &.nearest-point {
+      pointer-events: none;
+    }
+  }
+
+  &.alt-down {
+    .point {
+      &:hover {
+        cursor: url('/assets/cursor/pen-minus.png'), auto;
+      }
+    }
+  }
+}
+
+path {
+  &:hover {
+    stroke: #0000ff;
+    stroke-width: 4;
+  }
+}
+
+svg {
+  &.pen-cursor {
+    cursor: url('/assets/cursor/pen.png'), auto;
+  }
+
+  &.curve-cursor {
+    cursor: url('/assets/cursor/pen-curve.png'), auto;
+  }
+
+  &.pen-minus {
+    cursor: url('/assets/cursor/pen-minus.png'), auto;
+  }
+}

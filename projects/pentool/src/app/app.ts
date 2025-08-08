@@ -1,5 +1,5 @@
 import { Component, ElementRef, viewChild } from '@angular/core';
-import { SVGEdit } from './svgedit/svgedit';
+import { SVGEdit } from '@richapps/ngx-pentool';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +31,18 @@ export class App {
   fromHistory() {
     if (this.svgEdit) {
       this.svgEdit.fromHistory();
+    }
+  }
+
+  setPath() {
+    if (this.svgEdit) {
+      this.svgEdit.setPath('M 10 10 L 100 100 L 200 50');
+    }
+  }
+
+  clearAll() {
+    if (this.svgEdit) {
+      this.svgEdit.clearAll();
     }
   }
 }

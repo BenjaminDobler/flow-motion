@@ -40,6 +40,7 @@ export class Point {
     this.ref.setAttribute('cy', '0');
 
     this.ref.setAttribute('fill', '#fff');
+    this.ref.setAttribute('preventselection', 'true');
 
     if (this.type === 'nearest-point') {
       this.ref.classList.add('nearest-point');
