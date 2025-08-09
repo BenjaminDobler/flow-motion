@@ -26,6 +26,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { MotionPathHelper } from 'gsap/MotionPathHelper';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { InspectorComponent } from './lib/timeline/components/inspector/inspector.component';
+import { ImageComponent } from './components/image/image.component';
 
 gsap.registerPlugin(MotionPathHelper, MotionPathPlugin);
 
@@ -112,6 +113,15 @@ gsap.registerPlugin({
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [NgBondService, SelectionManager, KeyManager, TimelineService, InspectorComponent],
+  host: {
+    '(drop)': 'onDrop($event)',
+    '(dragover)': '$event.preventDefault()',
+    '(dragenter)': '$event.preventDefault()',
+    '(dragleave)': '$event.preventDefault()',
+    '(dragend)': '$event.preventDefault()',
+    '(dragstart)': '$event.preventDefault()',
+    '(drag)': '$event.preventDefault()',
+  }
 })
 export class AppComponent {
   title = 'demo';
@@ -124,7 +134,6 @@ export class AppComponent {
 
   timelineService = inject(TimelineService);
   svgEdit?: SVGEdit;
-
 
   constructor() {
     afterNextRender(() => {
@@ -146,14 +155,17 @@ export class AppComponent {
       }
     });
 
-
     const animationTimeline = gsap.timeline();
     let animatedObject = { x: 0, y: 0 };
-    animationTimeline.to(animatedObject, {
-      duration: 0.5,
-      motionPath: 'M222.15625 115.41015625 C446.046875 369.92304687499995 620.19453125 464.703125 802.6484375 431.34375',
-      onUpdate: () => console.log("YO", animatedObject),
-    }, 2);
+    animationTimeline.to(
+      animatedObject,
+      {
+        duration: 0.5,
+        motionPath: 'M222.15625 115.41015625 C446.046875 369.92304687499995 620.19453125 464.703125 802.6484375 431.34375',
+        onUpdate: () => console.log('YO', animatedObject),
+      },
+      2
+    );
   }
 
   onTweenSelected(event: { tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }) {
@@ -177,5 +189,44 @@ export class AppComponent {
         this.svgEdit.setPath(`M ${event.tween.start.value.x} ${event.tween.start.value.y} L ${event.tween.end.value.x} ${event.tween.end.value.y}`);
       }
     }
+  }
+
+  onDrop(e: DragEvent) {
+    e.preventDefault();
+    if (e.dataTransfer?.files.length === 0) {
+      return;
+    }
+    const reader = new FileReader();
+    if (!e.dataTransfer?.files[0]) {
+      return;
+    }
+    reader.readAsDataURL(e.dataTransfer?.files[0]);
+    reader.onload = () => {
+      const image = new Image();
+      image.src = reader.result as string;
+
+      this.timelineService.addComponent(ImageComponent, {
+        src:reader.result as string
+
+      });
+
+
+      image.onload = () => {
+        console.log('Image loaded', image);
+      };
+    };
+
+    // reader.onload = () => {
+    //   const image = new Image();
+    //   image.src = reader.result;
+    //   image.onload = () => {
+    //     const canvas = document.querySelector('canvas');
+    //     canvas.width = image.width;
+    //     canvas.height = image.height;
+    //     const context = canvas.getContext('2d');
+    //     context.filter = 'blur(10px)';
+    //     context.drawImage(image, 0, 0);
+    //   };
+    // };
   }
 }

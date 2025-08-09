@@ -132,10 +132,10 @@ export class TimelineService {
   }
 
   componentCount = 0;
-  addComponent() {
+  addComponent(componentClass: { new (...args: any[]): TestComponentComponent } = TestComponentComponent, inputs: any = {}) {
     const id = 'some-id-' + this.componentCount;
     this.componentCount++;
-    const componentRef = this.worldHost.createComponent(TestComponentComponent, {
+    const componentRef = this.worldHost.createComponent(componentClass, {
       directives: [
         {
           type: NgBondContainer,
@@ -154,6 +154,10 @@ export class TimelineService {
       ],
     });
     componentRef.setInput('bondcontainer', id);
+
+    for(const key in inputs) {
+      componentRef.setInput(key, inputs[key]);
+    }
 
     this.timeline.update((currentTimeline) => {
       currentTimeline.groups.push({
