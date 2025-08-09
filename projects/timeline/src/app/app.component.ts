@@ -15,7 +15,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { TimelineComponent } from './lib/timeline/components/timeline/timeline.component';
-import { Timeline, TimelineTween } from './lib/timeline/model/timeline';
+import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from './lib/timeline/model/timeline';
 import { TestComponentComponent } from './components/test-component/test-component.component';
 import { KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 import { TimelineService } from './lib/timeline/services/timeline.service';
@@ -25,6 +25,7 @@ import { distinctUntilChanged } from 'rxjs';
 
 import { MotionPathHelper } from 'gsap/MotionPathHelper';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+import { InspectorComponent } from './lib/timeline/components/inspector/inspector.component';
 
 gsap.registerPlugin(MotionPathHelper, MotionPathPlugin);
 
@@ -107,10 +108,10 @@ gsap.registerPlugin({
 
 @Component({
   selector: 'app-root',
-  imports: [TimelineComponent, NgBondWorld],
+  imports: [TimelineComponent, NgBondWorld, InspectorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [NgBondService, SelectionManager, KeyManager, TimelineService],
+  providers: [NgBondService, SelectionManager, KeyManager, TimelineService, InspectorComponent],
 })
 export class AppComponent {
   title = 'demo';
@@ -124,7 +125,6 @@ export class AppComponent {
   timelineService = inject(TimelineService);
   svgEdit?: SVGEdit;
 
-  selectedTween: TimelineTween | null = null;
 
   constructor() {
     afterNextRender(() => {
@@ -136,8 +136,10 @@ export class AppComponent {
 
         this.svgEdit.pathChanged$.pipe(distinctUntilChanged()).subscribe((d) => {
           console.log('Path changed:', d);
-          if (this.selectedTween) {
-            this.selectedTween.motionPath = d;
+          if (this.timelineService.selectedTween()) {
+            if (this.timelineService.selectedTween()) {
+              this.timelineService.selectedTween()!.tween.motionPath = d;
+            }
             this.timelineService.createGsapTimeline();
           }
         });
@@ -154,17 +156,17 @@ export class AppComponent {
     }, 2);
   }
 
-  onTweenSelected(event: { tween: TimelineTween; track: any; group: any }) {
+  onTweenSelected(event: { tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }) {
     console.log('Tween selected:', event);
     // Handle the tween selection logic here
 
-    if (this.selectedTween === event.tween) {
-      this.selectedTween = null;
+    if (this.timelineService.selectedTween()?.tween === event.tween) {
+      this.timelineService.selectedTween.set(null);
       this.svgEdit?.clearAll();
       return;
     }
 
-    this.selectedTween = event.tween;
+    this.timelineService.selectedTween.set(event);
     this.svgEdit?.clearAll();
     if (this.svgEdit) {
       if (event.tween.motionPath) {

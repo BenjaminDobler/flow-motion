@@ -1,0 +1,19 @@
+<button (click)="timelineService.addComponent()">Add Component</button><br />
+<button (click)="timelineService.createGsapTimeline()">Update Timeline</button>
+
+@if (timelineService.selectedTween()) {
+
+    @let tween = timelineService.selectedTween()!.tween;
+  <div>
+    <h3>Selected Tween</h3>
+    {{ tween.easing }}
+    {{ tween.motionPath }}
+
+    <select (change)="easingChanged($any($event).target.value)">
+      @for (easing of easings; track $index) {
+        <option [selected]="tween.easing === easing">{{ easing }}</option>
+      }
+      <option></option>
+    </select>
+  </div>
+}

@@ -1,7 +1,7 @@
 import { inject, outputBinding, signal, ViewContainerRef } from '@angular/core';
 
 import { gsap } from 'gsap';
-import { Timeline } from '../model/timeline';
+import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from '../model/timeline';
 import { NgBondContainer, NgBondService } from '@richapps/ngx-bond';
 import { TestComponentComponent } from '../../../components/test-component/test-component.component';
 
@@ -9,6 +9,8 @@ export class TimelineService {
   private bondService = inject(NgBondService);
 
   worldHost!: ViewContainerRef;
+
+  selectedTween = signal<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup } | null>(null);
 
   animationTimeline: gsap.core.Timeline = gsap.timeline({
     onUpdate: () => {
@@ -88,10 +90,9 @@ export class TimelineService {
                 props = {
                   [`signal_` + track.name]: nextKeyframe.value,
                   duration: (nextKeyframe.time - keyframe.time) / 1000,
-                  ease: 'power1.inOut',
+                  ease: tween.easing || 'none',
                 };
                 if (tween.motionPath) {
-                  console.log('has motion path', tween.motionPath);
                   const proxyElement = {
                     x: element.x(),
                     y: element.y(),
@@ -104,9 +105,9 @@ export class TimelineService {
                       duration,
                       motionPath: tween.motionPath,
                       autoRotate: true,
+                      ease: tween.easing || 'none',
 
                       onUpdate: () => {
-                        console.log('on update', proxyElement.x, proxyElement.y, proxyElement.rotation);
                         element.x.set(proxyElement.x);
                         element.y.set(proxyElement.y);
                       },
@@ -201,4 +202,6 @@ export class TimelineService {
 
     this.createGsapTimeline();
   }
+
+  updateTween(tween: TimelineTween) {}
 }

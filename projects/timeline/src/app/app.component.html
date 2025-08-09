@@ -1,17 +1,18 @@
-<ng-bond-world style="height: 600px">
-  <ng-template #insert_slot></ng-template>
+<div  style="display: flex; flex-direction: row; height: 100vh; width: 100vw">
+  <div style="display: flex; flex-direction: column; flex-grow: 1; width: 100%;overflow: hidden;">
+    <ng-bond-world style="height: 100%">
+      <!-- insert slot for dynamically created components -->
+      <ng-template #insert_slot></ng-template>
+      <!-- motion path editor -->
+      <svg #svg_canvas width="1400px" height="600px" xmlns="http://www.w3.org/2000/svg"></svg>
+    </ng-bond-world>
+    <timeline (tweenSelected)="onTweenSelected($event)"></timeline>
 
-  <svg #svg_canvas  width="1400px" height="600px" xmlns="http://www.w3.org/2000/svg">
-
-
-    <!-- <path id="myp" fill="none" preventselection="true"  stroke="#fff" d="M207 126 C207 126 393 76 458 211 C523 346 497 463 442 508 C387 553 149 545 149 545"></path> -->
-  </svg>
-</ng-bond-world>
-<timeline (tweenSelected)="onTweenSelected($event)"></timeline>
-
-<button (click)="timelineService.addComponent()">Add Component</button>
-<button (click)="timelineService.createGsapTimeline()">Create Timeline</button>
-
+    <!-- <button (click)="timelineService.addComponent()">Add Component</button>
+<button (click)="timelineService.createGsapTimeline()">Create Timeline</button> -->
+  </div>
+  <inspector></inspector>
+</div>
 <!-- <div style="position:absolute; left: 0; top:0; width: 20px; height: 20px;background-color: blue;" appTestit [x]="200" [y]="100"></div>
 
 
