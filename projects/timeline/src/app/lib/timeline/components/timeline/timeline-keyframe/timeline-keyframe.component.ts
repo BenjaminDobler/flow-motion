@@ -1,6 +1,7 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { CdkContextMenuTrigger, CdkMenuItem, CdkMenu } from '@angular/cdk/menu';
 import { Timeline, TimelineKeyframe } from '../../../model/timeline';
+import { TimelineService } from '../../../services/timeline.service';
 
 @Component({
   selector: 'timeline-keyframe',
@@ -13,6 +14,8 @@ import { Timeline, TimelineKeyframe } from '../../../model/timeline';
   },
 })
 export class TimelineKeyframeComponent {
+  timelineService = inject(TimelineService);
+
   keyframe = input<TimelineKeyframe>();
   timeline = input<Timeline>();
   dragging = signal<boolean>(false);
@@ -20,7 +23,7 @@ export class TimelineKeyframeComponent {
   tween = output<TimelineKeyframe>();
 
   time = computed(() => {
-    const mpp = this.timeline()?.millisecondsPerPixel || 1;
+    const mpp = this.timelineService.millisecondsPerPixel() || 1;
     return this.keyframe() ? this.keyframe()!.time : 0;
   });
 
@@ -32,8 +35,10 @@ export class TimelineKeyframeComponent {
 
   onDragStart() {
     this.dragging.set(true);
+    this.timelineService.setScrubbing(true);
   }
   onDragEnd() {
     this.dragging.set(false);
+    this.timelineService.setScrubbing(false);
   }
 }

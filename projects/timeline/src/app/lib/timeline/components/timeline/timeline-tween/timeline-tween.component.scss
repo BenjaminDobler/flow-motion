@@ -11,10 +11,10 @@
 .bar {
   pointer-events: none;
   position: absolute;
-  height: 10px;
+  height: calc(var(--track-height) * 0.5);
   background-color: #C9A510;
   left: 0;
-  top: 5px;
+  top: calc((var(--track-height) - var(--track-height) * 0.5)*0.5);
   left: 7px;
   right: 7px;
   border-radius: 5px;

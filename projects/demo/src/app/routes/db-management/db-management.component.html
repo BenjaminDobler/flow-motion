@@ -25,7 +25,7 @@
 <div style="display: flex; height: 100%">
   <ng-bond-world [animationBubbleCount]="inspector.animationBubbleCount()" [animationBubbleDuration]="inspector.animationBubbleDuration()">
     @for (table of tables; track $index) {
-      <div class="card" [bondcontainer]="table.name">
+      <div class="card" [bondcontainer]="table.name" [x]="200" [y]="200">
         <div class="card-header">
           <div class="tx">
             <span class="tx-muted">/</span><span>{{ table.name }}</span>
@@ -36,8 +36,8 @@
             <div class="list-item">
               <span>{{ field.name }}</span>
               <span class="tx-muted">{{ field.type }}</span>
-              <div class="connection-indicator left" [bondproperty]="`${table.name}_${field.name}_left`"></div>
-              <div class="connection-indicator right" [bondproperty]="`${table.name}_${field.name}_right`"></div>
+              <div class="connection-indicator left" positioning="none" [draggable]="false" [bondproperty]="`${table.name}_${field.name}_left`"></div>
+              <div class="connection-indicator right" positioning="none" [draggable]="false" [bondproperty]="`${table.name}_${field.name}_right`"></div>
             </div>
           }
         </div>

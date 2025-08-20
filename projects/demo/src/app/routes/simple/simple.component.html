@@ -1,6 +1,6 @@
 <div style="display: flex; height: 100%">
   <ng-bond-world>
-    <div bondcontainer="container1" class="drag-container" positioning="transform" style="transform: translate(200px,200px)" [x]="200" [y]="200">
+    <!-- <div bondcontainer="container1" class="drag-container" positioning="transform" style="transform: translate(200px,200px)" [x]="200" [y]="200">
       <div
         bondproperty="property1"
         bondcolor="#00ff00"
@@ -16,10 +16,13 @@
         class="drag-prop drag-child"
       ></div>
       <div bondproperty="property3" class="drag-prop drag-child"></div>
-    </div>
+    </div> -->
 
-    <div bondcontainer="container2" class="drag-container"  [x]="200" [y]="200">
-      <div
+        <div bondcontainer="container1" class="drag-container" style="width: 100px;height: 100px" [x]="700" [y]="200"></div>
+
+
+    <div bondcontainer="container2" class="drag-container" style="width: 600px;height: 600px" [x]="200" [y]="200">
+      <!-- <div
         bondproperty="property4"
         style="top: 30px; right: 0"
         class="drag-prop drag-child"
@@ -33,22 +36,20 @@
         bondproperty="property6"
         style="right: 0"
         class="drag-prop drag-child"
-      ></div>
+      ></div> -->
 
-      <div
-        bondcontainer="inner-container"
-        class="drag-container"
-        style="width: 100px; height: 100px"
-      >
-        <div
+      <div bondcontainer="inner-container" class="drag-container" [y]="100" [x]="100" style="width: 300px; height: 300px">
+        <!-- <div
           bondproperty="innerprop"
           style="top: 50px; right: 50px"
           class="drag-prop drag-child"
-        ></div>
+        ></div> -->
+
+        <div bondcontainer="inner-inner-container" class="drag-container" style="width: 100px; height: 100px"></div>
       </div>
     </div>
 
-    <div bondcontainer="container3" class="drag-container">
+    <!-- <div bondcontainer="container3" class="drag-container">
       <div
         bondproperty="property7"
         style="top: 30px"
@@ -67,15 +68,14 @@
       <div bondproperty="p2" class="drag-prop drag-child right"></div>
       <div bondproperty="p3" class="drag-prop drag-child top"></div>
       <div bondproperty="p4" class="drag-prop drag-child bottom"></div>
-    </div>
+    </div> -->
 
-    <app-property-container></app-property-container>
+    <!-- <app-property-container></app-property-container> -->
   </ng-bond-world>
 
+  <bond-inspector #inspector></bond-inspector>
 
-    <bond-inspector #inspector></bond-inspector>
-
-<!--   
+  <!--   
   <div class="sidebar" style="width: 400px;">
     <div>
       <h3>Targets</h3>

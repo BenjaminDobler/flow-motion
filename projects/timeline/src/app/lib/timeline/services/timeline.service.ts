@@ -4,11 +4,14 @@ import { gsap } from 'gsap';
 import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from '../model/timeline';
 import { NgBondContainer, NgBondService } from '@richapps/ngx-bond';
 import { TestComponentComponent } from '../../../components/test-component/test-component.component';
+import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
+import { ComponentFactory } from './component.factory';
 
 export class TimelineService {
   private bondService = inject(NgBondService);
 
-  worldHost!: ViewContainerRef;
+  componentFactory = inject(ComponentFactory);
+
 
   selectedTween = signal<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup } | null>(null);
 
@@ -18,10 +21,15 @@ export class TimelineService {
       if (this.animationTimeline.isActive()) {
         this.playing.set(true);
       } else {
-        this.playing.set(false);
+        setTimeout(() => {
+          this.playing.set(false);
+        }, 100);
       }
     },
   });
+
+  duration = signal(15000); // Default duration in milliseconds
+  millisecondsPerPixel = signal(10); // Default milliseconds per pixel
 
   playing = signal(false);
 
@@ -29,12 +37,24 @@ export class TimelineService {
   scrubbing = signal(false);
 
   timeline = signal<Timeline>({
-    millisecondsPerPixel: 10,
-    maxTime: 10000, // Optional, can be omitted if not needed
     groups: [],
   });
 
-  constructor() {}
+  constructor() {
+    this.componentFactory.propertyChanged.subscribe(({ id, property, value }) => {
+      this.propertyChanged(id, property, value);
+    });
+
+    this.componentFactory.componentAdded.subscribe((id) => {
+      this.timeline.update((currentTimeline) => {
+        currentTimeline.groups.push({
+          name: id,
+          tracks: [],
+        });
+        return { ...currentTimeline };
+      });
+    });
+  }
 
   setPosition(pos: number) {
     //this.animationTimeline.play(pos/1000);
@@ -44,7 +64,13 @@ export class TimelineService {
   }
 
   setScrubbing(scrubbing: boolean) {
-    this.scrubbing.set(scrubbing);
+    if (!scrubbing) {
+      setTimeout(() => {
+        this.scrubbing.set(scrubbing);
+      }, 100);
+    } else {
+      this.scrubbing.set(scrubbing);
+    }
   }
 
   play() {
@@ -53,18 +79,24 @@ export class TimelineService {
   }
 
   pause() {
+    this.scrubbing.set(true);
+
     this.animationTimeline.pause();
     this.playing.set(false);
+    setTimeout(() => {
+      this.scrubbing.set(false);
+    }, 100);
   }
 
   stop() {
+    this.scrubbing.set(true);
     this.animationTimeline.pause(0);
     this.playing.set(false);
+    setTimeout(() => {
+      this.scrubbing.set(false);
+    }, 100);
   }
 
-  setWorldHost(worldHost: any) {
-    this.worldHost = worldHost;
-  }
 
   createGsapTimeline() {
     const t = this.timeline();
@@ -75,27 +107,39 @@ export class TimelineService {
 
     t.groups.forEach((group) => {
       const element = this.bondService.getComponentById(group.name);
+      const e = this.componentFactory.containerElementMap.get(element as NgBondContainer);
+
       if (element) {
         group.tracks.forEach((track) => {
+          const targetDirective = e?.propertyDirectiveMap.get(track.name);
+          const prop = targetDirective.inspectableProperties.find((p: any) => p.setterName === track.name);
+          const isSignal = prop?.isSignal || false;
+          const animationProp = isSignal ? `signal_${track.name}` : track.name;
+
           track.keyframes.forEach((keyframe, index) => {
-            timeline.set(element, { [`signal_` + track.name]: keyframe.value }, keyframe.time / 1000);
+            timeline.set(targetDirective, { [animationProp]: keyframe.value }, keyframe.time / 1000);
 
             if (index < track.keyframes.length - 1) {
               const nextKeyframe = track.keyframes[index + 1];
-              console.log('Creating GSAP timeline for track:', track.name, 'at keyframe:', keyframe);
               const tween = track.tweens.find((tween) => tween.start === keyframe);
               let props: any;
               if (tween) {
                 const duration = (nextKeyframe.time - keyframe.time) / 1000;
                 props = {
-                  [`signal_` + track.name]: nextKeyframe.value,
                   duration: (nextKeyframe.time - keyframe.time) / 1000,
                   ease: tween.easing || 'none',
                 };
+
+                if (isSignal) {
+                  props[`signal_${track.name}`] = nextKeyframe.value;
+                } else {
+                  props[track.name] = nextKeyframe.value;
+                }
+
                 if (tween.motionPath) {
                   const proxyElement = {
-                    x: element.x(),
-                    y: element.y(),
+                    x: targetDirective.x(),
+                    y: targetDirective.y(),
                     rotation: 0,
                   };
 
@@ -108,17 +152,15 @@ export class TimelineService {
                       ease: tween.easing || 'none',
 
                       onUpdate: () => {
-                        element.x.set(proxyElement.x);
-                        element.y.set(proxyElement.y);
+                        targetDirective.x.set(proxyElement.x);
+                        targetDirective.y.set(proxyElement.y);
                       },
                     },
                     keyframe.time / 1000
                   );
                 } else {
-                  timeline.to(element, props, keyframe.time / 1000);
+                  timeline.to(targetDirective, props, keyframe.time / 1000);
                 }
-
-                console.log('props:', props);
               }
             }
           });
@@ -131,45 +173,10 @@ export class TimelineService {
     // timeline.play();
   }
 
-  componentCount = 0;
-  addComponent(componentClass: { new (...args: any[]): TestComponentComponent } = TestComponentComponent, inputs: any = {}) {
-    const id = 'some-id-' + this.componentCount;
-    this.componentCount++;
-    const componentRef = this.worldHost.createComponent(componentClass, {
-      directives: [
-        {
-          type: NgBondContainer,
-          bindings: [
-            outputBinding('positionUpdated', (evt: any) => {
-              this.propertyChanged(id, 'position', evt);
-            }),
-            outputBinding('widthUpdated', (evt: any) => {
-              this.propertyChanged(id, 'width', evt);
-            }),
-            outputBinding('heightUpdated', (evt: any) => {
-              this.propertyChanged(id, 'height', evt);
-            }),
-          ],
-        },
-      ],
-    });
-    componentRef.setInput('bondcontainer', id);
 
-    for(const key in inputs) {
-      componentRef.setInput(key, inputs[key]);
-    }
-
-    this.timeline.update((currentTimeline) => {
-      currentTimeline.groups.push({
-        name: id,
-        tracks: [],
-      });
-      return { ...currentTimeline };
-    });
-  }
 
   propertyChanged(id: string, property: string, value: any) {
-    if (this.animationTimeline?.isActive() || this.scrubbing()) {
+    if (this.playing() || this.scrubbing()) {
       return;
     }
     // Handle the property change logic here

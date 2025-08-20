@@ -7,7 +7,7 @@
 
 .keyframe {
   width: 10px;
-  height: 20px;
+  height: var(--track-height);
   left: -10px;
   position: absolute;
   opacity: 0.8;

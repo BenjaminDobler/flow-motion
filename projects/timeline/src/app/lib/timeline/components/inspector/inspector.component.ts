@@ -1,15 +1,18 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { TimelineService } from '../../services/timeline.service';
+import { SelectionManager } from '@richapps/ngx-bond';
+import { FormsModule } from '@angular/forms';
+import { EditablePathComponent } from '../../../../components/editable-path/editable-path.component';
 
 @Component({
   selector: 'inspector',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
 })
 export class InspectorComponent {
   timelineService = inject(TimelineService);
-
+  selectionManager = inject(SelectionManager);
 
   easings = [
     'linear',
@@ -29,22 +32,33 @@ export class InspectorComponent {
     'bounce.out',
     'bounce.inOut',
     'elastic.in',
-    'elastic.out',
+    'elastic.out(1.7)',
     'elastic.inOut',
-    'back.in',
-    'back.out',
-    'back.inOut',
+    'back.in(1.7)',
+    'back.out(1.7)',
+    'back.inOut(1.7)',
     'rough',
     'slow',
     'steps',
     'expo.in',
-  ]
+  ];
 
   easingChanged(easing: string) {
     if (this.timelineService.selectedTween()) {
-      console.log('Easing changed:', easing);
       this.timelineService.selectedTween()!.tween.easing = easing;
       this.timelineService.createGsapTimeline();
     }
+  }
+
+  getDirectives(element: any) {
+    return this.timelineService.componentFactory.containerElementMap.get(element)?.directives;
+  }
+
+  getComponentInstance(element: any) {
+    return this.timelineService.componentFactory.containerElementMap.get(element)?.instance;
+  }
+
+  addPathComponent() {
+    this.timelineService.componentFactory.addComponent(EditablePathComponent);
   }
 }

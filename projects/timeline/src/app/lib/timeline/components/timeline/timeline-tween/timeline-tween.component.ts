@@ -1,8 +1,9 @@
-import { Component, computed, effect, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Timeline, TimelineTween } from '../../../model/timeline';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, Observable, of, switchMap, timer } from 'rxjs';
 import { NgBondContainer } from '@richapps/ngx-bond';
+import { TimelineService } from '../../../services/timeline.service';
 
 @Component({
   selector: 'timeline-tween',
@@ -15,6 +16,8 @@ import { NgBondContainer } from '@richapps/ngx-bond';
   },
 })
 export class TimelineTweenComponent extends NgBondContainer {
+
+  timelineService = inject(TimelineService);
   tween = input<TimelineTween>();
   timeline = input<Timeline>();
   dragging = signal<boolean>(false);
@@ -44,7 +47,7 @@ export class TimelineTweenComponent extends NgBondContainer {
     effect(() => {
       const start = this.tween()?.start.time || 0;
       const end = this.tween()?.end.time || 0;
-      const mpp = this.timeline()?.millisecondsPerPixel || 1;
+      const mpp = this.timelineService.millisecondsPerPixel() || 1;
       const w = (end - start) / mpp;
       this.setWidth(w);
 

@@ -5,8 +5,8 @@ import { NgBondContainer } from '../components/ng-bond-container/ng-bond-contain
 
 export class SelectionManager {
   keyManager: KeyManager = inject(KeyManager);
-  selectionTargets = signal<(NgBondContainer | NgBondProperty)[]>([]);
-  selectionMap = new Map<NgBondContainer | NgBondProperty, boolean>();
+  selectionTargets = signal<(NgBondContainer)[]>([]);
+  selectionMap = new Map<NgBondContainer, boolean>();
 
   selectedGroup = computed(() => {
     const selectionTargets = this.selectionTargets();
@@ -23,7 +23,13 @@ export class SelectionManager {
     let yMax = first.gY() + first.height();
 
     this.selectionTargets().forEach((target) => {
-      const bounds = target.bounds;
+      // const bounds = 'globalBounds' in target && target.globalBounds
+      //   ? target.globalBounds
+      //   : target.bounds;
+      // console.log('target bounds: ', bounds);
+
+      const bounds = target.globalBounds();
+
       xMin = Math.min(xMin, bounds.left);
       yMin = Math.min(yMin, bounds.top);
       xMax = Math.max(xMax, bounds.left + bounds.width);
@@ -40,7 +46,7 @@ export class SelectionManager {
 
   constructor() {}
 
-  setAll(targets: (NgBondContainer | NgBondProperty)[]) {
+  setAll(targets: (NgBondContainer)[]) {
     this.selectionTargets.set(targets);
     this.selectionMap.clear();
     targets.forEach((target) => {
@@ -48,7 +54,7 @@ export class SelectionManager {
     });
   }
 
-  select(target: NgBondContainer | NgBondProperty) {
+  select(target: NgBondContainer) {
     if (this.selectionMap.has(target)) {
       if (!this.keyManager.keydownMap.has('Shift')) {
         this.selectionTargets().forEach((t) => {
@@ -73,7 +79,7 @@ export class SelectionManager {
     }
   }
 
-  unselect(target: NgBondContainer | NgBondProperty) {
+  unselect(target: NgBondContainer) {
     if (this.selectionMap.has(target)) {
       this.selectionMap.delete(target);
       this.selectionTargets.update((targets) => targets.filter((x) => x !== target));
@@ -84,7 +90,7 @@ export class SelectionManager {
     this.selectionTargets().forEach((t) => this.unselect(t));
   }
 
-  isSelected(target: NgBondContainer | NgBondProperty) {
+  isSelected(target: NgBondContainer) {
     return this.selectionMap.get(target);
   }
 
@@ -131,7 +137,7 @@ export class SelectionManager {
       if (target.type === 'container') {
         (target as NgBondContainer).moveBy(minX - target.gX(), 0);
       } else if (target.type === 'property') {
-        target.gX.set(minX);
+       // target.gX.set(minX);
       }
     });
   }
@@ -146,9 +152,9 @@ export class SelectionManager {
       if (target.type === 'container') {
         (target as NgBondContainer).moveBy(maxX - target.gX(), 0);
       } else if (target.type === 'property') {
-        target.gX.update((x) => {
-          return maxX - target.width() + x;
-        });
+        // target.gX.update((x) => {
+        //   return maxX - target.width() + x;
+        // });
       }
     });
   }
@@ -162,7 +168,7 @@ export class SelectionManager {
       if (target.type === 'container') {
         (target as NgBondContainer).moveBy(0, minY - target.gY());
       } else if (target.type === 'property') {
-        target.gY.set(minY);
+        //target.gY.set(minY);
       }
     });
   }
@@ -176,7 +182,7 @@ export class SelectionManager {
       if (target.type === 'container') {
         (target as NgBondContainer).moveBy(0, maxY - target.gY());
       } else if (target.type === 'property') {
-        target.gY.set(maxY);
+        //target.gY.set(maxY);
       }
     });
   }

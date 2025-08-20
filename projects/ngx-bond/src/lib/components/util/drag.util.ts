@@ -1,16 +1,17 @@
-import { fromEvent, race, last, map, share, startWith, switchMap, take, takeUntil, tap, filter } from 'rxjs';
+import { fromEvent, race, last, map, share, startWith, switchMap, take, takeUntil, tap, filter, BehaviorSubject, combineLatest, NEVER } from 'rxjs';
 
 const mouseMove$ = fromEvent<PointerEvent>(document, 'pointermove').pipe(share());
 const mouseUp$ = fromEvent<PointerEvent>(document, 'pointerup').pipe(share());
 
-export function makeDraggable(element: HTMLElement) {
-  const mouseDown$ = fromEvent<PointerEvent>(element, 'pointerdown').pipe(
+export function makeDraggable(element: HTMLElement, disabled$ = new BehaviorSubject<boolean>(false)) {
+  const mouseDown$ =  fromEvent<PointerEvent>(element, 'pointerdown').pipe(
     filter((e: PointerEvent)=>{
       console.log('pointer down',(e.target as any).attributes);
       return !(e.target as any).attributes.preventselection;
     }),
     tap((e: PointerEvent) => {
       if (!(e.target instanceof HTMLInputElement)) {
+        console.log('pointer down', e.target);
         console.log('prevent me');
         e.preventDefault();
         e.stopPropagation();
@@ -92,5 +93,14 @@ export function makeDraggable(element: HTMLElement) {
   // Create a click event that is emitted when the mouse is released without moving
   const click$ = mouseDown$.pipe(switchMap((start) => mouseUp$.pipe(takeUntil(mouseMove$))));
 
-  return { dragStart$, dragMove$, dragEnd$, click$: click$ };
+  return { dragStart$: disabled$.pipe(switchMap((d)=>{
+    if(!d) return dragStart$;
+    return NEVER;
+  })), dragMove$: disabled$.pipe(switchMap((d)=>{
+    if(!d) return dragMove$;
+    return NEVER;
+  })), dragEnd$: disabled$.pipe(switchMap((d)=>{
+    if(!d) return dragEnd$;
+    return NEVER;
+  })), click$: click$ };
 }

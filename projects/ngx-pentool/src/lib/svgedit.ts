@@ -269,6 +269,10 @@ export class SVGEdit {
         tap((downEvent: MouseEvent) => {
           const lastPoint = this.points[this.points.length - 1];
           moves = 0;
+          if (this.svg) {
+            parentRect = this.svg?.getBoundingClientRect();
+          }
+
           downPoint = new Point(this.svg, 'point', () => this.draw(), this.positionUpdated.bind(this), this.onPointClick.bind(this));
           downPoint.x = downEvent.clientX - parentRect.left;
           downPoint.y = downEvent.clientY - parentRect.top;

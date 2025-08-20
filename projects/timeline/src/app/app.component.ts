@@ -1,23 +1,15 @@
 import {
   afterNextRender,
   Component,
-  effect,
   ElementRef,
-  EnvironmentInjector,
   inject,
-  inputBinding,
-  output,
-  outputBinding,
-  runInInjectionContext,
-  signal,
   viewChild,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { TimelineComponent } from './lib/timeline/components/timeline/timeline.component';
-import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from './lib/timeline/model/timeline';
-import { TestComponentComponent } from './components/test-component/test-component.component';
-import { KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+import { TimelineGroup, TimelineTrack, TimelineTween } from './lib/timeline/model/timeline';
+import { KeyManager, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 import { TimelineService } from './lib/timeline/services/timeline.service';
 import { gsap } from 'gsap';
 import { SVGEdit } from '@richapps/ngx-pentool';
@@ -27,10 +19,11 @@ import { MotionPathHelper } from 'gsap/MotionPathHelper';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { InspectorComponent } from './lib/timeline/components/inspector/inspector.component';
 import { ImageComponent } from './components/image/image.component';
+import { ComponentFactory } from './lib/timeline/services/component.factory';
 
 gsap.registerPlugin(MotionPathHelper, MotionPathPlugin);
 
-const props = ['x', 'y', 'width', 'height'];
+const props = ['x', 'y', 'width', 'height', 'borderRadius', 'backgroundColor', 'pathPosition'];
 
 props.forEach((prop) => {
   gsap.registerPlugin({
@@ -45,44 +38,10 @@ props.forEach((prop) => {
       data.interp = gsap.utils.interpolate(currentValue, endValue);
     },
     render(progress: any, data: any) {
-      console.log('rendering', prop, data.interp(progress));
       data.target[prop].set(data.interp(progress));
     },
   });
 });
-
-// gsap.registerPlugin({
-//   name: `x`,
-//   get(target: any) {
-//     return target.x();
-//   },
-//   init(target: any, endValue: any, b: any) {
-//     const currentValue = target.x() | 0;
-//     const data: any = this;
-//     data.target = target;
-//     data.interp = gsap.utils.interpolate(currentValue, endValue);
-//   },
-//   render(progress: any, data: any) {
-//     console.log('render x', progress, data.interp(progress));
-//     data.target.x.set(data.interp(progress));
-//   },
-// });
-
-// gsap.registerPlugin({
-//   name: `y`,
-//   get(target: any) {
-//     return target.y();
-//   },
-//   init(target: any, endValue: any, b: any) {
-//     const currentValue = target.y() | 0;
-//     const data: any = this;
-//     data.target = target;
-//     data.interp = gsap.utils.interpolate(currentValue, endValue);
-//   },
-//   render(progress: any, data: any) {
-//     data.target.y.set(data.interp(progress));
-//   },
-// });
 
 gsap.registerPlugin({
   name: `signal_position`,
@@ -112,7 +71,7 @@ gsap.registerPlugin({
   imports: [TimelineComponent, NgBondWorld, InspectorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [NgBondService, SelectionManager, KeyManager, TimelineService, InspectorComponent],
+  providers: [NgBondService, SelectionManager, KeyManager, TimelineService, InspectorComponent, ComponentFactory, SelectionManager],
   host: {
     '(drop)': 'onDrop($event)',
     '(dragover)': '$event.preventDefault()',
@@ -137,14 +96,13 @@ export class AppComponent {
 
   constructor() {
     afterNextRender(() => {
-      this.timelineService.setWorldHost(this.worldHost);
+      this.timelineService.componentFactory.setWorldHost(this.worldHost);
       if (this.svgCanvas()) {
         this.svgEdit = new SVGEdit();
         this.svgEdit.svg = this.svgCanvas()?.nativeElement;
         this.svgEdit.init();
 
         this.svgEdit.pathChanged$.pipe(distinctUntilChanged()).subscribe((d) => {
-          console.log('Path changed:', d);
           if (this.timelineService.selectedTween()) {
             if (this.timelineService.selectedTween()) {
               this.timelineService.selectedTween()!.tween.motionPath = d;
@@ -155,17 +113,6 @@ export class AppComponent {
       }
     });
 
-    const animationTimeline = gsap.timeline();
-    let animatedObject = { x: 0, y: 0 };
-    animationTimeline.to(
-      animatedObject,
-      {
-        duration: 0.5,
-        motionPath: 'M222.15625 115.41015625 C446.046875 369.92304687499995 620.19453125 464.703125 802.6484375 431.34375',
-        onUpdate: () => console.log('YO', animatedObject),
-      },
-      2
-    );
   }
 
   onTweenSelected(event: { tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }) {
@@ -205,28 +152,15 @@ export class AppComponent {
       const image = new Image();
       image.src = reader.result as string;
 
-      this.timelineService.addComponent(ImageComponent, {
+      this.timelineService.componentFactory.addComponent(ImageComponent, {
         src:reader.result as string
 
       });
-
 
       image.onload = () => {
         console.log('Image loaded', image);
       };
     };
 
-    // reader.onload = () => {
-    //   const image = new Image();
-    //   image.src = reader.result;
-    //   image.onload = () => {
-    //     const canvas = document.querySelector('canvas');
-    //     canvas.width = image.width;
-    //     canvas.height = image.height;
-    //     const context = canvas.getContext('2d');
-    //     context.filter = 'blur(10px)';
-    //     context.drawImage(image, 0, 0);
-    //   };
-    // };
   }
 }

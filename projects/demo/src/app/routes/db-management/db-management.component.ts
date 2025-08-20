@@ -39,7 +39,7 @@ const dbData = [
 
 @Component({
   selector: 'app-db-management',
-  imports: [NgBondContainer, NgBondWorld, NgBondProperty, InspectorComponent],
+  imports: [NgBondContainer, NgBondWorld, InspectorComponent, NgBondProperty],
   templateUrl: './db-management.component.html',
   styleUrl: './db-management.component.scss',
   providers: [NgBondService, SelectionManager, KeyManager],

@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { ElementInspectorComponent } from './element-inspector/element-inspector.component';
 import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager } from '@richapps/ngx-bond';
+import { TreeChildComponent } from './tree-child/tree-child.component';
 
-type tabType = 'properties' | 'children' | 'selection' | 'element-inspector';
+type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree';
 type Tab = {
   label: string;
   value: tabType;
@@ -13,7 +14,7 @@ type Tab = {
 
 @Component({
   selector: 'bond-inspector',
-  imports: [FormsModule, DecimalPipe, ElementInspectorComponent],
+  imports: [FormsModule, DecimalPipe, ElementInspectorComponent, TreeChildComponent],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
 })
@@ -27,6 +28,7 @@ export class InspectorComponent {
     { label: 'Children', value: 'children' },
     { label: 'Selection', value: 'selection' },
     { label: 'Element', value: 'element-inspector' },
+    { label: 'Child Tree', value: 'child-tree' },
   ]);
 
   animationBubbleCount = signal(5);
@@ -41,10 +43,19 @@ export class InspectorComponent {
 
   updateAnimateLink(link: Link, evt: Event) {
     const target = evt.target as HTMLInputElement;
-    this.bondService.getBrondPropertyById(link().inputId).animatedLink.set(target.checked);
+    const container = this.bondService.getBrondPropertyById(link().inputId);
+
+    if (!container) {
+      console.warn(`No container found for link inputId: ${link().inputId}`);
+      return;
+    }
+
+    const property1 = container.injector.get(NgBondProperty);
+
+    property1.animatedLink.set(target.checked);
   }
 
-  toggleSelection(target: NgBondContainer | NgBondProperty) {
+  toggleSelection(target: NgBondContainer) {
     if (this.selectionManager.isSelected(target)) {
       this.selectionManager.unselect(target);
     } else {

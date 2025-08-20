@@ -1,26 +1,53 @@
-import { Directive, ElementRef, inject, input, model, output, Signal, signal, OnInit, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, inject, input, model, output, Signal, signal, OnInit, OnDestroy, computed, forwardRef } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
-
 export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
 
 @Directive({
   selector: '[bondproperty]',
   standalone: true,
   exportAs: 'bondproperty',
+  hostDirectives: [{
+    directive: forwardRef(() => NgBondContainer),
+    inputs: ['draggable', 'bondcontainer', 'positioning', 'bondcontainer:bondproperty'],
+  }],
   host: {
     '[class.has-link]': 'this.hasLink()',
     '[style.touchAction]': "'none'",
+    '[positioning]': "'none'",
+    '[draggable]': 'false', 
   },
 })
-export class NgBondProperty implements OnInit, OnDestroy {
+export class NgBondProperty {
+  get height() {
+    return this.container?.height || signal(0);
+  }
+
+  get width() {
+    return this.container?.width || signal(0);
+  }
+
+  get gY() {
+    return this.container?.gY || signal(0);
+  }
+
+  get gX() {
+    return this.container?.gX || signal(0);
+  }
+
+  get x() {
+    return this.container?.x || signal(0);
+  }
+
+  get y() {
+    return this.container?.y || signal(0);
+  }
+
   hasLink = signal<boolean>(false);
   isStartOfLink = signal<boolean>(false);
   isEndOfLink = signal<boolean>(false);
-  el: ElementRef = inject(ElementRef);
 
   id = input<string>('', { alias: 'bondproperty' });
 
@@ -28,34 +55,24 @@ export class NgBondProperty implements OnInit, OnDestroy {
   bondstrokewidth = input<number>();
 
   animatedLink = model<boolean>(false);
-  // Positions within the parent
-  x = model(0);
-  y = model(0);
 
-  width = model(0);
-  height = model(0);
+  ngBondService = inject(NgBondService);
+  el: ElementRef<HTMLElement> = inject(ElementRef);
+  // Positions within the parent
 
   // global positions within the bond world
-  gX = model(0);
-  gY = model(0);
-
-  positionUpdated = output<{ x: number; y: number }>();
-  widthUpdated = output<number>();
-  heightUpdated = output<number>();
 
   public type = 'propertys';
-
-  public resizeOffset = 5;
-
-  ngBondService: NgBondService = inject(NgBondService);
-
-  dragWorld: NgBondWorld | null = inject(NgBondWorld, { optional: true });
 
   container? = inject(NgBondContainer, { optional: true });
 
   constructor() {
-    const itemElement = this.el.nativeElement;
-    const drag = makeDraggable(itemElement);
+    console.log('NgBondProperty initialized:', this.id(), this.el.nativeElement);
+    const drag = makeDraggable(this.el.nativeElement);
+
+    if (!this.ngBondService) {
+      return;
+    }
 
     const dragPreview = {
       gX: signal<number>(0),
@@ -64,25 +81,37 @@ export class NgBondProperty implements OnInit, OnDestroy {
       height: signal(0),
     };
 
-    const parentElement = this.parent();
-    let parentRect = parentElement.getBoundingClientRect();
+    let parentRect = {
+      width: this.container?.parentContainer()?.width() ?? 0,
+      height: this.container?.parentContainer()?.height() ?? 0,
+      left: this.container?.parentContainer()?.gX() ?? 0,
+      top: this.container?.parentContainer()?.gY() ?? 0,
+    };
+
     let worldRect = parentRect;
     let currentPreview: Signal<Link> | null;
     let isFirstMove = true;
 
     drag.dragStart$.pipe(takeUntilDestroyed()).subscribe(() => {
-      parentRect = parentElement.getBoundingClientRect();
+      parentRect = parentRect = {
+        width: this.container?.parentContainer()?.width() ?? 0,
+        height: this.container?.parentContainer()?.height() ?? 0,
+        left: this.container?.parentContainer()?.gX() ?? 0,
+        top: this.container?.parentContainer()?.gY() ?? 0,
+      };
       worldRect = parentRect;
       isFirstMove = true;
-      if (this.dragWorld) {
-        const worldEl = this.dragWorld.el.nativeElement;
+      if (this.container?.dragWorld) {
+        const worldEl = this.container.dragWorld.el.nativeElement;
         worldRect = worldEl.getBoundingClientRect();
       }
     });
 
     drag.dragMove$.subscribe((move) => {
+      console.log('Drag move:', this.id());
       if (isFirstMove && this.id()) {
         this.ngBondService.currentDragSource = this;
+        console.log('Creating drag preview for:', this.id());
         currentPreview = this.ngBondService.createLink(this.id(), dragPreview) as any;
         isFirstMove = false;
       }
@@ -113,7 +142,13 @@ export class NgBondProperty implements OnInit, OnDestroy {
   }
 
   position(): LinkPosition {
-    const parentRect = this.parent().getBoundingClientRect();
+    //const parentRect = this.parent().getBoundingClientRect();
+
+    const parentRect = {
+      width: this.container?.parentContainer()?.width() ?? 0,
+      height: this.container?.parentContainer()?.height() ?? 0,
+    };
+
     const centerX = parentRect.width / 2;
     const centerY = parentRect.height / 2;
     const angleDeg = (Math.atan2(centerY - this.y(), centerX - this.x()) * 180) / Math.PI;
@@ -132,67 +167,67 @@ export class NgBondProperty implements OnInit, OnDestroy {
     return position;
   }
 
-  updatePosition() {
-    const itemElement = this.el?.nativeElement;
-    let worldRect = { left: 0, top: 0 };
-    if (this.dragWorld) {
-      const worldElement = this.dragWorld.el.nativeElement;
-      worldRect = worldElement.getBoundingClientRect();
-    }
+  // updatePosition() {
+  //   const itemElement = this.el?.nativeElement;
+  //   let worldRect = { left: 0, top: 0 };
+  //   if (this.dragWorld) {
+  //     const worldElement = this.dragWorld.el.nativeElement;
+  //     worldRect = worldElement.getBoundingClientRect();
+  //   }
 
-    const parentRect = this.parent().getBoundingClientRect();
-    const itemRect = itemElement.getBoundingClientRect();
+  //   const parentRect = this.parent().getBoundingClientRect();
+  //   const itemRect = itemElement.getBoundingClientRect();
 
-    this.bounds.height = itemRect.height;
-    this.bounds.width = itemRect.width;
-    this.bounds.left = itemRect.left - parentRect.left;
-    this.bounds.top = itemRect.top - parentRect.top;
-    this.width.set(itemRect.width);
-    this.height.set(itemRect.height);
-    const x = itemRect.left - parentRect.left;
-    const y = itemRect.top - parentRect.top;
-    this.x.set(x);
-    this.y.set(y);
+  //   // this.bounds.height = itemRect.height;
+  //   // this.bounds.width = itemRect.width;
+  //   // this.bounds.left = itemRect.left - parentRect.left;
+  //   // this.bounds.top = itemRect.top - parentRect.top;
+  //   this.width.set(itemRect.width);
+  //   this.height.set(itemRect.height);
+  //   const x = itemRect.left - parentRect.left;
+  //   const y = itemRect.top - parentRect.top;
+  //   this.x.set(x);
+  //   this.y.set(y);
 
-    const gX = parentRect.left + x - worldRect.left;
-    const gY = parentRect.top + y - worldRect.top;
+  //   const gX = parentRect.left + x - worldRect.left;
+  //   const gY = parentRect.top + y - worldRect.top;
 
-    this.gX.set(gX);
-    this.gY.set(gY);
-  }
-
-  private parent() {
-    const itemElement = this.el?.nativeElement;
-    let parentElement = itemElement.parentElement;
-    if (this.container) {
-      parentElement = this.container.el.nativeElement;
-    }
-    return parentElement;
-  }
-
-  bounds = {
-    left: this.gX(),
-    top: this.gY(),
-    width: 0,
-    height: 0,
-  }
-
-  // get bounds() {
-  //   const rect = this.el.nativeElement.getBoundingClientRect();
-  //   return {
-  //     left: this.gX(),
-  //     top: this.gY(),
-  //     width: rect.width,
-  //     height: rect.height,
-  //   };
+  //   this.gX.set(gX);
+  //   this.gY.set(gY);
   // }
 
-  ngOnInit() {
-    this.ngBondService.registerDraggableElement(this);
-    this.updatePosition();
-  }
+  // private parent() {
+  //   const itemElement = this.el?.nativeElement;
+  //   let parentElement = itemElement.parentElement;
+  //   if (this.container) {
+  //     parentElement = this.container.el.nativeElement;
+  //   }
+  //   return parentElement;
+  // }
 
-  ngOnDestroy() {
-    this.ngBondService.removeDraggableElement(this);
-  }
+  // // bounds = {
+  // //   left: this.gX(),
+  // //   top: this.gY(),
+  // //   width: 0,
+  // //   height: 0,
+  // // }
+
+  // // get bounds() {
+  // //   const rect = this.el.nativeElement.getBoundingClientRect();
+  // //   return {
+  // //     left: this.gX(),
+  // //     top: this.gY(),
+  // //     width: rect.width,
+  // //     height: rect.height,
+  // //   };
+  // // }
+
+  // ngOnInit() {
+  //   this.ngBondService.registerDraggableElement(this);
+  //   this.updatePosition();
+  // }
+
+  // ngOnDestroy() {
+  //   this.ngBondService.removeDraggableElement(this);
+  // }
 }

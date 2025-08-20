@@ -1,7 +1,5 @@
 export interface Timeline {
   groups: TimelineGroup[];
-  millisecondsPerPixel: number;
-  maxTime?: number;
 }
 
 export interface TimelineGroup {

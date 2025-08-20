@@ -1,49 +1,28 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  inject,
-  input,
-  model,
-  output,
-  signal,
-} from '@angular/core';
-import {
-  Timeline,
-  TimelineGroup,
-  TimelineKeyframe,
-  TimelineTrack,
-  TimelineTween,
-} from '../../model/timeline';
+import { ChangeDetectorRef, Component, inject, input, model, output, signal } from '@angular/core';
+import { Timeline, TimelineGroup, TimelineKeyframe, TimelineTrack, TimelineTween } from '../../model/timeline';
 import { TimelineRulerComponent } from './timeline-ruler/timeline-ruler.component';
 import { TimelineKeyframeComponent } from './timeline-keyframe/timeline-keyframe.component';
 import { TimelineTweenComponent } from './timeline-tween/timeline-tween.component';
 import { KeyManager, NgBondContainer, NgBondService, SelectionManager } from '@richapps/ngx-bond';
 import { TimelineService } from '../../services/timeline.service';
 import { CommonModule } from '@angular/common';
+import { TimelineControlsComponent } from './timeline-controls/timeline-controls.component';
 
 @Component({
   selector: 'timeline',
-  imports: [
-    TimelineRulerComponent,
-    TimelineKeyframeComponent,
-    TimelineTweenComponent,
-    NgBondContainer,
-    CommonModule,
-  ],
+  imports: [TimelineRulerComponent, TimelineKeyframeComponent, TimelineTweenComponent, NgBondContainer, CommonModule, TimelineControlsComponent],
   templateUrl: './timeline.component.html',
   styleUrl: './timeline.component.scss',
   providers: [NgBondService, SelectionManager, KeyManager],
 })
 export class TimelineComponent {
-
-
   timelineService = inject(TimelineService);
 
   changeRef = inject(ChangeDetectorRef);
 
   selectedTween = model<TimelineTween | null>(null);
 
-  tweenSelected = output<{tween: TimelineTween, track: TimelineTrack, group: TimelineGroup}>();
+  tweenSelected = output<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }>();
 
   onTweenClick(event: MouseEvent, tween: TimelineTween, track: TimelineTrack, group: TimelineGroup) {
     // event.stopPropagation();
@@ -56,11 +35,7 @@ export class TimelineComponent {
     }
   }
 
-  onTween(
-    keyframe: TimelineKeyframe,
-    group: TimelineGroup,
-    track: TimelineTrack,
-  ) {
+  onTween(keyframe: TimelineKeyframe, group: TimelineGroup, track: TimelineTrack) {
     this.timelineService.timeline.update((currentTimeline) => {
       if (!currentTimeline) {
         return currentTimeline;
@@ -74,7 +49,7 @@ export class TimelineComponent {
           end: nextKeyframe,
         };
         // track.tweens.push(tween);
-      } 
+      }
       currentTimeline.groups = currentTimeline.groups.map((g) => {
         if (g === group) {
           return {
@@ -103,8 +78,6 @@ export class TimelineComponent {
     });
 
     this.timelineService.createGsapTimeline();
-
-    
   }
 
   isTweenDragging = signal<boolean>(false);
@@ -118,12 +91,7 @@ export class TimelineComponent {
     this.isTweenDragging.set(false);
   }
 
-  onKeyframePositionUpdated(
-    position: { x: number; y: number },
-    keyframe: TimelineKeyframe,
-    track: TimelineTrack,
-    group: TimelineGroup,
-  ) {
+  onKeyframePositionUpdated(position: { x: number; y: number }, keyframe: TimelineKeyframe, track: TimelineTrack, group: TimelineGroup) {
     if (this.isTweenDragging()) {
       return;
     }
@@ -131,7 +99,7 @@ export class TimelineComponent {
 
     console.log('Keyframe position updated:', position, keyframe, track, group);
 
-    const time = position.x * (this.timelineService.timeline()?.millisecondsPerPixel || 1);
+    const time = position.x * (this.timelineService.millisecondsPerPixel() || 1);
     console.log('new time for keyframe:', time, keyframe.time);
     this.timelineService.timeline.update((currentTimeline) => {
       if (!currentTimeline) {
@@ -160,9 +128,7 @@ export class TimelineComponent {
               if (t === track) {
                 return {
                   ...t,
-                  keyframes: t.keyframes.map((kf) =>
-                    kf === keyframe ? updatedKeyframe : kf,
-                  ),
+                  keyframes: t.keyframes.map((kf) => (kf === keyframe ? updatedKeyframe : kf)),
                 };
               }
               return t;
@@ -177,18 +143,13 @@ export class TimelineComponent {
     });
   }
 
-  onTweenPositionUpdated(
-    position: { x: number; y: number },
-    tween: TimelineTween,
-    track: TimelineTrack,
-    group: TimelineGroup,
-  ) {
+  onTweenPositionUpdated(position: { x: number; y: number }, tween: TimelineTween, track: TimelineTrack, group: TimelineGroup) {
     const start = tween.start;
     const end = tween.end;
 
     const duration = end.time - start.time;
 
-    const newStart = position.x * (this.timelineService.timeline()?.millisecondsPerPixel || 1);
+    const newStart = position.x * (this.timelineService.millisecondsPerPixel() || 1);
 
     const startKeyframe = { ...tween.start, time: newStart };
     const endKeyframe = { ...tween.end, time: newStart + duration };
@@ -200,19 +161,13 @@ export class TimelineComponent {
       start.time = Math.round(newStart);
       end.time = Math.round(newStart + duration);
 
-      
-
       return { ...currentTimeline };
     });
   }
 
-  onKeyframeClick(
-    event: MouseEvent,
-    keyframe: TimelineKeyframe,
-    track: TimelineTrack,
-    group: TimelineGroup,
-  ) {
+  onKeyframeClick(event: MouseEvent, keyframe: TimelineKeyframe, track: TimelineTrack, group: TimelineGroup) {
     console.log('Keyframe clicked:', keyframe, track, group);
+    console.log('go to position:', keyframe.time);
     this.timelineService.setPosition(keyframe.time);
   }
 }

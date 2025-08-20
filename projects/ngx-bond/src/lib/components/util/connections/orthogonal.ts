@@ -15,12 +15,14 @@ export function getOrhogonalConnection(
   p1: NgBondProperty,
   p2: NgBondProperty | DragPoint
 ) {
-  const rect1 = ((p1.container) as NgBondContainer)?.bounds;
+  const rect1 = ((p1.container) as NgBondContainer)?.bounds();
 
   let distance1 = 0;
   let distance2 = 0;
   if (p1Position === 'bottom' || p1Position === 'top') {
-    distance1 = (p1.x() + p1.width() / 2) / rect1?.width;
+    distance1 = rect1 && typeof p1.x === 'function' && typeof p1.width === 'function'
+      ? (p1.x() + p1.width() / 2) / rect1.width
+      : 0;
   }
 
   if (p1Position === 'left' || p1Position === 'right') {
@@ -32,11 +34,17 @@ export function getOrhogonalConnection(
     rect2 = (p2 as any).container?.bounds as any;
 
     if (p2Position === 'bottom' || p2Position === 'top') {
-      distance2 = ((p2 as NgBondProperty).x() + (p2 as NgBondProperty).width() / 2) / rect2?.width;
+      const p2NgBond = p2 as NgBondProperty;
+      const p2X = typeof p2NgBond.x === 'function' ? p2NgBond.x() : 0;
+      const p2Width = typeof p2NgBond.width === 'function' ? p2NgBond.width() : 0;
+      distance2 = (p2X + p2Width / 2) / rect2?.width;
     }
 
     if (p2Position === 'left' || p2Position === 'right') {
-      distance2 = ((p2 as NgBondProperty).y() + p2.height() / 2) / rect2?.height;
+      const p2NgBond = p2 as NgBondProperty;
+      const p2Y = typeof p2NgBond.y === 'function' ? p2NgBond.y() : 0;
+      const p2Height = typeof p2NgBond.height === 'function' ? p2NgBond.height() : 0;
+      distance2 = (p2Y + p2Height / 2) / rect2?.height;
     }
   }
 
