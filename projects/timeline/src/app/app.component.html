@@ -1,19 +1,14 @@
-<div  style="display: flex; flex-direction: row; height: 100vh; width: 100vw">
-  <div style="display: flex; flex-direction: column; flex-grow: 1; width: 100%;overflow: hidden;">
+<div style="display: flex; flex-direction: row; height: 100vh; width: 100vw">
+  <div style="display: flex; flex-direction: column; flex-grow: 1; width: 100%; overflow: hidden">
     <ng-bond-world style="height: 100%">
       <!-- insert slot for dynamically created components -->
-      <svg #svg_canvas style="position: absolute;left: 0; top: 0" width="1400px" height="600px" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg #svg_canvas style="position: absolute; left: 0; top: 0" width="1400px" height="600px" xmlns="http://www.w3.org/2000/svg"></svg>
       <ng-template #insert_slot></ng-template>
       <!-- motion path editor -->
+
+      <div [bondcontainer]="'test'"></div>
     </ng-bond-world>
     <timeline (tweenSelected)="onTweenSelected($event)"></timeline>
-
-    <!-- <button (click)="timelineService.addComponent()">Add Component</button>
-<button (click)="timelineService.createGsapTimeline()">Create Timeline</button> -->
   </div>
   <inspector></inspector>
 </div>
-<!-- <div style="position:absolute; left: 0; top:0; width: 20px; height: 20px;background-color: blue;" appTestit [x]="200" [y]="100"></div>
-
-
- <div style="position:absolute; left: 0; top:0; width: 20px; height: 20px;background-color: red;" bondcontainer [x]="200" [y]="100" ></div> -->

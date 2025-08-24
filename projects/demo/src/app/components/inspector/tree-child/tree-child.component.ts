@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { NgBondContainer } from '@richapps/ngx-bond';
+import { NgBondContainer, NGBondItem } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'tree-child',
@@ -8,5 +8,5 @@ import { NgBondContainer } from '@richapps/ngx-bond';
   styleUrl: './tree-child.component.scss',
 })
 export class TreeChildComponent {
-  child = input.required<NgBondContainer>();
+  child = input.required<NGBondItem>();
 }

@@ -82,10 +82,10 @@ export class NgBondProperty {
     };
 
     let parentRect = {
-      width: this.container?.parentContainer()?.width() ?? 0,
-      height: this.container?.parentContainer()?.height() ?? 0,
-      left: this.container?.parentContainer()?.gX() ?? 0,
-      top: this.container?.parentContainer()?.gY() ?? 0,
+      width: this.container?.parent()?.width() ?? 0,
+      height: this.container?.parent()?.height() ?? 0,
+      left: this.container?.parent()?.gX() ?? 0,
+      top: this.container?.parent()?.gY() ?? 0,
     };
 
     let worldRect = parentRect;
@@ -94,10 +94,10 @@ export class NgBondProperty {
 
     drag.dragStart$.pipe(takeUntilDestroyed()).subscribe(() => {
       parentRect = parentRect = {
-        width: this.container?.parentContainer()?.width() ?? 0,
-        height: this.container?.parentContainer()?.height() ?? 0,
-        left: this.container?.parentContainer()?.gX() ?? 0,
-        top: this.container?.parentContainer()?.gY() ?? 0,
+        width: this.container?.parent()?.width() ?? 0,
+        height: this.container?.parent()?.height() ?? 0,
+        left: this.container?.parent()?.gX() ?? 0,
+        top: this.container?.parent()?.gY() ?? 0,
       };
       worldRect = parentRect;
       isFirstMove = true;
@@ -145,8 +145,8 @@ export class NgBondProperty {
     //const parentRect = this.parent().getBoundingClientRect();
 
     const parentRect = {
-      width: this.container?.parentContainer()?.width() ?? 0,
-      height: this.container?.parentContainer()?.height() ?? 0,
+      width: this.container?.parent()?.width() ?? 0,
+      height: this.container?.parent()?.height() ?? 0,
     };
 
     const centerX = parentRect.width / 2;

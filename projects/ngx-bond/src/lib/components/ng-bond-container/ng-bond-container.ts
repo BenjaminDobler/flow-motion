@@ -49,12 +49,14 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'number',
       setterName: 'x',
       isSignal: true,
+      serializable: true,
     },
     {
       name: 'y',
       type: 'number',
       setterName: 'y',
       isSignal: true,
+      serializable: true,
     },
     {
       name: 'width',
@@ -62,6 +64,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'number',
       setterName: 'width',
       isSignal: true,
+      serializable: true,
     },
     {
       name: 'height',
@@ -69,6 +72,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'number',
       setterName: 'height',
       isSignal: true,
+
+      serializable: true,
     },
     {
       name: 'position',
@@ -76,6 +81,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'number',
       setterName: 'position',
       isSignal: true,
+      serializable: false,
     },
   ];
 
@@ -102,7 +108,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   showCursor = input<boolean>(true);
 
-  parentContainer = signal<NGBondItem | null>(null);
+  // parentContainer = signal<NGBondItem | null>(null);
 
   minX = input<number>(Number.NEGATIVE_INFINITY);
   maxX = input<number>(Number.POSITIVE_INFINITY);
@@ -113,15 +119,15 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   y = model(0);
 
   gY = computed(() => {
-    return this.y() + (this.parentContainer()?.gY() || 0);
+    return this.y() + (this.parent()?.gY() || 0);
   });
 
   gX = computed(() => {
-    return this.x() + (this.parentContainer()?.gX() || 0);
+    return this.x() + (this.parent()?.gX() || 0);
   });
 
-  width = signal<number>(0);
-  height = signal<number>(0);
+  width = model<number>(0);
+  height = model<number>(0);
 
   _widthChanged = toSignal(toObservable(this.width).pipe(distinctUntilChanged()));
   _heightChanged = toSignal(toObservable(this.height).pipe(distinctUntilChanged()));
@@ -145,17 +151,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   public resizeOffset = 10;
 
-  draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty, {
-    descendants: true,
-  });
-  dragContainerContentChildren = contentChildren<NgBondContainer>(NgBondContainer, { descendants: false });
-
-  dragViewChildren = viewChildren<NgBondProperty>(NgBondProperty);
-
-  children = computed(() => {
-    return this.dragContainerContentChildren().filter((c) => c.parentContainer() === this);
-  });
-
   ngBondService = inject(NgBondService, { optional: true });
   selectionManager = inject(SelectionManager, { optional: true });
 
@@ -166,6 +161,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   disabled$ = new BehaviorSubject<boolean>(false);
 
   inited = signal(false);
+
+  children = signal<NGBondItem[]>([]);
 
   private itemElement?: HTMLElement;
   private parentElement?: HTMLElement;
@@ -221,28 +218,31 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     };
   });
 
+  parentContainer: NgBondContainer | null = inject(NgBondContainer, {
+    optional: true,
+    skipSelf: true,
+  });
+
+  parentWorld: NgBondWorld | null = inject(NgBondWorld, {
+    optional: true,
+  });
+
+  // get parent(): null | NGBondItem {
+  //   if (this.parentContainer) {
+  //     return this.parentContainer;
+  //   }
+  //   if (this.parentWorld) {
+  //     return this.parentWorld;
+  //   }
+  //   return null;
+  // }
+
+  parent = signal<NGBondItem | null>(null);
+
   constructor() {
-    effect(() => {
-      const isInitialized = this.initialized();
-      if (!isInitialized) {
-        console.warn('NgBondContainer not initialized yet, skipping setting parent container for children:', this.id());
-        return;
-      }
-      console.log('PPP set children parent container:', this.id());
+    this.parent.set(this.parentContainer || this.parentWorld || null);
 
-      this.draggableContentChildren().forEach((c) => c.container?.parentContainer.set(this));
-      this.dragContainerContentChildren().forEach((c) => c.parentContainer.set(this));
-      this.dragViewChildren().forEach((c) => c.container?.parentContainer.set(this));
-    });
-
-    effect(() => {
-      const parentContainer = this.parentContainer();
-      const inited = this.inited();
-      if (parentContainer && inited) {
-        console.log('parent container changed:', this.id(), parentContainer.gX(), parentContainer.gY());
-        this.initialize();
-      }
-    });
+    this.parent()?.addChild(this);
 
     effect(() => {
       const x = this.x();
@@ -264,6 +264,14 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
         this.updateHeight(h);
       }
     });
+  }
+
+  addChild(child: NGBondItem) {
+    this.children.update((c) => [...c, child]);
+  }
+
+  removeChild(child: NGBondItem) {
+    this.children.update((c) => c.filter((cChild) => cChild !== child));
   }
 
   setPositionImmediately(x: number, y: number) {
@@ -290,8 +298,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     if (this.itemElement) {
       this.positioning !== 'none' && (this.itemElement.style.width = `${w}px`);
       this.widthUpdated.emit(w);
-    } else {
-      console.warn('No item element to update width on');
     }
   }
 
@@ -299,8 +305,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     if (this.itemElement) {
       this.positioning !== 'none' && (this.itemElement.style.height = `${h}px`);
       this.heightUpdated.emit(h);
-    } else {
-      console.warn('No item element to update height on');
     }
   }
 
@@ -334,13 +338,13 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   initialized = signal(false);
 
   getWorld() {
-    let parentContainer = this.parentContainer();
+    let parentContainer = this.parentContainer;
     while (parentContainer) {
       if (parentContainer instanceof NgBondWorld) {
         return parentContainer;
       }
       if (typeof parentContainer.parentContainer === 'function') {
-        parentContainer = parentContainer.parentContainer();
+        parentContainer = parentContainer.parentContainer;
       } else {
         break;
       }
@@ -349,17 +353,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   initialize() {
-    if (this.initialized()) {
-      console.warn('NgBondContainer already initialized:', this.id());
-      return;
-    }
-    console.log('PPP initialize container', this.id());
-
-    console.log('PPP WORLD ', this.getWorld());
-
-    // setTimeout(() => {
-    //   this.initialized.set(true);
-    // }, 100);
     this.initialized.set(true);
     if (this.ngBondService) {
       this.ngBondService.registerDraggableElement(this);
@@ -367,7 +360,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     this.updateBounds();
 
     if (this.positioning !== 'none') {
-      // this.pos(this.x(), this.y());
       this.setPositionImmediately(this.x(), this.y());
     }
 
@@ -506,6 +498,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   ngAfterViewInit() {
     // This is needed to ensure that the initial position is set correctly after the view is initialized
     this.inited.set(true);
+    this.initialize();
   }
 
   updatePosition() {
@@ -525,8 +518,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     //   return;
     // }
 
-    const containerX = this.parentContainer()?.gX?.() || 0;
-    const containerY = this.parentContainer()?.gY?.() || 0;
+    const containerX = this.parent()?.gX?.() || 0;
+    const containerY = this.parent()?.gY?.() || 0;
 
     const x = itemRect.left - containerX - (this.getWorld()?.rect?.left || 0);
     const y = itemRect.top - containerY - (this.getWorld()?.rect?.top || 0);

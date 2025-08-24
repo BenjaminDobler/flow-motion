@@ -1,4 +1,4 @@
-<svg #svg_canvas style="position: absolute; top: 0; left: 0" style="background: #111" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<svg #svg_canvas   style="position: absolute; top: 0; left: 0" style="background: #111" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <pattern id=":S4:" patternUnits="userSpaceOnUse" width="20" height="20">
       <circle r="1" cx="10" cy="10" fill="#313131"></circle>
@@ -10,6 +10,7 @@
 
 <div class="content-container" [style.transform]="`scale(${dragService.scale()})`">
   <ng-content></ng-content>
+  <ng-template #insert_slot></ng-template>
 </div>
 
 <svg style="position: absolute; left: 0; top: 0" width="100%" height="100%">
@@ -119,14 +120,27 @@
   @let rect = selectionRect();
 
   @if (rect) {
-    <rect style="pointer-events: none" [attr.x]="rect.x" [attr.y]="rect.y" [attr.width]="rect.width" [attr.height]="rect.height" stroke-dasharray="4 4" fill="#0C8CE9" fill-opacity="0.2" stroke="#0C8CE9" stroke-width="1"></rect>
+    <rect
+      style="pointer-events: none"
+      [attr.x]="rect.x"
+      [attr.y]="rect.y"
+      [attr.width]="rect.width"
+      [attr.height]="rect.height"
+      stroke-dasharray="4 4"
+      fill="#0C8CE9"
+      fill-opacity="0.2"
+      stroke="#0C8CE9"
+      stroke-width="1"
+    ></rect>
   }
 </svg>
 @if (group) {
-  <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x}px, ${group.y - 30x}px)`">
+  <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x}px, ${group.y - 30}px)`">
     <div style="transform: translateX(-50%); background: #2558ce; border-radius: 4px; padding: 3px">{{ group.x | number: '1.0-0' }} x {{ group.y | number: '1.0-0' }}</div>
   </div>
-  <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x + group.width/2}px, ${group.y + group.height + 5}px)`">
+  <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x + group.width / 2}px, ${group.y + group.height + 5}px)`">
     <div style="transform: translateX(-50%); background: #2558ce; border-radius: 4px; padding: 3px">{{ group.width | number: '1.0-0' }} x {{ group.height | number: '1.0-0' }}</div>
   </div>
 }
+
+

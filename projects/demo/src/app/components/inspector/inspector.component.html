@@ -1,5 +1,5 @@
 <div class="navigation">
-  @for(tab of tabs(); track $index) {
+  @for (tab of tabs(); track $index) {
     <div class="tab-item" (click)="selected.set(tab.value)" [class.selected]="selected() === tab.value">{{ tab.label }}</div>
   }
 </div>
@@ -91,6 +91,7 @@
     <div>
       <div>
         <h3>Targets</h3>
+
         @for (drag of bondService.dragElements(); track $index) {
           <div
             class="bond-item"
@@ -100,9 +101,17 @@
             (click)="toggleSelection(drag)"
             style="white-space: nowrap"
           >
-            ID: {{ drag.id() }} G: <span style="background: #2558ce; padding: 2px; border-radius: 3px">{{ drag.gX() | number: '1.0-0' }}x{{ drag.gY() | number: '1.0-0' }} {{ drag.x() | number: '1.0-0' }}x{{ drag.y() | number: '1.0-0' }}</span>
+            ID: {{ drag.id() }} G:
+            <span style="background: #2558ce; padding: 2px; border-radius: 3px"
+              >{{ drag.gX() | number: '1.0-0' }}x{{ drag.gY() | number: '1.0-0' }} {{ drag.x() | number: '1.0-0' }}x{{ drag.y() | number: '1.0-0' }}</span
+            >
           </div>
         }
+
+        <button (click)="componentFactory.addComponent()">Add</button>
+        <button (click)="componentFactory.groupSelected()">Group</button>
+        <button (click)="componentFactory.serializeComponents()">Serialize</button>
+        <button (click)="componentFactory.loadSerialized()">Load</button>
       </div>
     </div>
   } @else if (selected() === 'selection') {
@@ -190,14 +199,13 @@
     </div>
   } @else if (selected() === 'element-inspector') {
     <element-inspector></element-inspector>
-  } @else if(selected() === 'child-tree') {
+  } @else if (selected() === 'child-tree') {
     <div>
       <h3>Child Tree</h3>
 
-      @for (child of bondService.world?.dragContainerContentChildren(); track $index) {
+      @for (child of bondService.world?.children(); track $index) {
         <tree-child [child]="child"></tree-child>
       }
-
     </div>
   } @else {
     <div>Select a tab to view its content.</div>

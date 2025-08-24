@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { NgBondService } from '@richapps/ngx-bond';
+import { ComponentFactory, KeyManager, NgBondService, SelectionManager } from '@richapps/ngx-bond';
 
 import { RouterModule } from '@angular/router';
 
@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
   imports: [RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [NgBondService],
+  providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(drop)': 'onDrop($event)',

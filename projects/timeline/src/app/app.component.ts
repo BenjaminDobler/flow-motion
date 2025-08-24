@@ -1,15 +1,7 @@
-import {
-  afterNextRender,
-  Component,
-  ElementRef,
-  inject,
-  viewChild,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { afterNextRender, Component, ElementRef, inject, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { TimelineComponent } from './lib/timeline/components/timeline/timeline.component';
 import { TimelineGroup, TimelineTrack, TimelineTween } from './lib/timeline/model/timeline';
-import { KeyManager, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+import { ComponentFactory, KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 import { TimelineService } from './lib/timeline/services/timeline.service';
 import { gsap } from 'gsap';
 import { SVGEdit } from '@richapps/ngx-pentool';
@@ -18,8 +10,6 @@ import { distinctUntilChanged } from 'rxjs';
 import { MotionPathHelper } from 'gsap/MotionPathHelper';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { InspectorComponent } from './lib/timeline/components/inspector/inspector.component';
-import { ImageComponent } from './components/image/image.component';
-import { ComponentFactory } from './lib/timeline/services/component.factory';
 
 gsap.registerPlugin(MotionPathHelper, MotionPathPlugin);
 
@@ -68,19 +58,11 @@ gsap.registerPlugin({
 
 @Component({
   selector: 'app-root',
-  imports: [TimelineComponent, NgBondWorld, InspectorComponent],
+  imports: [TimelineComponent, NgBondWorld, InspectorComponent, NgBondContainer],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [NgBondService, SelectionManager, KeyManager, TimelineService, InspectorComponent, ComponentFactory, SelectionManager],
-  host: {
-    '(drop)': 'onDrop($event)',
-    '(dragover)': '$event.preventDefault()',
-    '(dragenter)': '$event.preventDefault()',
-    '(dragleave)': '$event.preventDefault()',
-    '(dragend)': '$event.preventDefault()',
-    '(dragstart)': '$event.preventDefault()',
-    '(drag)': '$event.preventDefault()',
-  }
+  host: {},
 })
 export class AppComponent {
   title = 'demo';
@@ -89,6 +71,9 @@ export class AppComponent {
   worldHost!: ViewContainerRef;
   svgCanvas = viewChild<ElementRef>('svg_canvas');
 
+  @ViewChild(NgBondWorld)
+  ngBondWorld!: NgBondWorld;
+
   bondService = inject(NgBondService);
 
   timelineService = inject(TimelineService);
@@ -96,7 +81,6 @@ export class AppComponent {
 
   constructor() {
     afterNextRender(() => {
-      this.timelineService.componentFactory.setWorldHost(this.worldHost);
       if (this.svgCanvas()) {
         this.svgEdit = new SVGEdit();
         this.svgEdit.svg = this.svgCanvas()?.nativeElement;
@@ -112,7 +96,6 @@ export class AppComponent {
         });
       }
     });
-
   }
 
   onTweenSelected(event: { tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }) {
@@ -136,31 +119,5 @@ export class AppComponent {
         this.svgEdit.setPath(`M ${event.tween.start.value.x} ${event.tween.start.value.y} L ${event.tween.end.value.x} ${event.tween.end.value.y}`);
       }
     }
-  }
-
-  onDrop(e: DragEvent) {
-    e.preventDefault();
-    if (e.dataTransfer?.files.length === 0) {
-      return;
-    }
-    const reader = new FileReader();
-    if (!e.dataTransfer?.files[0]) {
-      return;
-    }
-    reader.readAsDataURL(e.dataTransfer?.files[0]);
-    reader.onload = () => {
-      const image = new Image();
-      image.src = reader.result as string;
-
-      this.timelineService.componentFactory.addComponent(ImageComponent, {
-        src:reader.result as string
-
-      });
-
-      image.onload = () => {
-        console.log('Image loaded', image);
-      };
-    };
-
   }
 }

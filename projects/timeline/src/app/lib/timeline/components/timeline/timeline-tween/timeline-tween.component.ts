@@ -16,7 +16,6 @@ import { TimelineService } from '../../../services/timeline.service';
   },
 })
 export class TimelineTweenComponent extends NgBondContainer {
-
   timelineService = inject(TimelineService);
   tween = input<TimelineTween>();
   timeline = input<Timeline>();
@@ -31,15 +30,18 @@ export class TimelineTweenComponent extends NgBondContainer {
   durationChanged = toSignal(
     toObservable(this.duration).pipe(
       distinctUntilChanged(),
-      switchMap(() => new Observable<boolean>((observer) => {
-        observer.next(true);
-        const timer$ = timer(500);
-        timer$.subscribe(() => {
-          observer.next(false);
-          observer.complete();
-        });
-      })),
-    ),
+      switchMap(
+        () =>
+          new Observable<boolean>((observer) => {
+            observer.next(true);
+            const timer$ = timer(500);
+            timer$.subscribe(() => {
+              observer.next(false);
+              observer.complete();
+            });
+          })
+      )
+    )
   );
 
   constructor() {
@@ -54,29 +56,13 @@ export class TimelineTweenComponent extends NgBondContainer {
       const x = start / mpp;
       this.x.set(x);
     });
+    this.setHeight(20);
   }
 
   onDragStart() {
-    console.log('Drag started for tween', this.tween());
     this.dragging.set(true);
   }
   onDragEnd() {
-    console.log('Drag ended for tween', this.tween());
     this.dragging.set(false);
   }
-
-  // width = computed(() => {
-  //   const start = this.tween()?.start.time || 0;
-  //   const end = this.tween()?.end.time || 0;
-  //   const mpp = this.timeline()?.millisecondsPerPixel || 1;
-  //   const w = (end - start) / mpp;
-  //   return w;
-  // });
-
-  // x = computed(() => {
-  //   const start = this.tween()?.start.time || 0;
-  //   const mpp = this.timeline()?.millisecondsPerPixel || 1;
-  //   const x = start / mpp;
-  //   return x;
-  // });
 }

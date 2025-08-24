@@ -59,6 +59,12 @@
     },
     {
       "path": "./projects/timeline-layout/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/content-test/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/content-test/tsconfig.spec.json"
     }
   ]
 }

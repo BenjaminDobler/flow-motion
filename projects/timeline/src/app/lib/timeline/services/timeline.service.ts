@@ -2,10 +2,8 @@ import { inject, outputBinding, signal, ViewContainerRef } from '@angular/core';
 
 import { gsap } from 'gsap';
 import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from '../model/timeline';
-import { NgBondContainer, NgBondService } from '@richapps/ngx-bond';
-import { TestComponentComponent } from '../../../components/test-component/test-component.component';
+import { ComponentFactory, NgBondContainer, NgBondService } from '@richapps/ngx-bond';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
-import { ComponentFactory } from './component.factory';
 
 export class TimelineService {
   private bondService = inject(NgBondService);

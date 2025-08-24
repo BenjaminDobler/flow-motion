@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 
 import { DecimalPipe } from '@angular/common';
 import { ElementInspectorComponent } from './element-inspector/element-inspector.component';
-import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager } from '@richapps/ngx-bond';
+import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager, ComponentFactory } from '@richapps/ngx-bond';
 import { TreeChildComponent } from './tree-child/tree-child.component';
 
 type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree';
@@ -22,6 +22,7 @@ export class InspectorComponent {
   protected bondService: NgBondService = inject(NgBondService);
   protected selected = signal<tabType>('properties');
   protected selectionManager: SelectionManager = inject(SelectionManager);
+  protected componentFactory = inject(ComponentFactory);
 
   protected tabs = signal<Tab[]>([
     { label: 'Properties', value: 'properties' },

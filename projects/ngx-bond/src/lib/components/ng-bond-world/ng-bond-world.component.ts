@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, contentChildren, effect, ElementRef, inject, input, Signal, signal, TemplateRef, viewChildren, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, Signal, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { SelectionManager } from '../../services/selection.manager';
 import { KeyManager } from '../../services/key.manager';
 import { makeDraggable } from '../util/drag.util';
-import { contains, touches } from '../../utils/geo.utils';
-import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
-import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
+import { touches } from '../../utils/geo.utils';
+import { ComponentFactory } from '../../services/component.factory';
+import { ImageComponent } from '../editables/image/image.component';
 
 export interface NGBondItem {
   x: Signal<number>;
@@ -15,7 +15,10 @@ export interface NGBondItem {
   height: Signal<number>;
   gX: Signal<number>;
   gY: Signal<number>;
-  parentContainer?: WritableSignal<NGBondItem | null>;
+  id: Signal<string>;
+  children: Signal<NGBondItem[]>;
+  addChild: (child: NGBondItem) => void;
+  removeChild: (child: NGBondItem) => void;
 }
 
 @Component({
@@ -27,6 +30,13 @@ export interface NGBondItem {
   providers: [],
   host: {
     '(click)': 'onClick($event)',
+    '(drop)': 'onDrop($event)',
+    '(dragover)': '$event.preventDefault()',
+    '(dragenter)': '$event.preventDefault()',
+    '(dragleave)': '$event.preventDefault()',
+    '(dragend)': '$event.preventDefault()',
+    '(dragstart)': '$event.preventDefault()',
+    '(drag)': '$event.preventDefault()',
   },
 })
 export class NgBondWorld implements NGBondItem {
@@ -36,21 +46,16 @@ export class NgBondWorld implements NGBondItem {
   public pathanimation = input<TemplateRef<unknown>>();
   private keymanager: KeyManager = inject(KeyManager);
 
+  @ViewChild('insert_slot', { read: ViewContainerRef })
+  worldHost!: ViewContainerRef;
+
+  id = signal<string>('world');
+
   animationBubbleCount = input<number>(10);
   animationBubbleDuration = input<number>(4);
 
-  draggableContentChildren = contentChildren<NgBondProperty>(NgBondProperty, {
-    descendants: true,
-  });
 
-  children = computed(() => {
-    return this.dragContainerContentChildren().filter((c) => c.parentContainer() === this);
-  });
-
-  dragContainerContentChildren = contentChildren<NgBondContainer>(NgBondContainer, { descendants: false });
-
-  dragViewChildren = viewChildren<NgBondProperty>(NgBondProperty);
-
+  children = signal<NGBondItem[]>([]);
   x = signal(0);
   y = signal(0);
   gX = signal(0);
@@ -63,21 +68,20 @@ export class NgBondWorld implements NGBondItem {
 
   rect: DOMRect | null = null;
 
-  constructor() {
-    effect(() => {
-      const draggableChildren = this.draggableContentChildren();
-      const dragContainerChildren = this.dragContainerContentChildren();
-      const dragViewChildren = this.dragViewChildren();
+  componentFactory = inject(ComponentFactory);
 
-      console.log('Draggable children:', draggableChildren);
-      console.log('Drag container children:', dragContainerChildren);
-      console.log('Drag view children:', dragViewChildren);
-      draggableChildren.forEach((c) => c.container?.parentContainer.set(this));
-      dragContainerChildren.forEach((c) => c.parentContainer.set(this));
-      dragViewChildren.forEach((c) => c.container?.parentContainer.set(this));
-    });
+  constructor() {
+    this.componentFactory.world = this;
 
     this.dragService.world = this;
+  }
+
+  addChild(child: NGBondItem) {
+    this.children.update((c) => [...c, child]);
+  }
+
+  removeChild(child: NGBondItem) {
+    this.children.update((c) => c.filter((cChild) => cChild !== child));
   }
 
   selectionRect = computed(() => {
@@ -122,8 +126,10 @@ export class NgBondWorld implements NGBondItem {
     });
 
     drag.dragEnd$.subscribe((evt) => {
-      evt.originalEvent.preventDefault();
-      evt.originalEvent.stopPropagation();
+      if (evt.originalEvent) {
+        evt.originalEvent.preventDefault();
+        evt.originalEvent.stopPropagation();
+      }
 
       this.endP.set(null);
       this.startP.set(null);
@@ -158,8 +164,31 @@ export class NgBondWorld implements NGBondItem {
       target = target.parentElement as HTMLElement;
     }
     if (!hasComponent) {
-      console.log('NO COMPONENT FOUND, UNSELECTING');
       this.selectionManager.unselectAll();
     }
+  }
+
+  onDrop(e: DragEvent) {
+    e.preventDefault();
+    if (e.dataTransfer?.files.length === 0) {
+      return;
+    }
+    const reader = new FileReader();
+    if (!e.dataTransfer?.files[0]) {
+      return;
+    }
+    reader.readAsDataURL(e.dataTransfer?.files[0]);
+    reader.onload = () => {
+      const image = new Image();
+      image.src = reader.result as string;
+
+      this.componentFactory.addComponent(ImageComponent, {
+        src: reader.result as string,
+      });
+
+      image.onload = () => {
+        console.log('Image loaded', image);
+      };
+    };
   }
 }

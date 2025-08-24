@@ -8,7 +8,7 @@ import { InspectorComponent } from '../../components/inspector/inspector.compone
   imports: [NgBondContainer, NgBondProperty, NgBondWorld, PropertyContainerComponent, InspectorComponent],
   templateUrl: './simple.component.html',
   styleUrl: './simple.component.scss',
-  providers: [NgBondService, SelectionManager, KeyManager],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleComponent {

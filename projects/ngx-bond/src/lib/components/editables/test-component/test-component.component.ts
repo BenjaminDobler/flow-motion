@@ -1,6 +1,5 @@
 import { Component, effect, ElementRef, forwardRef, inject, input, ViewChild, ViewContainerRef } from '@angular/core';
-import { NgBondContainerHost } from '@richapps/ngx-bond';
-
+import { NgBondContainerHost } from '../../../types/types'
 @Component({
   selector: 'app-test-component',
   imports: [],

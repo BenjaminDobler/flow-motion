@@ -25,10 +25,10 @@ export class TimelineComponent {
   tweenSelected = output<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }>();
 
   onTweenClick(event: MouseEvent, tween: TimelineTween, track: TimelineTrack, group: TimelineGroup) {
+    console.log('on tween click');
     // event.stopPropagation();
     // console.log('Tween clicked:', tween, track, group);
     this.selectedTween.set(tween);
-    console.log('Selected tween:', this.selectedTween());
     if (track.name === 'position') {
       // show motion path
       this.tweenSelected.emit({ tween, track, group });
@@ -83,7 +83,6 @@ export class TimelineComponent {
   isTweenDragging = signal<boolean>(false);
 
   onTweenDragStart() {
-    console.log('Tween drag started2');
     this.isTweenDragging.set(true);
   }
 
@@ -97,10 +96,7 @@ export class TimelineComponent {
     }
     //this.changeRef.markForCheck();
 
-    console.log('Keyframe position updated:', position, keyframe, track, group);
-
     const time = position.x * (this.timelineService.millisecondsPerPixel() || 1);
-    console.log('new time for keyframe:', time, keyframe.time);
     this.timelineService.timeline.update((currentTimeline) => {
       if (!currentTimeline) {
         return currentTimeline;
@@ -138,7 +134,6 @@ export class TimelineComponent {
         return g;
       });
       // Return the updated timeline
-      console.log('Updated timeline:', currentTimeline);
       return { ...currentTimeline };
     });
   }
@@ -166,8 +161,6 @@ export class TimelineComponent {
   }
 
   onKeyframeClick(event: MouseEvent, keyframe: TimelineKeyframe, track: TimelineTrack, group: TimelineGroup) {
-    console.log('Keyframe clicked:', keyframe, track, group);
-    console.log('go to position:', keyframe.time);
     this.timelineService.setPosition(keyframe.time);
   }
 }
