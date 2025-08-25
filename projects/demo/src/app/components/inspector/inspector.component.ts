@@ -2,9 +2,7 @@ import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { DecimalPipe } from '@angular/common';
-import { ElementInspectorComponent } from './element-inspector/element-inspector.component';
-import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager, ComponentFactory } from '@richapps/ngx-bond';
-import { TreeChildComponent } from './tree-child/tree-child.component';
+import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager, ComponentFactory, ElementPropertyInspectorComponent, ElementTreeComponent, AlignmentInspectorComponent, ConnectionInspectorComponent } from '@richapps/ngx-bond';
 
 type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree';
 type Tab = {
@@ -14,7 +12,7 @@ type Tab = {
 
 @Component({
   selector: 'bond-inspector',
-  imports: [FormsModule, DecimalPipe, ElementInspectorComponent, TreeChildComponent],
+  imports: [FormsModule, DecimalPipe, ConnectionInspectorComponent, ElementTreeComponent, AlignmentInspectorComponent, ElementPropertyInspectorComponent, ElementPropertyInspectorComponent, ElementTreeComponent, ConnectionInspectorComponent],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
 })
@@ -25,11 +23,10 @@ export class InspectorComponent {
   protected componentFactory = inject(ComponentFactory);
 
   protected tabs = signal<Tab[]>([
-    { label: 'Properties', value: 'properties' },
-    { label: 'Children', value: 'children' },
+    { label: 'Connection', value: 'properties' },
     { label: 'Selection', value: 'selection' },
     { label: 'Element', value: 'element-inspector' },
-    { label: 'Child Tree', value: 'child-tree' },
+    { label: 'Children', value: 'child-tree' },
   ]);
 
   animationBubbleCount = signal(5);

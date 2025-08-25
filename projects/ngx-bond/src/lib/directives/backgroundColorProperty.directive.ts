@@ -1,4 +1,4 @@
-import { Directive, effect, ElementRef, inject, model, output, signal } from '@angular/core';
+import { Directive, effect, ElementRef, inject, Input, model, output, signal } from '@angular/core';
 
 export function rgbToHex(rgb: string): string {
   // Set seperator based on the rgb string provided
@@ -75,8 +75,8 @@ export class BackgroundColorPropertyDirective {
     {
       name: 'bgColor',
       type: 'color',
-      setterName: 'backgroundColor',
-      isSignal: false,
+      setterName: 'bgColor',
+      isSignal: true,
       event: 'backgroundColorChanged',
       serializable: true,
     },
@@ -99,20 +99,21 @@ export class BackgroundColorPropertyDirective {
   // backgroundColor = model('#00ff00');
   backgroundColorChanged = output<string>();
 
-  private _backgroundColor = '#00ff00';
+  // private _backgroundColor = '#00ff00';
 
-  get backgroundColor() {
-    return this._backgroundColor;
-  }
+  // get backgroundColor() {
+  //   return this._backgroundColor;
+  // }
 
-  set backgroundColor(value: string) {
-    if (value !== this._backgroundColor) {
-      this._backgroundColor = value;
-      this.bgColor.set(value);
-    }
-  }
+  // @Input()
+  // set backgroundColor(value: string) {
+  //   if (value !== this._backgroundColor) {
+  //     this._backgroundColor = value;
+  //     this.bgColor.set(value);
+  //   }
+  // }
 
-  bgColor = signal('#00ff00');
+  bgColor = model('#00ff00');
 
   borderRadius = model(20);
   borderRadiusChanged = output<number>();

@@ -1,4 +1,4 @@
-import { Directive, effect, ElementRef, inject, model, output, signal } from '@angular/core';
+import { Directive, effect, ElementRef, inject, Input, model, output, signal } from '@angular/core';
 
 export function rgbToHex(rgb: string): string {
   // Set seperator based on the rgb string provided
@@ -102,7 +102,8 @@ export class BackgroundColorPropertyDirective {
   get backgroundColor() {
     return this._backgroundColor;
   }
-
+  
+  @Input()
   set backgroundColor(value: string) {
     if (value !== this._backgroundColor) {
       this._backgroundColor = value;

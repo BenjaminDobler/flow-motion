@@ -1,0 +1,16 @@
+@for (element of selectionManager.selectionTargets(); track $index) {
+  @let directives = getDirectives(element);
+
+  @for (dir of directives; track $index) {
+    @for (prop of dir.inspectableProperties; track $index) {
+      {{ prop.name }}
+      <input [attr.type]="prop.type" [(ngModel)]="dir[prop.name]" />
+    }
+  }
+
+  @let componentInstance = getComponentInstance(element);
+  @for (prop of componentInstance.inspectableProperties; track $index) {
+    {{ prop.name }}
+    <input [attr.type]="prop.type" [(ngModel)]="componentInstance[prop.name]" />
+  }
+}

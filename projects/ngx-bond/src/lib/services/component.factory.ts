@@ -1,19 +1,14 @@
 import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
-import { NgBondContainer, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+import { NgBondContainer, NGBondItem, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
 import { TestComponentComponent } from '../components/editables/test-component/test-component.component';
 import { ImageComponent } from '../components/editables/image/image.component';
 
-
-
-
 const componentNameToClass = {
-  '_TestComponentComponent': TestComponentComponent,
-  '_ImageComponent': ImageComponent
+  _TestComponentComponent: TestComponentComponent,
+  _ImageComponent: ImageComponent,
 };
-
-
 
 @Injectable()
 export class ComponentFactory {
@@ -24,9 +19,17 @@ export class ComponentFactory {
   containerElementMap = new Map<NgBondContainer, { instance: any; directives: any[]; propertyDirectiveMap: Map<string, any>; componentRef: any }>();
   world?: NgBondWorld;
 
-  addComponent(componentClass: { new (...args: any[]): void } = TestComponentComponent, inputs: any = {}, additionalDirectives: any[] = []): ComponentRef<any> | undefined {
-    const id = 'some-id-' + this.componentCount;
+  addComponent(componentClass: { new (...args: any[]): void } = TestComponentComponent, inputs: any = {}, defaultID?: string, host?: any): ComponentRef<any> | undefined {
+    let id = 'some-id-' + this.componentCount;
     this.componentCount++;
+
+    if (defaultID) {
+      id = defaultID;
+    }
+
+    if (!host) {
+      host = this.world?.worldHost;
+    }
 
     const directives = [NgBondContainer, BackgroundColorPropertyDirective];
 
@@ -54,9 +57,11 @@ export class ComponentFactory {
       return;
     }
 
-    const componentRef = this.world?.worldHost.createComponent(componentClass, {
+    const componentRef = host.createComponent(componentClass, {
       directives: directiveSetup,
     });
+
+    console.log(componentRef);
 
     if ((componentRef.instance as any).inspectableProperties) {
       for (const prop of (componentRef.instance as any).inspectableProperties) {
@@ -97,13 +102,11 @@ export class ComponentFactory {
     componentRef.setInput('bondcontainer', id);
     componentRef.setInput('positioning', 'transform');
 
-
-    // additionalDirectives.forEach((dir) => {   
+    // additionalDirectives.forEach((dir) => {
     //   dir.properties.forEach(()=>{
 
     //   });
     // });
-
 
     for (const key in inputs) {
       componentRef.setInput(key, inputs[key]);
@@ -117,80 +120,154 @@ export class ComponentFactory {
     const serialized: any = {
       elements: [],
     };
-    this.containerElementMap.forEach((value, key) => {
-      // serialized[key] = {
-      //   instance: value.instance,
-      //   propertyDirectiveMap: Array.from(value.propertyDirectiveMap.entries()),
-      //   directives: value.directives,
-      // };
 
-      const el: any = {};
-      el.name = value.instance.constructor.name;
-      el.elementProperties = [];
-      el.directives = [];
-      el.id = key.id();
+    const getChildren = (item: NGBondItem, parent: any) => {
+      item.children().forEach((child) => {
+        const container = this.containerElementMap.get(child as NgBondContainer);
 
-      console.log('value: ', value.instance.constructor.name);
+        const el: any = {};
+        el.name = container?.instance.constructor.name;
+        el.elementProperties = [];
+        el.directives = [];
+        el.id = child.id();
+        el.elements = [];
 
-      console.log('directives: ', value.directives);
-
-      value.instance?.inspectableProperties?.forEach((prop: any) => {
-        console.log('prop', prop.setterName);
-        if (prop.serializable) {
-          try {
-            if (prop.isSignal) {
-              console.log('prop', prop.setterName, value.instance[prop.setterName]());
-              el.elementProperties.push({
-                name: prop.setterName,
-                value: value.instance[prop.setterName](),
-              });
-            } else {
-              console.log('prop', prop.setterName, value.instance[prop.setterName]);
-              el.elementProperties.push({
-                name: prop.setterName,
-                value: value.instance[prop.setterName],
-              });
-            }
-          } catch (error) {
-            console.error('Error serializing property:', prop.setterName, error);
-          }
-        }
-      });
-
-      // Serialize the directives if needed
-      value.directives.forEach((directive: any) => {
-        console.log('directive: ', directive.constructor.name);
-        el.directives.push({
-          name: directive.constructor.name,
-          properties: [],
-        });
-
-        directive.inspectableProperties.forEach((prop: any) => {
-          // serialized[key][prop.setterName] = directive[prop.setterName];
+        container?.instance?.inspectableProperties?.forEach((prop: any) => {
           console.log('prop', prop.setterName);
           if (prop.serializable) {
             try {
               if (prop.isSignal) {
-                el.directives[el.directives.length - 1].properties.push({
+                console.log('prop', prop.setterName, container.instance[prop.setterName]());
+                el.elementProperties.push({
                   name: prop.setterName,
-                  value: directive[prop.setterName](),
+                  value: container.instance[prop.setterName](),
                 });
-                console.log('prop', prop.setterName, directive[prop.setterName]());
               } else {
-                el.directives[el.directives.length - 1].properties.push({
+                console.log('prop', prop.setterName, container.instance[prop.setterName]);
+                el.elementProperties.push({
                   name: prop.setterName,
-                  value: directive[prop.setterName],
+                  value: container.instance[prop.setterName],
                 });
-                console.log('prop', prop.setterName, directive[prop.setterName]);
               }
             } catch (error) {
               console.error('Error serializing property:', prop.setterName, error);
             }
           }
         });
+
+        // Serialize the directives if needed
+        container?.directives.forEach((directive: any) => {
+          el.directives.push({
+            name: directive.constructor.name,
+            properties: [],
+          });
+
+          directive.inspectableProperties.forEach((prop: any) => {
+            // serialized[key][prop.setterName] = directive[prop.setterName];
+            console.log('prop', prop.setterName);
+            if (prop.serializable) {
+              try {
+                if (prop.isSignal) {
+                  el.directives[el.directives.length - 1].properties.push({
+                    name: prop.setterName,
+                    value: directive[prop.setterName](),
+                  });
+                } else {
+                  console.log('getter ', prop.setterName, directive[prop.setterName]);
+                  el.directives[el.directives.length - 1].properties.push({
+                    name: prop.setterName,
+                    value: directive[prop.setterName],
+                  });
+                }
+              } catch (error) {
+                console.error('Error serializing property:', prop.setterName, error);
+              }
+            }
+          });
+        });
+        parent.elements.push(el);
+        getChildren(child, el);
       });
-      serialized.elements.push(el);
-    });
+    };
+
+    if (this.world) {
+      getChildren(this.world, serialized);
+    }
+
+    // this.containerElementMap.forEach((value, key) => {
+    //   // serialized[key] = {
+    //   //   instance: value.instance,
+    //   //   propertyDirectiveMap: Array.from(value.propertyDirectiveMap.entries()),
+    //   //   directives: value.directives,
+    //   // };
+
+    //   const el: any = {};
+    //   el.name = value.instance.constructor.name;
+    //   el.elementProperties = [];
+    //   el.directives = [];
+    //   el.id = key.id();
+
+    //   console.log('value: ', value.instance.constructor.name);
+
+    //   console.log('directives: ', value.directives);
+
+    //   value.instance?.inspectableProperties?.forEach((prop: any) => {
+    //     console.log('prop', prop.setterName);
+    //     if (prop.serializable) {
+    //       try {
+    //         if (prop.isSignal) {
+    //           console.log('prop', prop.setterName, value.instance[prop.setterName]());
+    //           el.elementProperties.push({
+    //             name: prop.setterName,
+    //             value: value.instance[prop.setterName](),
+    //           });
+    //         } else {
+    //           console.log('prop', prop.setterName, value.instance[prop.setterName]);
+    //           el.elementProperties.push({
+    //             name: prop.setterName,
+    //             value: value.instance[prop.setterName],
+    //           });
+    //         }
+    //       } catch (error) {
+    //         console.error('Error serializing property:', prop.setterName, error);
+    //       }
+    //     }
+    //   });
+
+    //   // Serialize the directives if needed
+    //   value.directives.forEach((directive: any) => {
+    //     console.log('directive: ', directive.constructor.name);
+    //     el.directives.push({
+    //       name: directive.constructor.name,
+    //       properties: [],
+    //     });
+
+    //     directive.inspectableProperties.forEach((prop: any) => {
+    //       // serialized[key][prop.setterName] = directive[prop.setterName];
+    //       console.log('prop', prop.setterName);
+    //       if (prop.serializable) {
+    //         try {
+    //           if (prop.isSignal) {
+    //             el.directives[el.directives.length - 1].properties.push({
+    //               name: prop.setterName,
+    //               value: directive[prop.setterName](),
+    //             });
+    //             console.log('prop', prop.setterName, directive[prop.setterName]());
+    //           } else {
+    //             el.directives[el.directives.length - 1].properties.push({
+    //               name: prop.setterName,
+    //               value: directive[prop.setterName],
+    //             });
+    //             console.log('prop', prop.setterName, directive[prop.setterName]);
+    //           }
+    //         } catch (error) {
+    //           console.error('Error serializing property:', prop.setterName, error);
+    //         }
+    //       }
+    //     });
+    //   });
+    //   serialized.elements.push(el);
+    // });
     console.log('serialized: ', JSON.stringify(serialized, null, 2));
 
     localStorage.setItem('serialized', JSON.stringify(serialized, null, 2));
@@ -206,16 +283,18 @@ export class ComponentFactory {
 
     console.log(data);
 
-    data.elements.forEach((element: any)=>{
-      console.log('add component ', element.name);
-      const componentClass = componentNameToClass[element.name as keyof typeof componentNameToClass];
+    const host = this.world?.worldHost;
 
-      let componentProps = element.elementProperties.reduce((acc: any, prop: any) => {
+    const addChildren = (el: any, componentHost: any) => {
+      console.log('addd children host ', componentHost);
+      const componentClass = componentNameToClass[el.name as keyof typeof componentNameToClass];
+
+      let componentProps = el.elementProperties.reduce((acc: any, prop: any) => {
         acc[prop.name] = prop.value;
         return acc;
       }, {});
 
-      element.directives.forEach((dir: any)=>{
+      el.directives.forEach((dir: any) => {
         const directiveProps = dir.properties.reduce((acc: any, prop: any) => {
           acc[prop.name] = prop.value;
           return acc;
@@ -224,9 +303,17 @@ export class ComponentFactory {
         componentProps = { ...componentProps, ...directiveProps };
       });
 
-      this.addComponent(componentClass, componentProps);
-    });
+      const cHost = this.addComponent(componentClass, componentProps, el.id, componentHost);
+      setTimeout(() => {
+        el.elements.forEach((child: any) => {
+          addChildren(child, cHost?.instance.insertSlot);
+        });
+      }, 1);
+    };
 
+    data.elements.forEach((element: any) => {
+      addChildren(element, host);
+    });
   }
 
   groupSelected() {
@@ -264,7 +351,7 @@ export class ComponentFactory {
     if (container) {
       const colorDirective = container.directives.find((d: any) => d instanceof BackgroundColorPropertyDirective);
       if (colorDirective) {
-        colorDirective.backgroundColor = '#111111'; // Set a default color for the group
+        colorDirective.bgColor.set('#111111'); // Set a default color for the group
         colorDirective.borderRadius.set(0); // Set a default border radius
       }
     }

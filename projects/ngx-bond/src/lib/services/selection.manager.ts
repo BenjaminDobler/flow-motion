@@ -5,7 +5,7 @@ import { NgBondContainer } from '../components/ng-bond-container/ng-bond-contain
 
 export class SelectionManager {
   keyManager: KeyManager = inject(KeyManager);
-  selectionTargets = signal<(NgBondContainer)[]>([]);
+  selectionTargets = signal<NgBondContainer[]>([]);
   selectionMap = new Map<NgBondContainer, boolean>();
 
   selectedGroup = computed(() => {
@@ -46,7 +46,7 @@ export class SelectionManager {
 
   constructor() {}
 
-  setAll(targets: (NgBondContainer)[]) {
+  setAll(targets: NgBondContainer[]) {
     this.selectionTargets.set(targets);
     this.selectionMap.clear();
     targets.forEach((target) => {
@@ -137,7 +137,7 @@ export class SelectionManager {
       if (target.type === 'container') {
         (target as NgBondContainer).moveBy(minX - target.gX(), 0);
       } else if (target.type === 'property') {
-       // target.gX.set(minX);
+        // target.gX.set(minX);
       }
     });
   }
@@ -213,5 +213,13 @@ export class SelectionManager {
         target.y.set(centerY - target.height() / 2);
       }
     });
+  }
+
+  toggleSelection(target: NgBondContainer) {
+    if (this.isSelected(target)) {
+      this.unselect(target);
+    } else {
+      this.select(target);
+    }
   }
 }

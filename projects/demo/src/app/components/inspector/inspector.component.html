@@ -7,205 +7,28 @@
 <div class="content">
   @if (selected() === 'properties') {
     <div>
-      <h3>Properties</h3>
+      <h3>Connection</h3>
 
-      <form>
-        <fieldset>
-          <label>
-            Stroke Color
-            <input
-              type="color"
-              placeholder="Table Name"
-              [value]="bondService.defaultProperties().stroke"
-              (input)="updateProperty(bondService.defaultProperties, 'stroke', $any($event.target).value)"
-            />
-          </label>
-          <label>
-            Stroke Width
-            <input type="number" [value]="bondService.defaultProperties().strokeWidth" (input)="updateProperty(bondService.defaultProperties, 'strokeWidth', $any($event.target).value)" />
-          </label>
-
-          <label>
-            Stroke Dasharray
-            <input type="string" [value]="bondService.defaultProperties().strokeDasharray" (input)="updateProperty(bondService.defaultProperties, 'strokeDasharray', $any($event.target).value)" />
-          </label>
-          <label>
-            Connection Type
-            <select (change)="updateProperty(bondService.defaultProperties, 'curveType', $any($event.target).value)" [value]="bondService.defaultProperties().curveType">
-              <option value="bezier">bezier</option>
-              <option value="multi-line">multi-line</option>
-              <option value="straight">straight</option>
-              <option value="orthogonal">orthogonal</option>
-            </select>
-          </label>
-
-          <label>
-            Snap
-            <input name="snap" type="checkbox" [(ngModel)]="bondService.snap" />
-          </label>
-
-          <label>
-            Snap Distance
-            <input name="snapdist" type="number" [(ngModel)]="bondService.snapDistance" />
-          </label>
-
-          @if (bondService.defaultProperties().curveType === 'multi-line' || bondService.defaultProperties().curveType === 'orthogonal') {
-            <label>
-              Connection Smoothness
-              <input type="number" [value]="bondService.defaultProperties().curveRadius" (input)="updateProperty(bondService.defaultProperties, 'curveRadius', $any($event.target).value)" />
-            </label>
-          }
-        </fieldset>
-      </form>
-
-      <label>
-        Animation Bubble Count
-        <input type="number" [(ngModel)]="animationBubbleCount" />
-      </label>
-
-      <label>
-        Animation Bubble Duration
-        <input type="number" [(ngModel)]="animationBubbleDuration" />
-      </label>
-
-      <h3>Links</h3>
-      @for (link of bondService.links(); track $index) {
-        <div>
-          {{ link().inputId }} > {{ link().outputId }}
-          <div style="display: flex; align-items: center">
-            <label>
-              Animate
-              <input type="checkbox" [value]="link().properties.animate" (change)="updateAnimateLink(link, $event)" />
-            </label>
-            <button (click)="bondService.removeLink(link)">Remove</button>
-          </div>
-        </div>
-      }
-
-      <br />
-      <br />
-      <input type="number" [value]="bondService.scale()" step="0.1" (change)="bondService.scale.set($any($event).target.value)" />
-    </div>
-  } @else if (selected() === 'children') {
-    <!-- Children -->
-    <div>
-      <div>
-        <h3>Targets</h3>
-
-        @for (drag of bondService.dragElements(); track $index) {
-          <div
-            class="bond-item"
-            [class.container]="drag.type === 'container'"
-            [style]="'margin-top: 5px'"
-            [class.selected]="selectionManager.isSelected(drag)"
-            (click)="toggleSelection(drag)"
-            style="white-space: nowrap"
-          >
-            ID: {{ drag.id() }} G:
-            <span style="background: #2558ce; padding: 2px; border-radius: 3px"
-              >{{ drag.gX() | number: '1.0-0' }}x{{ drag.gY() | number: '1.0-0' }} {{ drag.x() | number: '1.0-0' }}x{{ drag.y() | number: '1.0-0' }}</span
-            >
-          </div>
-        }
-
-        <button (click)="componentFactory.addComponent()">Add</button>
-        <button (click)="componentFactory.groupSelected()">Group</button>
-        <button (click)="componentFactory.serializeComponents()">Serialize</button>
-        <button (click)="componentFactory.loadSerialized()">Load</button>
-      </div>
+      <connection-inspector></connection-inspector>
     </div>
   } @else if (selected() === 'selection') {
     <!-- Selection -->
     <div>
       <h3>Selection</h3>
-      <div style="margin-bottom: 10px">
-        @for (selection of selectionManager.selectionTargets(); track $index) {
-          <div class="bond-item" style="white-space: nowrap">
-            ID: {{ selection.id() }}
-            <button (click)="selectionManager.unselect(selection)">Remove</button>
-          </div>
-        }
-      </div>
-
-      <button (click)="selectionManager.align('left')">
-        <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-          <path
-            fill="var(--color-icon)"
-            fill-rule="evenodd"
-            d="M17.25 10a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-8.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75zm-4 5a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75z"
-            clip-rule="evenodd"
-          ></path>
-          <path fill="var(--color-icon-tertiary)" d="M6 17.5a.5.5 0 0 1-1 0v-12a.5.5 0 0 1 1 0z"></path>
-        </svg>
-      </button>
-      <button (click)="selectionManager.align('horizontal-center')">
-        <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-          <path
-            fill="var(--color-icon)"
-            fill-rule="evenodd"
-            d="M17.25 10a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-9.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75zm-2 5a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75z"
-            clip-rule="evenodd"
-          ></path>
-          <path fill="var(--color-icon-tertiary)" fill-rule="evenodd" d="M13 17.5a.5.5 0 0 1-1 0V15h1zm0-4.5v-3h-1v3zm0-7.5V8h-1V5.5a.5.5 0 0 1 1 0" clip-rule="evenodd"></path>
-        </svg>
-      </button>
-      <button (click)="selectionManager.align('right')">
-        <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-          <path
-            fill="var(--color-icon)"
-            fill-rule="evenodd"
-            d="M6.75 10A.75.75 0 0 1 6 9.25v-.5A.75.75 0 0 1 6.75 8h8.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75zm4 5a.75.75 0 0 1-.75-.75v-.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75z"
-            clip-rule="evenodd"
-          ></path>
-          <path fill="var(--color-icon-tertiary)" d="M18 17.5a.5.5 0 0 0 1 0v-12a.5.5 0 0 0-1 0z"></path>
-        </svg>
-      </button>
-      <br />
-      <br />
-      <button (click)="selectionManager.align('top')">
-        <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-          <path
-            fill="var(--color-icon)"
-            fill-rule="evenodd"
-            d="M10 17.25a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-8.5A.75.75 0 0 1 8.75 8h.5a.75.75 0 0 1 .75.75zm5-4a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 .75.75z"
-            clip-rule="evenodd"
-          ></path>
-          <path fill="var(--color-icon-tertiary)" d="M17.5 6a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"></path>
-        </svg>
-      </button>
-      <button (click)="selectionManager.align('vertical-center')">
-        <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-          <path
-            fill="var(--color-icon)"
-            fill-rule="evenodd"
-            d="M10 6.75A.75.75 0 0 0 9.25 6h-.5a.75.75 0 0 0-.75.75v9.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75zm5 2a.75.75 0 0 0-.75-.75h-.5a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75z"
-            clip-rule="evenodd"
-          ></path>
-          <path fill="var(--color-icon-tertiary)" fill-rule="evenodd" d="M17.5 11a.5.5 0 0 1 0 1H15v-1zM13 11h-3v1h3zm-7.5 0H8v1H5.5a.5.5 0 0 1 0-1" clip-rule="evenodd"></path>
-        </svg>
-      </button>
-      <button (click)="selectionManager.align('bottom')">
-        <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-          <path
-            fill="var(--color-icon)"
-            fill-rule="evenodd"
-            d="M10 6.75A.75.75 0 0 0 9.25 6h-.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75zm5 4a.75.75 0 0 0-.75-.75h-.5a.75.75 0 0 0-.75.75v4.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75z"
-            clip-rule="evenodd"
-          ></path>
-          <path fill="var(--color-icon-tertiary)" d="M17.5 18a.5.5 0 0 1 0 1h-12a.5.5 0 0 1 0-1z"></path>
-        </svg>
-      </button>
-      <br />
+      <alignment-inspector></alignment-inspector>
     </div>
   } @else if (selected() === 'element-inspector') {
-    <element-inspector></element-inspector>
+    <element-property-inspector></element-property-inspector>
   } @else if (selected() === 'child-tree') {
     <div>
-      <h3>Child Tree</h3>
+      <h3>Children</h3>
 
-      @for (child of bondService.world?.children(); track $index) {
-        <tree-child [child]="child"></tree-child>
-      }
+      <element-tree></element-tree>
+
+      <button (click)="componentFactory.addComponent()">Add</button>
+      <button (click)="componentFactory.groupSelected()">Group</button>
+      <button (click)="componentFactory.serializeComponents()">Serialize</button>
+      <button (click)="componentFactory.loadSerialized()">Load</button>
     </div>
   } @else {
     <div>Select a tab to view its content.</div>
