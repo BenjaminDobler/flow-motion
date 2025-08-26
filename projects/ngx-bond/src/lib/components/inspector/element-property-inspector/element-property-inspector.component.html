@@ -4,7 +4,15 @@
   @for (dir of directives; track $index) {
     @for (prop of dir.inspectableProperties; track $index) {
       {{ prop.name }}
-      <input [attr.type]="prop.type" [(ngModel)]="dir[prop.name]" />
+      @if (prop.type === 'select') {
+        <select [(ngModel)]="dir[prop.name]">
+          @for (option of prop.options; track $index) {
+            <option [selected]="dir[prop.name] === option">{{ option }}</option>
+          }
+        </select>
+      } @else {
+        <input [attr.type]="prop.type" [(ngModel)]="dir[prop.name]" />
+      }
     }
   }
 

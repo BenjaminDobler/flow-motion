@@ -10,8 +10,9 @@ import { distinctUntilChanged } from 'rxjs';
 import { MotionPathHelper } from 'gsap/MotionPathHelper';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { InspectorComponent } from './lib/timeline/components/inspector/inspector.component';
+import EasePack from 'gsap/EasePack';
 
-gsap.registerPlugin(MotionPathHelper, MotionPathPlugin);
+gsap.registerPlugin(MotionPathHelper, MotionPathPlugin, EasePack);
 
 const props = ['x', 'y', 'width', 'height', 'borderRadius', 'backgroundColor', 'pathPosition'];
 

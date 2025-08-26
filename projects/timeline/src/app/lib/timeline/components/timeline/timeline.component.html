@@ -57,11 +57,12 @@
               }
               @for (keyframe of track.keyframes; track $index) {
                 <timeline-keyframe
-                  [minY]="0"
-                  [maxY]="0"
+                  [minY]="5"
+                  [maxY]="5"
                   [minX]="0"
                   [showCursor]="false"
                   [x]="keyframe.time / mpp"
+                  [y]="5"
                   [bondcontainer]="`keyframe`"
                   [positioning]="'transform'"
                   [resizable]="false"
@@ -70,6 +71,7 @@
                   (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
                   [timeline]="timelineService.timeline()"
                   (click)="onKeyframeClick($event, keyframe, track, group)"
+                  (dragEnd)="onKeyframeDragEnd($event, keyframe, track, group)"
                 ></timeline-keyframe>
               }
             </div>

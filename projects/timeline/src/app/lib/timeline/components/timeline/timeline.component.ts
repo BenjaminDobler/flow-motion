@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, input, model, output, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectorRef, Component, inject, input, model, output, signal } from '@angular/core';
 import { Timeline, TimelineGroup, TimelineKeyframe, TimelineTrack, TimelineTween } from '../../model/timeline';
 import { TimelineRulerComponent } from './timeline-ruler/timeline-ruler.component';
 import { TimelineKeyframeComponent } from './timeline-keyframe/timeline-keyframe.component';
@@ -88,6 +88,7 @@ export class TimelineComponent {
 
   onTweenDragEnd() {
     this.isTweenDragging.set(false);
+    this.timelineService.createGsapTimeline();
   }
 
   onKeyframePositionUpdated(position: { x: number; y: number }, keyframe: TimelineKeyframe, track: TimelineTrack, group: TimelineGroup) {
@@ -162,5 +163,9 @@ export class TimelineComponent {
 
   onKeyframeClick(event: MouseEvent, keyframe: TimelineKeyframe, track: TimelineTrack, group: TimelineGroup) {
     this.timelineService.setPosition(keyframe.time);
+  }
+
+  onKeyframeDragEnd(event: MouseEvent, keyframe: TimelineKeyframe, track: TimelineTrack, group: TimelineGroup) {
+    this.timelineService.createGsapTimeline();
   }
 }

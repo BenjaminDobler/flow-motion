@@ -67,7 +67,6 @@ export class NgBondProperty {
   container? = inject(NgBondContainer, { optional: true });
 
   constructor() {
-    console.log('NgBondProperty initialized:', this.id(), this.el.nativeElement);
     const drag = makeDraggable(this.el.nativeElement);
 
     if (!this.ngBondService) {
@@ -101,8 +100,8 @@ export class NgBondProperty {
       };
       worldRect = parentRect;
       isFirstMove = true;
-      if (this.container?.dragWorld) {
-        const worldEl = this.container.dragWorld.el.nativeElement;
+      if (this.container?.world) {
+        const worldEl = this.container.world.el.nativeElement;
         worldRect = worldEl.getBoundingClientRect();
       }
     });
@@ -165,6 +164,11 @@ export class NgBondProperty {
       position = 'bottom';
     }
     return position;
+  }
+
+  ngAfterViewInit() {
+        console.log('NgBondProperty initialized:', this.id(),'gx: ' +  this.gX(),'x: '+ this.x());
+
   }
 
   // updatePosition() {

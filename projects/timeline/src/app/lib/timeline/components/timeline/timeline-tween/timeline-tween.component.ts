@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { Timeline, TimelineTween } from '../../../model/timeline';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, Observable, of, switchMap, timer } from 'rxjs';
@@ -49,6 +49,7 @@ export class TimelineTweenComponent extends NgBondContainer {
     effect(() => {
       const start = this.tween()?.start.time || 0;
       const end = this.tween()?.end.time || 0;
+      this.timeline();
       const mpp = this.timelineService.millisecondsPerPixel() || 1;
       const w = (end - start) / mpp;
       this.setWidth(w);

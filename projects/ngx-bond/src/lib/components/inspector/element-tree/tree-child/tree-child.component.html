@@ -1,5 +1,4 @@
-{{ child().id() }} {{selected()}}
-
+<div (click)="toggleSelection()">{{ child().id() }}</div>
 @for (c of child().children(); track $index) {
   <tree-child style="margin-left: 20px" [child]="c"></tree-child>
 }

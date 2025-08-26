@@ -88,6 +88,15 @@ export class BackgroundColorPropertyDirective {
       event: 'borderRadiusChanged',
       serializable: true,
     },
+    {
+      name: 'overflow',
+      type: 'select',
+      setterName: 'overflow',
+      isSignal: true,
+      event: 'overflowChanged',
+      serializable: true,
+      options: ['visible', 'hidden', 'scroll', 'auto'],
+    },
   ];
 
   get inspectableProperties() {
@@ -118,6 +127,9 @@ export class BackgroundColorPropertyDirective {
   borderRadius = model(20);
   borderRadiusChanged = output<number>();
 
+  overflow = model('visible');
+  overflowChanged = output<string>();
+
   constructor() {
     effect(() => {
       let bg = this.bgColor();
@@ -137,6 +149,12 @@ export class BackgroundColorPropertyDirective {
       const br = this.borderRadius();
       this.borderRadiusChanged.emit(br);
       this.el.nativeElement.style.borderRadius = `${br}px`;
+    });
+
+    effect(() => {
+      const ov = this.overflow();
+      this.overflowChanged.emit(ov);
+      this.el.nativeElement.style.overflow = ov;
     });
   }
 }

@@ -1,12 +1,12 @@
 import { Component, effect, inject } from '@angular/core';
 import { TimelineService } from '../../services/timeline.service';
-import { SelectionManager } from '@richapps/ngx-bond';
+import { ElementPropertyInspectorComponent, SelectionManager } from '@richapps/ngx-bond';
 import { FormsModule } from '@angular/forms';
 import { EditablePathComponent } from '../../../../components/editable-path/editable-path.component';
 
 @Component({
   selector: 'inspector',
-  imports: [FormsModule],
+  imports: [FormsModule, ElementPropertyInspectorComponent],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
 })

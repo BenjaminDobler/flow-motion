@@ -5,7 +5,6 @@
 <button (click)="timelineService.componentFactory.serializeComponents()">Serialize Components</button>
 <button (click)="timelineService.componentFactory.groupSelected()">Group</button>
 
-
 @if (timelineService.selectedTween()) {
   @let tween = timelineService.selectedTween()!.tween;
   <div>
@@ -22,21 +21,4 @@
   </div>
 }
 
-@for (element of selectionManager.selectionTargets(); track $index) {
-  @let directives = getDirectives(element);
-
-  @for (dir of directives; track $index) {
-    @for (prop of dir.inspectableProperties; track $index) {
-      {{ prop.name }}
-      <input [attr.type]="prop.type" [(ngModel)]="dir[prop.name]" />
-    }
-  }
-
-  @let componentInstance = getComponentInstance(element);
-  @for (prop of componentInstance.inspectableProperties; track $index) {
-    {{ prop.name }}
-    <input [attr.type]="prop.type" [(ngModel)]="componentInstance[prop.name]" />
-  }
-
-  instance
-}
+<element-property-inspector />
