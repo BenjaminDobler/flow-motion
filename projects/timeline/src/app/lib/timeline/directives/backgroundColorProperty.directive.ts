@@ -86,6 +86,13 @@ export class BackgroundColorPropertyDirective {
       isSignal: true,
       event: 'borderRadiusChanged',
     },
+    {
+      name: 'overflow',
+      type: 'string',
+      setterName: 'overflow',
+      isSignal: true,
+      event: 'overflowChanged',
+    },
   ];
 
   get inspectableProperties() {
@@ -102,7 +109,7 @@ export class BackgroundColorPropertyDirective {
   get backgroundColor() {
     return this._backgroundColor;
   }
-  
+
   @Input()
   set backgroundColor(value: string) {
     if (value !== this._backgroundColor) {
@@ -115,6 +122,9 @@ export class BackgroundColorPropertyDirective {
 
   borderRadius = model(20);
   borderRadiusChanged = output<number>();
+
+  overflow = model('visible');
+  overflowChanged = output<string>();
 
   constructor() {
     effect(() => {
@@ -135,6 +145,12 @@ export class BackgroundColorPropertyDirective {
       const br = this.borderRadius();
       this.borderRadiusChanged.emit(br);
       this.el.nativeElement.style.borderRadius = `${br}px`;
+    });
+
+    effect(() => {
+      const ov = this.overflow();
+      this.overflowChanged.emit(ov);
+      this.el.nativeElement.style.overflow = ov;
     });
   }
 }
