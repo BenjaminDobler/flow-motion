@@ -83,6 +83,13 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       isSignal: true,
       serializable: false,
     },
+    {
+      name: 'rotate',
+      type: 'number',
+      setterName: 'rotate',
+      isSignal: true,
+      serializable: true,
+    },
   ];
 
   get inspectableProperties() {
@@ -117,6 +124,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   x = model(0);
   y = model(0);
+
+  rotate = model(0);
 
   gY = computed(() => {
     return this.y() + (this.parent()?.gY() || 0);
@@ -154,7 +163,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   ngBondService = inject(NgBondService, { optional: true });
   selectionManager = inject(SelectionManager, { optional: true });
 
-  dragWorld: NgBondWorld | null = inject(NgBondWorld, { optional: true });
+  world: NgBondWorld | null = inject(NgBondWorld, { optional: true });
 
   public type = 'container';
 
@@ -223,24 +232,10 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     skipSelf: true,
   });
 
-  parentWorld: NgBondWorld | null = inject(NgBondWorld, {
-    optional: true,
-  });
-
-  // get parent(): null | NGBondItem {
-  //   if (this.parentContainer) {
-  //     return this.parentContainer;
-  //   }
-  //   if (this.parentWorld) {
-  //     return this.parentWorld;
-  //   }
-  //   return null;
-  // }
-
   parent = signal<NGBondItem | null>(null);
 
   constructor() {
-    this.parent.set(this.parentContainer || this.parentWorld || null);
+    this.parent.set(this.parentContainer || this.world || null);
 
     this.parent()?.addChild(this);
 
@@ -280,7 +275,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
         this.itemElement.style.left = `${x}px`;
         this.itemElement.style.top = `${y}px`;
       } else if (this.positioning === 'transform') {
-        this.itemElement.style.transform = `translate(${x}px, ${y}px)`;
+        this.itemElement.style.transform = `translate(${x}px, ${y}px) rotate(${this.rotate() || 0}deg)`;
       }
     }
     this.positionUpdated.emit({ x, y });
@@ -318,8 +313,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       this.worldRect = this.parentRect;
     }
 
-    if (this.dragWorld) {
-      const worldEl = this.dragWorld.el.nativeElement;
+    if (this.world) {
+      const worldEl = this.world.el.nativeElement;
       this.worldRect = worldEl.getBoundingClientRect();
     }
   }
@@ -336,21 +331,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   };
 
   initialized = signal(false);
-
-  getWorld() {
-    let parentContainer = this.parentContainer;
-    while (parentContainer) {
-      if (parentContainer instanceof NgBondWorld) {
-        return parentContainer;
-      }
-      if (typeof parentContainer.parentContainer === 'function') {
-        parentContainer = parentContainer.parentContainer;
-      } else {
-        break;
-      }
-    }
-    return null;
-  }
 
   initialize() {
     this.initialized.set(true);
@@ -372,7 +352,10 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     }
 
     if (this.positioning === 'none') {
-      this.updatePosition();
+      setTimeout(() => {
+        //this.logRect();
+        this.updatePosition();
+      });
     }
 
     if (!this.itemElement) {
@@ -405,6 +388,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       this.dragStart.emit();
       this.updateBounds();
       if (this.selectionManager) {
+        this.selectionManager.dragStart(this);
+
         if (!this.selectionManager.isSelected(this)) {
           this.selectionManager.unselectAll();
           this.selectionManager.select(this);
@@ -413,6 +398,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     });
 
     drag.dragEnd$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.selectionManager?.dragEnd(this);
       this.dragEnd.emit();
     });
 
@@ -497,38 +483,24 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   ngAfterViewInit() {
     // This is needed to ensure that the initial position is set correctly after the view is initialized
+
     this.inited.set(true);
     this.initialize();
   }
 
   updatePosition() {
     const itemElement = this.el?.nativeElement;
-    // const parentElement = itemElement.parentElement;
-
-    // let worldRect = { left: 0, top: 0 };
-    // if (this.dragWorld) {
-    //   const worldElement = this.dragWorld.el.nativeElement;
-    //   worldRect = worldElement.getBoundingClientRect();
-    // }
 
     const itemRect = itemElement.getBoundingClientRect();
-
-    // if (!this.parentContainer()) {
-    //   console.warn('No parent container set for NgBondContainer, cannot update position.');
-    //   return;
-    // }
 
     const containerX = this.parent()?.gX?.() || 0;
     const containerY = this.parent()?.gY?.() || 0;
 
-    const x = itemRect.left - containerX - (this.getWorld()?.rect?.left || 0);
-    const y = itemRect.top - containerY - (this.getWorld()?.rect?.top || 0);
+    const x = itemRect.left - containerX - (this.world?.rect?.left || 0);
+    const y = itemRect.top - containerY - (this.world?.rect?.top || 0);
 
     this.x.set(x);
     this.y.set(y);
-
-    // this.draggableContentChildren().forEach((c) => c.container?.updatePosition());
-    // this.dragContainerContentChildren().forEach((c) => c.updatePosition());
   }
 
   ngOnDestroy() {
@@ -545,11 +517,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   pos(x: number, y: number, isSource = true) {
     if (!this.itemElement) {
-      console.log('no item element to set position on');
       return;
     }
-    console.log('Setting position:', this.id(), x, y);
-
     x = Math.max(this.minX(), Math.min(x, this.maxX()));
     y = Math.max(this.minY(), Math.min(y, this.maxY()));
 

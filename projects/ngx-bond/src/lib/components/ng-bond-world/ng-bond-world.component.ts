@@ -7,6 +7,7 @@ import { makeDraggable } from '../util/drag.util';
 import { touches } from '../../utils/geo.utils';
 import { ComponentFactory } from '../../services/component.factory';
 import { ImageComponent } from '../editables/image/image.component';
+import { NgBondContainer } from '@richapps/ngx-bond';
 
 export interface NGBondItem {
   x: Signal<number>;
@@ -54,7 +55,6 @@ export class NgBondWorld implements NGBondItem {
   animationBubbleCount = input<number>(10);
   animationBubbleDuration = input<number>(4);
 
-
   children = signal<NGBondItem[]>([]);
   x = signal(0);
   y = signal(0);
@@ -78,10 +78,12 @@ export class NgBondWorld implements NGBondItem {
 
   addChild(child: NGBondItem) {
     this.children.update((c) => [...c, child]);
+    this.selectionManager.rootChildren.update((c) => [...c, child as NgBondContainer]);
   }
 
   removeChild(child: NGBondItem) {
     this.children.update((c) => c.filter((cChild) => cChild !== child));
+    this.selectionManager.rootChildren.update((c) => c.filter((cChild) => cChild !== (child as NgBondContainer)));
   }
 
   selectionRect = computed(() => {
@@ -184,6 +186,8 @@ export class NgBondWorld implements NGBondItem {
 
       this.componentFactory.addComponent(ImageComponent, {
         src: reader.result as string,
+        x: e.pageX - this.rect!.left,
+        y: e.pageY - this.rect!.top,
       });
 
       image.onload = () => {
