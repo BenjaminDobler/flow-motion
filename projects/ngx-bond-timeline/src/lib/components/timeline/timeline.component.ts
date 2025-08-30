@@ -25,13 +25,20 @@ export class TimelineComponent {
   tweenSelected = output<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }>();
 
   onTweenClick(event: MouseEvent, tween: TimelineTween, track: TimelineTrack, group: TimelineGroup) {
-    console.log('on tween click');
+    console.log('on tween click', tween);
     // event.stopPropagation();
     // console.log('Tween clicked:', tween, track, group);
     this.selectedTween.set(tween);
     if (track.name === 'position') {
       // show motion path
       this.tweenSelected.emit({ tween, track, group });
+
+      if (this.timelineService.selectedTween()?.tween === tween) {
+        this.timelineService.selectedTween.set(null);
+        return;
+      }
+
+      this.timelineService.selectedTween.set({ tween, track, group });
     }
   }
 

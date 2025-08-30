@@ -11,3 +11,5 @@ export * from './lib/components/inspector/inspector.component';
 
 export * from './lib/model/timeline';
 export * from './lib/services/timeline.service';
+
+export * from './lib/components/motion-path/motion-path.component';

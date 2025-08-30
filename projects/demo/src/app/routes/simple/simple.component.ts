@@ -15,6 +15,7 @@ import { TimelineComponent, TimelineService } from '@richapps/ngx-bond-timeline'
 })
 export class SimpleComponent {
   protected ngBondService: NgBondService = inject(NgBondService);
+  protected timelineService: TimelineService = inject(TimelineService);
 
   cX = signal(200);
 

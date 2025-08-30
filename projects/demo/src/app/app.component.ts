@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ComponentFactory, KeyManager, NgBondService, SelectionManager } from '@richapps/ngx-bond';
+import { ComponentFactory, EditablePathComponent, KeyManager, NgBondService, SelectionManager, TextComponentComponent } from '@richapps/ngx-bond';
 
 import { RouterModule } from '@angular/router';
 import { configureGsap } from './gsap.setup';
 
-
 configureGsap();
-
 
 @Component({
   selector: 'app-root',
@@ -29,6 +27,7 @@ export class AppComponent {
   title = 'demo';
 
   protected ngBondService: NgBondService = inject(NgBondService);
+  protected componentFactory: ComponentFactory = inject(ComponentFactory);
 
   onDrop(e: DragEvent) {
     e.preventDefault();
@@ -60,5 +59,19 @@ export class AppComponent {
     //     context.drawImage(image, 0, 0);
     //   };
     // };
+  }
+
+  addPath() {
+    this.componentFactory.addComponent(EditablePathComponent);
+  }
+
+  addContainer() {
+    this.componentFactory.addComponent();
+  }
+
+  addImage() {}
+
+  addText() {
+    this.componentFactory.addComponent(TextComponentComponent, { resizable: false, bgColor: 'transparent' });
   }
 }
