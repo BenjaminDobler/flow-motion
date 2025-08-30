@@ -2,7 +2,7 @@ import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { DecimalPipe } from '@angular/common';
-import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager, ComponentFactory, ElementPropertyInspectorComponent, ElementTreeComponent, AlignmentInspectorComponent, ConnectionInspectorComponent } from '@richapps/ngx-bond';
+import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager, ComponentFactory, ElementPropertyInspectorComponent, ElementTreeComponent, AlignmentInspectorComponent, ConnectionInspectorComponent, TextComponentComponent } from '@richapps/ngx-bond';
 
 type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree';
 type Tab = {
@@ -60,4 +60,8 @@ export class InspectorComponent {
       this.selectionManager.select(target);
     }
   }
+
+  addText() {
+    this.componentFactory.addComponent(TextComponentComponent, {resizable: false, bgColor: 'transparent'});
+  } 
 }

@@ -14,6 +14,7 @@ export class TreeChildComponent {
   selection = inject(SelectionManager);
   child = input.required<NGBondItem>();
   onselect = output<NGBondItem>();
+
   selected = computed(() => {
     return this.selection.selectionTargets().includes(this.child() as NgBondContainer);
   });
@@ -21,4 +22,9 @@ export class TreeChildComponent {
   toggleSelection() {
     this.selection.toggleSelection(this.child() as NgBondContainer);
   }
+
+  component = computed(() => {
+    const container = this.selection.componentFactory?.containerElementMap.get(this.child() as NgBondContainer);
+    return container?.instance;
+  });
 }

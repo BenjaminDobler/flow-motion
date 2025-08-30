@@ -11,4 +11,5 @@ import { TreeChildComponent } from './tree-child/tree-child.component';
 export class ElementTreeComponent {
   bondService = inject(NgBondService);
   selection = inject(SelectionManager);
+
 }

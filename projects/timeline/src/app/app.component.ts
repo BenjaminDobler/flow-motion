@@ -1,15 +1,12 @@
 import { afterNextRender, Component, ElementRef, inject, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
-import { TimelineComponent } from './lib/timeline/components/timeline/timeline.component';
-import { TimelineGroup, TimelineTrack, TimelineTween } from './lib/timeline/model/timeline';
+import { TimelineComponent, TimelineGroup, TimelineTrack, TimelineTween, TimelineService, InspectorComponent } from '@richapps/ngx-bond-timeline';
 import { ComponentFactory, KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
-import { TimelineService } from './lib/timeline/services/timeline.service';
 import { gsap } from 'gsap';
 import { SVGEdit } from '@richapps/ngx-pentool';
 import { distinctUntilChanged } from 'rxjs';
 
 import { MotionPathHelper } from 'gsap/MotionPathHelper';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
-import { InspectorComponent } from './lib/timeline/components/inspector/inspector.component';
 import EasePack from 'gsap/EasePack';
 
 gsap.registerPlugin(MotionPathHelper, MotionPathPlugin, EasePack);

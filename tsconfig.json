@@ -12,6 +12,12 @@
     "paths": {
       "@richapps/ngx-bond": [
         "./projects/ngx-bond/src/public-api.ts"
+      ],
+      "@richapps/ngx-bond-timeline": [
+        "./projects/ngx-bond-timeline/src/public-api.ts"
+      ],
+      "ngx-bond-timeline": [
+        "./dist/ngx-bond-timeline"
       ]
     },
     "skipLibCheck": true,
@@ -65,6 +71,12 @@
     },
     {
       "path": "./projects/content-test/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ngx-bond-timeline/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ngx-bond-timeline/tsconfig.spec.json"
     }
   ]
 }

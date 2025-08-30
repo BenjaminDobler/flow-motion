@@ -20,6 +20,8 @@ export class ImageComponent {
   src = input<string>('');
   srcChanged = output<string>();
 
+  type = 'image';
+
   get inspectableProperties() {
     return ImageComponent.inspectableProperties;
   }

@@ -330,6 +330,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     }
   };
 
+  onInitialized = output<boolean>();
+
   initialized = signal(false);
 
   initialize() {
@@ -369,6 +371,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
     this.setUpDraggable();
     this.inited.set(true);
+
+    this.onInitialized.emit(true);
   }
 
   setUpDraggable() {

@@ -28,6 +28,7 @@
     "ngx-monaco-editor-v2": "^20.0.0",
     "path-data-polyfill": "^1.0.10",
     "prettier": "^3.5.3",
+    "primeicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

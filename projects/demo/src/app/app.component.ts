@@ -2,6 +2,11 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ComponentFactory, KeyManager, NgBondService, SelectionManager } from '@richapps/ngx-bond';
 
 import { RouterModule } from '@angular/router';
+import { configureGsap } from './gsap.setup';
+
+
+configureGsap();
+
 
 @Component({
   selector: 'app-root',

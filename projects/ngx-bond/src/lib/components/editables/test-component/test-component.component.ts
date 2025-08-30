@@ -11,6 +11,7 @@ export class TestComponentComponent extends NgBondContainerHost {
   // backgroundColor = input('#00ff00');
 
 
+  type = 'container';
 
   el = inject(ElementRef);
   @ViewChild('insert_slot', { read: ViewContainerRef })
