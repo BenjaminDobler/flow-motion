@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  position: absolute;
+  &.editable {
+    input {
+      pointer-events: all;
+      background: #333;
+    }
+  }
+
+  input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    field-sizing: content;
+    background: transparent;
+    pointer-events: none;
+
+    border: none;
+  }
+}
