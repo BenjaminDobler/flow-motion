@@ -32,6 +32,12 @@
       <button (click)="componentFactory.serializeComponents()">Serialize</button>
       <button (click)="componentFactory.loadSerialized()">Load</button>
     </div>
+  } @else if (selected() === 'tween') {
+    <div>
+      <h3>Tween</h3>
+
+      <inspector-tween-properties></inspector-tween-properties>
+    </div>
   } @else {
     <div>Select a tab to view its content.</div>
   }

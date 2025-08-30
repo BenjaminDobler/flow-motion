@@ -2,9 +2,22 @@ import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { DecimalPipe } from '@angular/common';
-import { Link, NgBondContainer, NgBondProperty, NgBondService, SelectionManager, ComponentFactory, ElementPropertyInspectorComponent, ElementTreeComponent, AlignmentInspectorComponent, ConnectionInspectorComponent, TextComponentComponent } from '@richapps/ngx-bond';
+import {
+  Link,
+  NgBondContainer,
+  NgBondProperty,
+  NgBondService,
+  SelectionManager,
+  ComponentFactory,
+  ElementPropertyInspectorComponent,
+  ElementTreeComponent,
+  AlignmentInspectorComponent,
+  ConnectionInspectorComponent,
+  TextComponentComponent,
+} from '@richapps/ngx-bond';
+import { InspectorTweenProperties } from '@richapps/ngx-bond-timeline';
 
-type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree';
+type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree' | 'tween';
 type Tab = {
   label: string;
   value: tabType;
@@ -12,7 +25,18 @@ type Tab = {
 
 @Component({
   selector: 'bond-inspector',
-  imports: [FormsModule, DecimalPipe, ConnectionInspectorComponent, ElementTreeComponent, AlignmentInspectorComponent, ElementPropertyInspectorComponent, ElementPropertyInspectorComponent, ElementTreeComponent, ConnectionInspectorComponent],
+  imports: [
+    FormsModule,
+    DecimalPipe,
+    ConnectionInspectorComponent,
+    ElementTreeComponent,
+    AlignmentInspectorComponent,
+    ElementPropertyInspectorComponent,
+    ElementPropertyInspectorComponent,
+    ElementTreeComponent,
+    ConnectionInspectorComponent,
+    InspectorTweenProperties,
+  ],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
 })
@@ -27,6 +51,7 @@ export class InspectorComponent {
     { label: 'Selection', value: 'selection' },
     { label: 'Element', value: 'element-inspector' },
     { label: 'Children', value: 'child-tree' },
+    { label: 'Tween', value: 'tween' },
   ]);
 
   animationBubbleCount = signal(5);
@@ -62,6 +87,6 @@ export class InspectorComponent {
   }
 
   addText() {
-    this.componentFactory.addComponent(TextComponentComponent, {resizable: false, bgColor: 'transparent'});
-  } 
+    this.componentFactory.addComponent(TextComponentComponent, { resizable: false, bgColor: 'transparent' });
+  }
 }

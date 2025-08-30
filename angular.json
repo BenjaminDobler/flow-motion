@@ -21,9 +21,7 @@
             "index": "projects/demo/src/index.html",
             "browser": "projects/demo/src/main.ts",
             "tsConfig": "projects/demo/tsconfig.app.json",
-            "externalDependencies": [
-              "fs"
-            ],
+            "externalDependencies": ["fs"],
             "inlineStyleLanguage": "scss",
             "assets": [
               {
@@ -41,10 +39,9 @@
                 "output": "./assets/monaco/min-maps"
               }
             ],
-            "styles": [
-              "projects/demo/src/styles.scss"
-            ],
-            "scripts": []
+            "styles": ["projects/demo/src/styles.scss"],
+            "scripts": ["projects/pentool/src/polyfills/pathseg.js"],
+            "polyfills": ["node_modules/path-data-polyfill/path-data-polyfill.js"]
           },
           "configurations": {
             "production": {
@@ -96,19 +93,14 @@
                 "input": "projects/demo/public"
               }
             ],
-            "styles": [
-              "projects/demo/src/styles.scss"
-            ],
+            "styles": ["projects/demo/src/styles.scss"],
             "scripts": []
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/demo/**/*.ts",
-              "projects/demo/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/demo/**/*.ts", "projects/demo/**/*.html"],
             "eslintConfig": "projects/demo/eslint.config.js"
           }
         }
@@ -136,19 +128,13 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/ngx-bond/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/ngx-bond/**/*.ts",
-              "projects/ngx-bond/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/ngx-bond/**/*.ts", "projects/ngx-bond/**/*.html"],
             "eslintConfig": "projects/ngx-bond/eslint.config.js"
           }
         }
@@ -170,12 +156,8 @@
           "options": {
             "browser": "projects/timeline/src/main.ts",
             "tsConfig": "projects/timeline/tsconfig.app.json",
-            "scripts": [
-              "projects/pentool/src/polyfills/pathseg.js"
-            ],
-            "polyfills": [
-              "node_modules/path-data-polyfill/path-data-polyfill.js"
-            ],
+            "scripts": ["projects/pentool/src/polyfills/pathseg.js"],
+            "polyfills": ["node_modules/path-data-polyfill/path-data-polyfill.js"],
             "inlineStyleLanguage": "scss",
             "assets": [
               {
@@ -183,9 +165,7 @@
                 "input": "projects/timeline/public"
               }
             ],
-            "styles": [
-              "projects/timeline/src/styles.scss"
-            ]
+            "styles": ["projects/timeline/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -237,18 +217,13 @@
                 "input": "projects/timeline/public"
               }
             ],
-            "styles": [
-              "projects/timeline/src/styles.scss"
-            ]
+            "styles": ["projects/timeline/src/styles.scss"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/timeline/**/*.ts",
-              "projects/timeline/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/timeline/**/*.ts", "projects/timeline/**/*.html"],
             "eslintConfig": "projects/timeline/eslint.config.js"
           }
         }
@@ -277,9 +252,7 @@
                 "input": "projects/gsap-demo/public"
               }
             ],
-            "styles": [
-              "projects/gsap-demo/src/styles.scss"
-            ]
+            "styles": ["projects/gsap-demo/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -331,18 +304,13 @@
                 "input": "projects/gsap-demo/public"
               }
             ],
-            "styles": [
-              "projects/gsap-demo/src/styles.scss"
-            ]
+            "styles": ["projects/gsap-demo/src/styles.scss"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/gsap-demo/**/*.ts",
-              "projects/gsap-demo/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/gsap-demo/**/*.ts", "projects/gsap-demo/**/*.html"],
             "eslintConfig": "projects/gsap-demo/eslint.config.js"
           }
         }
@@ -365,21 +333,15 @@
             "browser": "projects/pentool/src/main.ts",
             "tsConfig": "projects/pentool/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "scripts": [
-              "projects/pentool/src/polyfills/pathseg.js"
-            ],
-            "polyfills": [
-              "node_modules/path-data-polyfill/path-data-polyfill.js"
-            ],
+            "scripts": ["projects/pentool/src/polyfills/pathseg.js"],
+            "polyfills": ["node_modules/path-data-polyfill/path-data-polyfill.js"],
             "assets": [
               {
                 "glob": "**/*",
                 "input": "projects/pentool/public"
               }
             ],
-            "styles": [
-              "projects/pentool/src/styles.scss"
-            ]
+            "styles": ["projects/pentool/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -431,18 +393,13 @@
                 "input": "projects/pentool/public"
               }
             ],
-            "styles": [
-              "projects/pentool/src/styles.scss"
-            ]
+            "styles": ["projects/pentool/src/styles.scss"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/pentool/**/*.ts",
-              "projects/pentool/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/pentool/**/*.ts", "projects/pentool/**/*.html"],
             "eslintConfig": "projects/pentool/eslint.config.js"
           }
         }
@@ -470,19 +427,13 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/ngx-pentool/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/ngx-pentool/**/*.ts",
-              "projects/ngx-pentool/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/ngx-pentool/**/*.ts", "projects/ngx-pentool/**/*.html"],
             "eslintConfig": "projects/ngx-pentool/eslint.config.js"
           }
         }
@@ -511,9 +462,7 @@
                 "input": "projects/timeline-layout/public"
               }
             ],
-            "styles": [
-              "projects/timeline-layout/src/styles.scss"
-            ]
+            "styles": ["projects/timeline-layout/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -565,18 +514,13 @@
                 "input": "projects/timeline-layout/public"
               }
             ],
-            "styles": [
-              "projects/timeline-layout/src/styles.scss"
-            ]
+            "styles": ["projects/timeline-layout/src/styles.scss"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/timeline-layout/**/*.ts",
-              "projects/timeline-layout/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/timeline-layout/**/*.ts", "projects/timeline-layout/**/*.html"],
             "eslintConfig": "projects/timeline-layout/eslint.config.js"
           }
         }
@@ -597,9 +541,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "projects/content-test/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "projects/content-test/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -608,9 +550,7 @@
                 "input": "projects/content-test/public"
               }
             ],
-            "styles": [
-              "projects/content-test/src/styles.scss"
-            ]
+            "styles": ["projects/content-test/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -654,10 +594,7 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/content-test/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -666,18 +603,13 @@
                 "input": "projects/content-test/public"
               }
             ],
-            "styles": [
-              "projects/content-test/src/styles.scss"
-            ]
+            "styles": ["projects/content-test/src/styles.scss"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/content-test/**/*.ts",
-              "projects/content-test/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/content-test/**/*.ts", "projects/content-test/**/*.html"],
             "eslintConfig": "projects/content-test/eslint.config.js"
           }
         }
@@ -705,19 +637,13 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/ngx-bond-timeline/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/ngx-bond-timeline/**/*.ts",
-              "projects/ngx-bond-timeline/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/ngx-bond-timeline/**/*.ts", "projects/ngx-bond-timeline/**/*.html"],
             "eslintConfig": "projects/ngx-bond-timeline/eslint.config.js"
           }
         }
@@ -751,8 +677,6 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "angular-eslint"
-    ]
+    "schematicCollections": ["angular-eslint"]
   }
 }
