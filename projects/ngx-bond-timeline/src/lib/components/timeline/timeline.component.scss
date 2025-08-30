@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  --track-height: 30px;
+  --group-height: 40px;
+  --header-height: 30px;
+
+  --header-background: #222;
+  --track-background: #222;
+  --label-background: #333;
+}
+
+:host {
+  display: block;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.timeline-container {
+  overflow-x: scroll;
+  overflow-y: scroll;
+  overscroll-behavior: none;
+  position: relative;
+  z-index: 0;
+  max-height: 200px;
+}
+
+.labels {
+  position: sticky;
+  left: 0;
+  height: 0;
+  z-index: 20;
+}
+
+.label {
+  height: var(--track-height);
+  background: var(--label-background);
+  border-bottom: solid 1px #4b4b4a;
+  width: 250px;
+  padding-left: 20px;
+  line-height: var(--track-height);
+
+  &.group {
+    height: var(--group-height);
+    line-height: var(--group-height);
+    padding-left: 10px;
+  }
+}
+
+.tracks {
+  margin-left: 250px;
+}
+
+.track-container {
+  display: flex;
+  .track-spacer {
+    width: 10px;
+    height: var(--track-height);
+
+    background: #222;
+
+    &.group {
+      height: var(--group-height);
+      background-color: #555454;
+      border-bottom: solid 1px #4b4b4a;
+    }
+    &.header {
+      height: var(--header-height);
+    }
+
+    &.track {
+      border-bottom: solid 1px #4b4b4a;
+    }
+  }
+}
+
+.header {
+  height: 30px;
+  background-color: #222;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.track {
+  width: 8000px;
+  height: 20px;
+  position: relative;
+  background-color: var(--track-background);
+  border-bottom: solid 1px #4b4b4a;
+  height: var(--track-height);
+  border-bottom: solid 1px #4b4b4a;
+}
+
+.group {
+  height: var(--group-height, 20px);
+  background-color: #555454;
+  border-bottom: solid 1px #4b4b4a;
+}
+
+.keyframe {
+  width: 10px;
+  height: 10px;
+  background-color: #ff0000;
+}
+
+.pos-line {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background-color: #a62929;
+  z-index: 1000;
+}

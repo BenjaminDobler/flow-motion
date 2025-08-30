@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  height: 30px;
+  position: relative;
+}
+
+
+.scrubber {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 30px;
+  background-color: rgba(0,0,0,0.001);
+}
+
+
+

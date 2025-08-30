@@ -1,0 +1,37 @@
+<svg width="100%" height="100%" x="0" y="0" (click)="onClick($event)">
+  <defs>
+    <pattern height="30" [attr.width]="patternWidth()" stroke-width="1" stroke="#777777" x="0" id="pattern-timeline-ruler" patternUnits="userSpaceOnUse" y="0">
+      <path [attr.d]="patternPath()"></path>
+    </pattern>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#pattern-timeline-ruler)" pointer-events="all" x="0" y="0"></rect>
+</svg>
+
+<div
+  [bondcontainer]="`scrubber`"
+  [x]="timelineService.position() / timelineService.millisecondsPerPixel()"
+  (dragStart)="onScrubberDragStart($event)"
+  (dragEnd)="onScrubberDragEnd($event)"
+  (positionUpdated)="onScrubberPositionUpdated($event)"
+  [resizable]="false"
+  [minY]="0"
+  [maxY]="0"
+  [minX]="0"
+  [showCursor]="false"
+  class="scrubber"
+>
+  <svg style="position: absolute; left: -8; bottom: 0" width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M10.3135 15.0234C9.46607 17.0944 6.53393 17.0944 5.68652 15.0234L1.1543 3.94629C0.481826 2.30169 1.69188 0.5 3.46875 0.5H12.5312C14.3081 0.5 15.5182 2.30169 14.8457 3.94629L10.3135 15.0234Z"
+      fill="url(#paint0_linear_1_3)"
+      stroke="#555454"
+    />
+    <defs>
+      <linearGradient id="paint0_linear_1_3" x1="8" y1="0" x2="8" y2="22" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#D9D9D9" />
+        <stop offset="1" stop-color="#737373" />
+      </linearGradient>
+    </defs>
+  </svg>
+</div>
