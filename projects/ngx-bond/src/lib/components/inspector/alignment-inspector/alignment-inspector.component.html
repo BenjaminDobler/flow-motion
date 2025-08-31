@@ -1,11 +1,11 @@
-<div style="margin-bottom: 10px">
+<!-- <div style="margin-bottom: 10px">
   @for (selection of selectionManager.selectionTargets(); track $index) {
     <div class="bond-item" style="white-space: nowrap">
       ID: {{ selection.id() }}
       <button (click)="selectionManager.unselect(selection)">Remove</button>
     </div>
   }
-</div>
+</div> -->
 
 <button (click)="selectionManager.align('left')">
   <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
@@ -40,8 +40,7 @@
     <path fill="var(--color-icon-tertiary)" d="M18 17.5a.5.5 0 0 0 1 0v-12a.5.5 0 0 0-1 0z"></path>
   </svg>
 </button>
-<br />
-<br />
+
 <button (click)="selectionManager.align('top')">
   <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
     <path

@@ -9,6 +9,7 @@
     "test": "ng test",
     "build:prod": "ng build demo --configuration production --base-href=/ng-bond/",
     "lint": "ng lint",
+    "ngx-pentool:build": "ng build ngx-pentool",
     "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool"
   },
   "private": true,
@@ -38,6 +39,7 @@
     "@angular/cli": "^20.0.2",
     "@angular/compiler-cli": "^20.0.3",
     "@types/jasmine": "~5.1.0",
+    "@types/wicg-file-system-access": "^2023.10.6",
     "angular-eslint": "20.1.1",
     "eslint": "^9.29.0",
     "jasmine-core": "~5.6.0",

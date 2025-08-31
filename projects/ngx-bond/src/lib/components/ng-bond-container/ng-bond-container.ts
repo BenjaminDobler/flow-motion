@@ -50,6 +50,9 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       setterName: 'x',
       isSignal: true,
       serializable: true,
+      group: {
+        name: 'Position',
+      },
     },
     {
       name: 'y',
@@ -57,6 +60,9 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       setterName: 'y',
       isSignal: true,
       serializable: true,
+      group: {
+        name: 'Position',
+      },
     },
     {
       name: 'width',
@@ -65,6 +71,9 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       setterName: 'width',
       isSignal: true,
       serializable: true,
+      group: {
+        name: 'Size',
+      },
     },
     {
       name: 'height',
@@ -72,8 +81,10 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'number',
       setterName: 'height',
       isSignal: true,
-
       serializable: true,
+      group: {
+        name: 'Size',
+      },
     },
     {
       name: 'position',
@@ -321,12 +332,12 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   setWidth = (width: number) => {
     if (width !== this.width()) {
-      this.width.set(width);
+      this.width.set(Math.round(width));
     }
   };
   setHeight = (height: number) => {
     if (height !== this.height()) {
-      this.height.set(height);
+      this.height.set(Math.round(height));
     }
   };
 
@@ -523,8 +534,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     if (!this.itemElement) {
       return;
     }
-    x = Math.max(this.minX(), Math.min(x, this.maxX()));
-    y = Math.max(this.minY(), Math.min(y, this.maxY()));
+    x = Math.round(Math.max(this.minX(), Math.min(x, this.maxX())));
+    y = Math.round(Math.max(this.minY(), Math.min(y, this.maxY())));
 
     const xBy = x - this.x();
     const yBy = y - this.y();

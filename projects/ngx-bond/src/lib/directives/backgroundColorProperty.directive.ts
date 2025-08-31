@@ -89,6 +89,14 @@ export class BackgroundColorPropertyDirective {
       serializable: true,
     },
     {
+      name: 'opacity',
+      type: 'number',
+      setterName: 'opacity',
+      isSignal: true,
+      event: 'opacityChanged',
+      serializable: true,
+    },
+    {
       name: 'overflow',
       type: 'select',
       setterName: 'overflow',
@@ -130,6 +138,9 @@ export class BackgroundColorPropertyDirective {
   overflow = model('visible');
   overflowChanged = output<string>();
 
+  opacity = model(1);
+  opacityChanged = output<number>();
+
   constructor() {
     effect(() => {
       let bg = this.bgColor();
@@ -143,6 +154,12 @@ export class BackgroundColorPropertyDirective {
       //   this.el.nativeElement.style.backgroundColor = bg;
       // }
       this.el.nativeElement.style.backgroundColor = bg;
+    });
+
+    effect(() => {
+      const op = this.opacity();
+      this.opacityChanged.emit(op);
+      this.el.nativeElement.style.opacity = op.toString();
     });
 
     effect(() => {

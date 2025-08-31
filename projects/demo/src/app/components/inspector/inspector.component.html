@@ -18,27 +18,19 @@
       <alignment-inspector></alignment-inspector>
     </div>
   } @else if (selected() === 'element-inspector') {
-    <element-property-inspector></element-property-inspector>
+    <alignment-inspector></alignment-inspector>
+
+    <element-property-inspector style="margin-top: 10px"></element-property-inspector>
+    <inspector-tween-properties></inspector-tween-properties>
   } @else if (selected() === 'child-tree') {
     <div>
-      <h3>Children</h3>
+      <h3>Properties</h3>
 
       <element-tree></element-tree>
-
-      <button (click)="componentFactory.addComponent()">Add</button>
-      <button (click)="addText()">Text</button>
 
       <button (click)="componentFactory.groupSelected()">Group</button>
       <button (click)="componentFactory.serializeComponents()">Serialize</button>
       <button (click)="componentFactory.loadSerialized()">Load</button>
     </div>
-  } @else if (selected() === 'tween') {
-    <div>
-      <h3>Tween</h3>
-
-      <inspector-tween-properties></inspector-tween-properties>
-    </div>
-  } @else {
-    <div>Select a tab to view its content.</div>
   }
 </div>

@@ -206,14 +206,19 @@ export class ComponentFactory {
     return serialized;
   }
 
-  loadSerialized() {
-    const serialized = localStorage.getItem('serialized');
-    if (!serialized) {
-      return;
-    }
-    const data = JSON.parse(serialized);
+  loadSerialized(content?: string) {
+    let data: any;
+    if (!content) {
+      const serialized = localStorage.getItem('serialized');
+      if (!serialized) {
+        return;
+      }
+      data = JSON.parse(serialized);
 
-    console.log(data);
+      console.log(data);
+    } else {
+      data = content;
+    }
 
     const host = this.world?.worldHost;
 

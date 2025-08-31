@@ -1,3 +1,39 @@
 :host {
   display: block;
 }
+
+.property-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  input {
+    margin-bottom: 0px;
+  }
+  margin-bottom: 10px;
+
+  label {
+    flex-grow: 1;
+  }
+}
+
+.property {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  margin-bottom: 10px;
+
+  label {
+    flex-grow: 1;
+  }
+
+  input {
+    margin-bottom: 0px;
+    width: 80px
+  }
+
+  select {
+    margin-bottom: 0px;
+    width: 80px;
+  }
+}

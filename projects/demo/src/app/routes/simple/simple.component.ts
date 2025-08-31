@@ -10,7 +10,7 @@ import { MotionPathComponent, TimelineComponent, TimelineService } from '@richap
   imports: [NgBondContainer, NgBondProperty, NgBondWorld, PropertyContainerComponent, InspectorComponent, TimelineComponent, MotionPathComponent],
   templateUrl: './simple.component.html',
   styleUrl: './simple.component.scss',
-  providers: [TimelineService],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SimpleComponent {

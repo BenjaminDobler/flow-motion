@@ -18,7 +18,7 @@ jobs:
           node-version: 23
 
       - name: Build Angular app to prod
-        run: npm install --force && npm run build:prod
+        run: npm install --force && ngx-pentool:build && npm run ngx-pentool:link && npm run build:prod
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

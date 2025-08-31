@@ -1,7 +1,52 @@
 @for (element of selectionManager.selectionTargets(); track $index) {
   @let directives = getDirectives(element);
 
-  @for (dir of directives; track $index) {
+  <div style="margin-bottom: 10px;">ID {{ element.id() }}</div>
+
+  @for (compGroup of componentGroups(); track $index) {
+    <div>{{ compGroup.name }}</div>
+    @for (prop of compGroup.props; track $index) {
+      {{ prop.name }}
+      <input [attr.type]="prop.type" [(ngModel)]="compGroup.props[prop.name]" />
+    }
+  }
+
+  @for (directiveGroup of directiveGroups(); track $index) {
+    @if (directiveGroup.name !== 'ungrouped') {
+      <div class="property-group">
+        <label>{{ directiveGroup.name }}</label>
+        @for (prop of directiveGroup.props; track $index) {
+          <!-- {{ prop.name }} -->
+          @if (prop.type === 'select') {
+            <select [(ngModel)]="directiveGroup.directive[prop.name]">
+              @for (option of prop.options; track $index) {
+                <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
+              }
+            </select>
+          } @else {
+            <input style="width: 80px" [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
+          }
+        }
+      </div>
+    } @else {
+      @for (prop of directiveGroup.props; track $index) {
+        <div class="property">
+          <label>{{ prop.name }}</label>
+          @if (prop.type === 'select') {
+            <select [(ngModel)]="directiveGroup.directive[prop.name]">
+              @for (option of prop.options; track $index) {
+                <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
+              }
+            </select>
+          } @else {
+            <input [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
+          }
+        </div>
+      }
+    }
+  }
+
+  <!-- @for (dir of directives; track $index) {
     @for (prop of dir.inspectableProperties; track $index) {
       {{ prop.name }}
       @if (prop.type === 'select') {
@@ -14,7 +59,7 @@
         <input [attr.type]="prop.type" [(ngModel)]="dir[prop.name]" />
       }
     }
-  }
+  } -->
 
   @let componentInstance = getComponentInstance(element);
   @for (prop of componentInstance.inspectableProperties; track $index) {

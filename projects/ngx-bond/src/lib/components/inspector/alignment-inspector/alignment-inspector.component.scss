@@ -1,3 +1,8 @@
 :host {
-  display: block;
+  display: flex;
+  gap: 2px;
+
+  button {
+    padding: 0;
+  }
 }

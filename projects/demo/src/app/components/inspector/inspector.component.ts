@@ -42,16 +42,14 @@ type Tab = {
 })
 export class InspectorComponent {
   protected bondService: NgBondService = inject(NgBondService);
-  protected selected = signal<tabType>('properties');
+  protected selected = signal<tabType>('element-inspector');
   protected selectionManager: SelectionManager = inject(SelectionManager);
   protected componentFactory = inject(ComponentFactory);
 
   protected tabs = signal<Tab[]>([
-    { label: 'Connection', value: 'properties' },
-    { label: 'Selection', value: 'selection' },
     { label: 'Element', value: 'element-inspector' },
     { label: 'Children', value: 'child-tree' },
-    { label: 'Tween', value: 'tween' },
+    { label: 'Connection', value: 'properties' },
   ]);
 
   animationBubbleCount = signal(5);

@@ -3,6 +3,7 @@ import { inject, outputBinding, signal, ViewContainerRef } from '@angular/core';
 import { gsap } from 'gsap';
 import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from '../model/timeline';
 import { ComponentFactory, NgBondContainer, NgBondService } from '@richapps/ngx-bond';
+import { configureGsap } from '../gsap.setup';
 
 export class TimelineService {
   private bondService = inject(NgBondService);
@@ -38,6 +39,8 @@ export class TimelineService {
   });
 
   constructor() {
+
+    configureGsap();
     this.componentFactory.propertyChanged.subscribe(({ id, property, value }) => {
       this.propertyChanged(id, property, value);
     });
