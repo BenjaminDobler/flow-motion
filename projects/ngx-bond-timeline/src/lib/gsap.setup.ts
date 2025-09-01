@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 
 gsap.registerPlugin(MotionPathHelper, MotionPathPlugin, EasePack);
 
-const props = ['x', 'y', 'width', 'height', 'borderRadius', 'backgroundColor', 'pathPosition', 'opacity'];
+const props = ['x', 'y', 'width', 'height', 'borderRadius', 'backgroundColor', 'bgColor', 'pathPosition', 'opacity'];
 
 export const configureGsap = () => {
   props.forEach((prop) => {
@@ -46,6 +46,7 @@ export const configureGsap = () => {
     render(progress: any, data: any) {
       data.target.x.set(data.interp(progress).x);
       data.target.y.set(data.interp(progress).y);
+      
     },
   });
 };

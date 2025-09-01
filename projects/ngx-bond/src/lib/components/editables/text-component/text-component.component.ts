@@ -90,7 +90,6 @@ export class TextComponentComponent extends NgBondContainerHost {
 
     effect(() => {
       this.fontSizeChanged.emit(this.fontSize());
-      console.log('Font size changed:', this.fontSize());
       setTimeout(() => {
         this.measureSize();
       });
@@ -98,7 +97,6 @@ export class TextComponentComponent extends NgBondContainerHost {
 
     effect(() => {
       this.colorChanged.emit(this.color());
-      console.log('Color changed:', this.color());
       setTimeout(() => {
         this.measureSize();
       });
@@ -112,7 +110,6 @@ export class TextComponentComponent extends NgBondContainerHost {
     });
 
     this.container.onInitialized.subscribe(() => {
-      console.log('Container initialized in text component', this.textInput()?.nativeElement);
 
       setTimeout(() => {
         this.measureSize();
@@ -121,13 +118,11 @@ export class TextComponentComponent extends NgBondContainerHost {
 
     const dbl$ = fromEvent(this.el.nativeElement, 'dblclick');
     dbl$.subscribe(() => {
-      console.log('Double clicked');
       this.editable.set(!this.editable());
     });
 
     effect(() => {
       const editable = this.editable();
-      console.log('Editable state changed:', editable);
       if (editable) {
         this.container.disable();
         //this.textInput()?.nativeElement.setAttribute('disabled', 'true');

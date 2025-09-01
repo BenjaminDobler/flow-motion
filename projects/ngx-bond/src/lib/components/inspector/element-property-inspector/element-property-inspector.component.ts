@@ -33,7 +33,6 @@ export class ElementPropertyInspectorComponent {
     if (elements.length > 0) {
       const element = elements[0];
       const instance = this.getComponentInstance(element);
-      console.log('instance', instance);
       if (instance.inspectableProperties) {
         const instanceGroups = groupBy(instance.inspectableProperties, (prop) => {
           return prop.group?.name || 'ungrouped';
@@ -42,6 +41,7 @@ export class ElementPropertyInspectorComponent {
           return {
             name,
             props: value,
+            component: instance
           };
         });
       }
@@ -73,8 +73,6 @@ export class ElementPropertyInspectorComponent {
         
       }
     }
-    console.log('groups');
-    console.log(groups);
     return groups;
   });
 

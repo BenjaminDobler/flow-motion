@@ -34,7 +34,6 @@ export class SVGEdit {
 
   previewPath?: SVGPathElement;
 
-
   public get svg(): SVGElement | undefined {
     return this._svg;
   }
@@ -66,7 +65,7 @@ export class SVGEdit {
         newPath.setAttribute('stroke-dasharray', '5 5');
         newPath.setAttribute('preventselection', 'true');
         this.previewPath = newPath;
-        
+
         group.appendChild(newPath);
 
         this.svg?.appendChild(group);
@@ -80,8 +79,6 @@ export class SVGEdit {
             console.log('nearest point clicked');
           }
         );
-
-        
       } else {
         if (controlLines) {
           this.controlLinesPath = controlLines as SVGPathElement;
@@ -267,12 +264,12 @@ export class SVGEdit {
           return !this.insertionPointActive && this.mode === 'pen' && !x.target.classList.contains('point');
         }),
         tap((downEvent: MouseEvent) => {
+          console.log('mouse down', downEvent);
           const lastPoint = this.points[this.points.length - 1];
           moves = 0;
           if (this.svg) {
             parentRect = this.svg?.getBoundingClientRect();
           }
-
           downPoint = new Point(this.svg, 'point', () => this.draw(), this.positionUpdated.bind(this), this.onPointClick.bind(this));
           downPoint.x = downEvent.clientX - parentRect.left;
           downPoint.y = downEvent.clientY - parentRect.top;
@@ -289,7 +286,7 @@ export class SVGEdit {
 
           this.points.push(downPoint);
           this.addToHistory();
-          this.draw();
+          this.draw({x: downPoint.x, y: downPoint.y});
         }),
         switchMap(() => {
           return mouseMove$.pipe(
@@ -375,7 +372,7 @@ export class SVGEdit {
     }
   }
 
-  createNewPath(d?: string) {
+  createNewPath(d?: string, startX?: number, startY?: number) {
     if (!this.svg) {
       console.error('SVG element is not set');
       return;
@@ -390,10 +387,17 @@ export class SVGEdit {
     }
     // this.generatePointsFromPath(newPath);
 
-    // const pointsBefore = [...this.points];
+    console.log('create point at ', startX, startY);
+    console.log('this points ', this.points);
 
     this.selectedPathElement = newPath;
-    //this.points = pointsBefore;
+
+    if (startX && startY) {
+      const p = new Point(this.svg, 'point', () => this.draw(), this.positionUpdated.bind(this), this.onPointClick.bind(this));
+      p.x = startX;
+      p.y = startY;
+      this.points = [p];
+    }
 
     if (this.points.length > 0) {
       // this.updatePath(`M${(this.points[0].x, this.points[0].y)}`);
@@ -421,14 +425,14 @@ export class SVGEdit {
     if (this.onNewPathAdded) {
       this.onNewPathAdded(newPath);
     }
-    // this.draw();
+    //this.draw();
   }
 
   draw(movePoint?: { x: number; y: number }) {
     if (this.svg && this.points.length > 0 && !this.selectedPathElement) {
       console.log('drawing svg edit', this.points, this.selectedPathElement);
 
-      this.createNewPath();
+      this.createNewPath(undefined, movePoint?.x, movePoint?.y);
     }
 
     let d = '';
@@ -660,8 +664,6 @@ export class SVGEdit {
         currentX = prevSegment.values[prevSegment.values.length - 2];
         currentY = prevSegment.values[prevSegment.values.length - 1];
       }
-
-
     }
 
     if (segment.type === 'L') {
@@ -921,8 +923,7 @@ export class SVGEdit {
     const existingPaths = this.svg?.querySelectorAll('path');
     console.log('existing paths', existingPaths);
     if (existingPaths && existingPaths.length > 0) {
-
-        const controlPaths = this.svg?.querySelectorAll('.editorControls > path');
+      const controlPaths = this.svg?.querySelectorAll('.editorControls > path');
 
       existingPaths.forEach((path) => {
         console.log('path removed', path);
@@ -930,7 +931,7 @@ export class SVGEdit {
         if (!isControlPath) {
           path.remove();
         }
-       // path.remove();
+        // path.remove();
       });
     }
   }

@@ -91,6 +91,7 @@ export class TimelineService {
   stop() {
     this.scrubbing.set(true);
     this.animationTimeline.pause(0);
+    this.position.set(0);
     this.playing.set(false);
     setTimeout(() => {
       this.scrubbing.set(false);
@@ -136,6 +137,8 @@ export class TimelineService {
                   props[track.name] = nextKeyframe.value;
                 }
 
+
+                console.log('tween motion path', tween.motionPath);
                 if (tween.motionPath) {
                   const proxyElement = {
                     x: targetDirective.x(),

@@ -25,7 +25,6 @@ export class TimelineComponent {
   tweenSelected = output<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup }>();
 
   onTweenClick(event: MouseEvent, tween: TimelineTween, track: TimelineTrack, group: TimelineGroup) {
-    console.log('on tween click', tween);
     // event.stopPropagation();
     // console.log('Tween clicked:', tween, track, group);
     this.selectedTween.set(tween);
@@ -57,6 +56,7 @@ export class TimelineComponent {
         };
         // track.tweens.push(tween);
       }
+
       currentTimeline.groups = currentTimeline.groups.map((g) => {
         if (g === group) {
           return {

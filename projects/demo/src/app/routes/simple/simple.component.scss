@@ -61,3 +61,11 @@
     transform: scale(1);
   }
 }
+
+bond-inspector {
+  z-index: 99;
+}
+
+timeline {
+  z-index: 100;
+}

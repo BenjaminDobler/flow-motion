@@ -15,6 +15,7 @@ export class MotionPathComponent {
   timelineService: TimelineService = inject(TimelineService);
 
   constructor() {
+    let initPath = '';
     afterNextRender(() => {
       if (this.svgCanvas()) {
         this.svgEdit = new SVGEdit();
@@ -22,11 +23,20 @@ export class MotionPathComponent {
         this.svgEdit.init();
 
         this.svgEdit.pathChanged$.pipe(distinctUntilChanged()).subscribe((d) => {
-          if (this.timelineService.selectedTween()) {
-            if (this.timelineService.selectedTween()) {
-              this.timelineService.selectedTween()!.tween.motionPath = d;
+          console.log('motion path changed ', d);
+
+          if (this.timelineService.selectedTween() !== null) {
+            const selectedTween = this.timelineService.selectedTween();
+            if (selectedTween) {
+              const straightMotionPath = `M${selectedTween.tween.start.value.x} ${selectedTween.tween.start.value.y} L${selectedTween.tween.end.value.x} ${selectedTween.tween.end.value.y}`;
+              if (d !== straightMotionPath) {
+                console.log('it is not the same ');
+                console.log(d, straightMotionPath);
+                this.timelineService.selectedTween()!.tween.motionPath = d;
+              }
+
+              this.timelineService.createGsapTimeline();
             }
-            this.timelineService.createGsapTimeline();
           }
         });
       }
@@ -35,7 +45,7 @@ export class MotionPathComponent {
     effect(() => {
       const selectedTween = this.timelineService.selectedTween();
 
-      console.log('selected tween changed:', selectedTween)
+      console.log('selected tween changed:', selectedTween);
       if (!selectedTween) {
         this.svgEdit?.clearAll();
       } else {
@@ -44,9 +54,10 @@ export class MotionPathComponent {
           if (selectedTween.tween.motionPath) {
             this.svgEdit.setPath(selectedTween.tween.motionPath);
           } else {
-            const d = `M ${selectedTween.tween.start.value.x} ${selectedTween.tween.start.value.y} L ${selectedTween.tween.end.value.x} ${selectedTween.tween.end.value.y}`;
+            const d = `M${selectedTween.tween.start.value.x} ${selectedTween.tween.start.value.y} L${selectedTween.tween.end.value.x} ${selectedTween.tween.end.value.y}`;
             console.log('Setting path:', d);
-            this.svgEdit.setPath(`M ${selectedTween.tween.start.value.x} ${selectedTween.tween.start.value.y} L ${selectedTween.tween.end.value.x} ${selectedTween.tween.end.value.y}`);
+            initPath = d;
+            this.svgEdit.setPath(d);
           }
         }
       }

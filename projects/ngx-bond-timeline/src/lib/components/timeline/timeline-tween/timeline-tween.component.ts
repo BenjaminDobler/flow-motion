@@ -55,7 +55,7 @@ export class TimelineTweenComponent extends NgBondContainer {
       this.setWidth(w);
 
       const x = start / mpp;
-      this.x.set(x);
+      // this.x.set(x);
     });
     this.setHeight(20);
   }

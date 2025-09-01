@@ -1,13 +1,15 @@
 @for (element of selectionManager.selectionTargets(); track $index) {
   @let directives = getDirectives(element);
 
-  <div style="margin-bottom: 10px;">ID {{ element.id() }}</div>
+  <div style="margin-bottom: 10px">ID {{ element.id() }}</div>
 
   @for (compGroup of componentGroups(); track $index) {
-    <div>{{ compGroup.name }}</div>
+    <!-- <div>{{ compGroup.name }}</div> -->
     @for (prop of compGroup.props; track $index) {
-      {{ prop.name }}
-      <input [attr.type]="prop.type" [(ngModel)]="compGroup.props[prop.name]" />
+      <div class="property-group">
+        <label>{{ prop.name }}</label>
+        <input style="width: 80px" [attr.type]="prop.type" [(ngModel)]="compGroup.component[prop.name]" />
+      </div>
     }
   }
 
@@ -61,9 +63,9 @@
     }
   } -->
 
-  @let componentInstance = getComponentInstance(element);
+  <!-- @let componentInstance = getComponentInstance(element);
   @for (prop of componentInstance.inspectableProperties; track $index) {
     {{ prop.name }}
     <input [attr.type]="prop.type" [(ngModel)]="componentInstance[prop.name]" />
-  }
+  } -->
 }

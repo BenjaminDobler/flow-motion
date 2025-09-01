@@ -46,6 +46,7 @@
                   [minX]="0"
                   [class.selected]="selectedTween() === tween"
                   [showCursor]="false"
+                  [x]="tween.start.time / mpp"
                   positioning="transform"
                   [resizable]="false"
                   [tween]="tween"
