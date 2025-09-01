@@ -275,7 +275,7 @@ export class ComponentFactory {
     if (container) {
       const colorDirective = container.directives.find((d: any) => d instanceof BackgroundColorPropertyDirective);
       if (colorDirective) {
-        colorDirective.bgColor.set('#111111'); // Set a default color for the group
+        colorDirective.backgroundColor.set('#111111'); // Set a default color for the group
         colorDirective.borderRadius.set(0); // Set a default border radius
       }
     }

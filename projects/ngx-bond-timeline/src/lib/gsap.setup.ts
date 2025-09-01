@@ -15,13 +15,19 @@ export const configureGsap = () => {
         return target[prop]();
       },
       init(target: any, endValue: any, b: any) {
-        const currentValue = target[prop]() | 0;
+        console.log('get target prop ', prop);
+        console.log('original val ', target[prop]());
+        const currentValue = target[prop]();
+        console.log('current value ', currentValue);
         const data: any = this;
         data.target = target;
         data.interp = gsap.utils.interpolate(currentValue, endValue);
       },
       render(progress: any, data: any) {
-        data.target[prop].set(data.interp(progress));
+        const interpolated = data.interp(progress);
+        console.log('set prog ', interpolated);
+
+        data.target[prop].set(interpolated);
       },
     });
   });
@@ -46,7 +52,6 @@ export const configureGsap = () => {
     render(progress: any, data: any) {
       data.target.x.set(data.interp(progress).x);
       data.target.y.set(data.interp(progress).y);
-      
     },
   });
 };
