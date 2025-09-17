@@ -9,7 +9,9 @@ export function makeDraggable(element: HTMLElement, disabled$ = new BehaviorSubj
       return !(e.target as any).attributes.preventselection;
     }),
     tap((e: PointerEvent) => {
-      if (!(e.target instanceof HTMLInputElement)) {
+      console.log('pointer down', disabled$.getValue());
+      if (!(e.target instanceof HTMLInputElement) && disabled$.getValue() === false) {
+        console.log('preventing default');
         e.preventDefault();
         e.stopPropagation();
       } 
@@ -98,5 +100,8 @@ export function makeDraggable(element: HTMLElement, disabled$ = new BehaviorSubj
   })), dragEnd$: disabled$.pipe(switchMap((d)=>{
     if(!d) return dragEnd$;
     return NEVER;
-  })), click$: click$ };
+  })), click$: disabled$.pipe(switchMap((d)=>{
+    if(!d) return click$;
+    return NEVER;
+  })) };
 }

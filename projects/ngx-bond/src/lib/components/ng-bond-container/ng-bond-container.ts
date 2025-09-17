@@ -112,11 +112,11 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   @Input()
   positioning: 'none' | 'absolute' | 'transform' = 'absolute';
 
-  resizable = input<boolean>(true);
+  resizable = model<boolean>(true);
 
   draggable = input<boolean>(true);
 
-  id = input<string>('', { alias: 'bondcontainer' });
+  id = model<string>('', { alias: 'bondcontainer' });
 
   @Input()
   minWidth = 0;
@@ -156,9 +156,11 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   dragEnd = output<void>();
 
   @Output()
-  positionUpdated: EventEmitter<{ x: number; y: number }> = new EventEmitter<{
+  positionUpdated: EventEmitter<{ x: number; y: number, xBy: number, yBy: number }> = new EventEmitter<{
     x: number;
     y: number;
+    xBy: number;
+    yBy: number;
   }>();
 
   @Output()
@@ -251,6 +253,11 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     this.parent()?.addChild(this);
 
     effect(() => {
+      const selectionManagerDisabled = this.selectionManager?.disabled() || false;
+      this.disabled$.next(selectionManagerDisabled);
+    });
+
+    effect(() => {
       const x = this.x();
       const y = this.y();
       const inited = this.inited();
@@ -280,7 +287,12 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     this.children.update((c) => c.filter((cChild) => cChild !== child));
   }
 
+  previousX = 0;
+  previousY = 0;
+
   setPositionImmediately(x: number, y: number) {
+    const xBy = x - this.previousX;
+    const yBy = y - this.previousY;
     if (this.itemElement && this.positioning !== 'none') {
       if (this.positioning === 'absolute') {
         this.itemElement.style.left = `${x}px`;
@@ -289,7 +301,9 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
         this.itemElement.style.transform = `translate(${x}px, ${y}px) rotate(${this.rotate() || 0}deg)`;
       }
     }
-    this.positionUpdated.emit({ x, y });
+    this.previousX = x;
+    this.previousY = y;
+    this.positionUpdated.emit({ x, y, xBy, yBy });
   }
 
   disable() {
@@ -390,6 +404,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     if (!this.itemElement) {
       return;
     }
+
     const drag = makeDraggable(this.itemElement, this.disabled$);
 
     drag.click$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
@@ -471,6 +486,11 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
         })
       )
       .subscribe((evt: PointerEvent) => {
+        if (this.disabled$?.getValue()) {
+          el.style.cursor = 'auto';
+          return;
+        }
+
         const bounds = this.globalBounds();
         const x = evt.x - bounds.left - this.worldRect.left;
         const y = evt.y - bounds.top - this.worldRect.top;
@@ -519,6 +539,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.parent()?.removeChild(this);
     if (this.ngBondService) {
       this.ngBondService.removeDraggableElement(this);
     }

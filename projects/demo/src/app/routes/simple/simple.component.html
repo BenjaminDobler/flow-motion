@@ -1,5 +1,9 @@
 <div style="display: flex; height: 100%">
   <ng-bond-world>
+
+
+      <svg-canvas #svgCanvas></svg-canvas>
+
     <!-- <div bondcontainer="container1" class="drag-container" positioning="transform" style="transform: translate(200px,200px)" [x]="200" [y]="200">
       <div
         bondproperty="property1"
@@ -72,12 +76,15 @@
 
     <!-- <app-property-container></app-property-container> -->
 
-    <motion-path style="position: absolute; left: 0; top: 0"></motion-path>
+    <!-- <motion-path style="position: absolute; left: 0; top: 0"></motion-path> -->
+
+    <!-- <svg style="position: absolute;left: 0; top: 0" width="500px" height="500px">
+      <path appPathDirective d="M 70 110 C 70 140, 110 140, 110 110" stroke="white" fill="transparent" />
+    </svg> -->
   </ng-bond-world>
 
-  
   <timeline></timeline>
-  
+
   <bond-inspector #inspector></bond-inspector>
   <!--   
   <div class="sidebar" style="width: 400px;">

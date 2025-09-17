@@ -25,6 +25,8 @@
                 <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
               }
             </select>
+          } @else if (prop.type === 'range') {
+            <input style="width: 80px" [attr.type]="prop.type" [attr.min]="prop.min" [attr.max]="prop.max" [attr.step]="prop.step" [(ngModel)]="directiveGroup.directive[prop.name]" />
           } @else {
             <input style="width: 80px" [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
           }

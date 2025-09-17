@@ -77,6 +77,12 @@
     },
     {
       "path": "./projects/ngx-bond-timeline/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/pentool-ng/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/pentool-ng/tsconfig.spec.json"
     }
   ]
 }

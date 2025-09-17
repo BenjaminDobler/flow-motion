@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ComponentFactory, EditablePathComponent, KeyManager, NgBondService, SelectionManager, TextComponentComponent } from '@richapps/ngx-bond';
+import { ComponentFactory, KeyManager, MotionPathService, NgBondService, SelectionManager, SVGCanvas, TextComponentComponent } from '@richapps/ngx-bond';
 
 import { RouterModule } from '@angular/router';
 import { TimelineService } from '@richapps/ngx-bond-timeline';
@@ -9,7 +9,7 @@ import { TimelineService } from '@richapps/ngx-bond-timeline';
   imports: [RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService],
+  providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(drop)': 'onDrop($event)',
@@ -27,6 +27,7 @@ export class AppComponent {
   protected ngBondService: NgBondService = inject(NgBondService);
   protected componentFactory: ComponentFactory = inject(ComponentFactory);
   protected timelineService: TimelineService = inject(TimelineService);
+  protected svg = inject(SVGCanvas);
 
   onDrop(e: DragEvent) {
     e.preventDefault();
@@ -61,7 +62,7 @@ export class AppComponent {
   }
 
   addPath() {
-    this.componentFactory.addComponent(EditablePathComponent);
+    this.svg.mode.set('pen');
   }
 
   addContainer() {

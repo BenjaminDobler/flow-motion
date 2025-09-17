@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, Signal, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, Signal, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { SelectionManager } from '../../services/selection.manager';
@@ -8,6 +8,8 @@ import { touches } from '../../utils/geo.utils';
 import { ComponentFactory } from '../../services/component.factory';
 import { ImageComponent } from '../editables/image/image.component';
 import { NgBondContainer } from '@richapps/ngx-bond';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { BehaviorSubject } from 'rxjs';
 
 export interface NGBondItem {
   x: Signal<number>;
@@ -44,6 +46,8 @@ export class NgBondWorld implements NGBondItem {
   public el: ElementRef<HTMLElement> = inject(ElementRef);
   protected dragService: NgBondService = inject(NgBondService);
   protected selectionManager: SelectionManager = inject(SelectionManager);
+
+  disabled$ = toObservable(this.selectionManager.disabled);
   public pathanimation = input<TemplateRef<unknown>>();
   private keymanager: KeyManager = inject(KeyManager);
 
@@ -70,10 +74,18 @@ export class NgBondWorld implements NGBondItem {
 
   componentFactory = inject(ComponentFactory);
 
+
   constructor() {
     this.componentFactory.world = this;
 
     this.dragService.world = this;
+
+    effect(() => {
+      const disabled = this.selectionManager.disabled();
+
+      this.endP.set(null);
+      this.startP.set(null);
+    });
   }
 
   addChild(child: NGBondItem) {
@@ -102,14 +114,23 @@ export class NgBondWorld implements NGBondItem {
 
   ngAfterViewInit() {
     this.rect = this.el.nativeElement.getBoundingClientRect();
-    const drag = makeDraggable(this.el.nativeElement);
+
+    const dis$ = new BehaviorSubject(false)
+    this.disabled$.subscribe(dis$)
+    const drag = makeDraggable(this.el.nativeElement, dis$);
 
     drag.dragStart$.subscribe((evt) => {
+      if (this.selectionManager.disabled()) {
+        return;
+      }
       this.wasDrag = true;
       this.startP.set({ x: evt.offsetX, y: evt.offsetY });
     });
 
     drag.dragMove$.subscribe((evt) => {
+      if (this.selectionManager.disabled()) {
+        return;
+      }
       this.endP.set({ x: evt.startOffsetX + evt.deltaX, y: evt.startOffsetY + evt.deltaY });
       const r = this.selectionRect();
       if (r) {
@@ -128,9 +149,12 @@ export class NgBondWorld implements NGBondItem {
     });
 
     drag.dragEnd$.subscribe((evt) => {
-      if (evt.originalEvent) {
-        evt.originalEvent.preventDefault();
-        evt.originalEvent.stopPropagation();
+      if (this.selectionManager.disabled()) {
+        return;
+      }
+      if (evt.originalEvent && evt.originalEvent instanceof MouseEvent) {
+        evt.originalEvent?.preventDefault();
+        evt.originalEvent?.stopPropagation();
       }
 
       this.endP.set(null);

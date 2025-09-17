@@ -118,6 +118,7 @@ export class TimelineService {
           const animationProp = isSignal ? `signal_${track.name}` : track.name;
 
           track.keyframes.forEach((keyframe, index) => {
+            console.log('Adding keyframe', keyframe, 'to timeline for', group.name, track.name, 'isSignal:', isSignal);
             timeline.set(targetDirective, { [animationProp]: keyframe.value }, keyframe.time / 1000);
 
             if (index < track.keyframes.length - 1) {
@@ -179,11 +180,13 @@ export class TimelineService {
 
 
   propertyChanged(id: string, property: string, value: any) {
+    console.log('Property changed:', id, property, value);
     if (this.playing() || this.scrubbing()) {
       return;
     }
     // Handle the property change logic here
     // For example, update the timeline or perform some action based on the change
+    console.log('Updating timeline for property change:', id, property, value);
     this.timeline.update((currentTimeline) => {
       const group = currentTimeline.groups.find((g) => g.name === id);
       const track = group?.tracks.find((t) => t.name === property);

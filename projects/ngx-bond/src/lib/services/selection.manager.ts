@@ -7,6 +7,8 @@ import { ComponentFactory } from './component.factory';
 import { getAlignmentHelpLines } from './alignment';
 
 export class SelectionManager {
+  readonly disabled = signal(false);
+
   keyManager: KeyManager = inject(KeyManager);
   selectionTargets = signal<NgBondContainer[]>([]);
   selectionMap = new Map<NgBondContainer, boolean>();
@@ -99,6 +101,20 @@ export class SelectionManager {
   constructor() {
     effect(() => {
       const helpLines = this.helpLines();
+    });
+
+    effect(() => {
+      const disabled = this.disabled();
+      const children = this.rootChildren();
+      if (disabled) {
+        children.forEach((t) => {
+          t.disable();
+        });
+      } else {
+        children.forEach((t) => {
+          t.enable();
+        });
+      }
     });
   }
 
@@ -294,5 +310,13 @@ export class SelectionManager {
       this.componentFactory?.moveToContainer(target, this.dropTargets()[0]);
     }
     this.dragTarget.set(null);
+  }
+
+  disableSelection() {
+    this.disabled.set(true);
+  }
+
+  enableSelection() {
+    this.disabled.set(false);
   }
 }

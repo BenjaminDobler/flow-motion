@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { TimelineService } from '../../../services/timeline.service';
-import { EditablePathComponent, ElementPropertyInspectorComponent, SelectionManager } from '@richapps/ngx-bond';
+import { ElementPropertyInspectorComponent, SelectionManager, SVGCanvas } from '@richapps/ngx-bond';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 export class InspectorTweenProperties {
   timelineService = inject(TimelineService);
   selectionManager = inject(SelectionManager);
+  svg = inject(SVGCanvas);
 
   easings = [
     'linear',
@@ -58,6 +59,6 @@ export class InspectorTweenProperties {
   }
 
   addPathComponent() {
-    this.timelineService.componentFactory.addComponent(EditablePathComponent);
+    this.svg.mode.set('pen');
   }
 }

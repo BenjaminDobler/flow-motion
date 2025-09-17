@@ -20,8 +20,13 @@ export class KeyManager {
     });
 
     keyDown$.subscribe((evt) => {
+      console.log('key down', evt.key);
       this.keydownMap.set(evt.key, true);
       this.keysDown.update((x) => [...x, evt.key]);
     });
+  }
+
+  isKeyDown(key: string): boolean {
+    return this.keydownMap.has(key);
   }
 }

@@ -1,5 +1,5 @@
 import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
-import { NgBondContainer, NGBondItem, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+import { NgBondContainer, NGBondItem, NgBondWorld, PathDirectiveDirective, SelectionManager } from '@richapps/ngx-bond';
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
 import { TestComponentComponent } from '../components/editables/test-component/test-component.component';
@@ -205,7 +205,6 @@ export class ComponentFactory {
         return;
       }
       data = JSON.parse(serialized);
-
     } else {
       data = content;
     }
@@ -247,7 +246,6 @@ export class ComponentFactory {
     let minY = Number.MAX_VALUE;
     let maxX = Number.MIN_VALUE;
     let maxY = Number.MIN_VALUE;
-
 
     this.selectionManager.selectionTargets().forEach((target) => {
       minX = Math.min(minX, target.x());
@@ -321,5 +319,52 @@ export class ComponentFactory {
 
     child.x.set(newChildX);
     child.y.set(newChildY);
+  }
+
+  addSvgContainer(container: NgBondContainer, directiveInstances: any[] = []) {
+    const pathDirective = container.injector.get(PathDirectiveDirective);
+
+    this.containerElementMap.set(container, {
+      instance: null,
+      propertyDirectiveMap: new Map<string, any>(),
+      directives: [...directiveInstances, container, pathDirective],
+      componentRef: null,
+    });
+
+    const id = container.id();
+
+    pathDirective.inspectableProperties.forEach((p: any) => {
+      this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.setterName, pathDirective);
+    });
+
+    container.inspectableProperties.forEach((p: any) => {
+      this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.setterName, container);
+    });
+
+    container.inspectableProperties
+      .filter((p) => p.event)
+      .forEach((p) => {
+        (container as any)[p.event as any].subscribe((evt: any) => {
+          this.propertyChanged.next({
+            id,
+            property: p.setterName,
+            value: evt,
+          });
+        });
+      });
+
+    pathDirective.inspectableProperties
+      .filter((p) => p.event)
+      .forEach((p) => {
+        (pathDirective as any)[p.event as any].subscribe((evt: any) => {
+          this.propertyChanged.next({
+            id,
+            property: p.setterName,
+            value: evt,
+          });
+        });
+      });
+
+    this.componentAdded.next(container.id());
   }
 }
