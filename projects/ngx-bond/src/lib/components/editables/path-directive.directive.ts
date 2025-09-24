@@ -1,6 +1,6 @@
 import { afterNextRender, computed, Directive, effect, ElementRef, inject, input, model, output, signal, untracked } from '@angular/core';
 import { ComponentFactory, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
-import { Path } from './lib/path';
+import { Path } from '../svg-canvas/path';
 
 @Directive({
   selector: '[appPathDirective]',

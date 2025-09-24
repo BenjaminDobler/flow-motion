@@ -15,7 +15,13 @@ export function getOrhogonalConnection(
   p1: NgBondProperty,
   p2: NgBondProperty | DragPoint
 ) {
-  const rect1 = ((p1.container) as NgBondContainer)?.bounds();
+
+  console.log('POSITIONS', p1Position, p2Position);
+
+
+  const parent = ((p1.container) as NgBondContainer).parent();
+  const rect1 = { width: parent?.width() || 0, height: parent?.height() || 0, left: parent?.gX(), top: parent?.gY() };
+  console.log('RECT1', rect1);
 
   let distance1 = 0;
   let distance2 = 0;
@@ -28,10 +34,11 @@ export function getOrhogonalConnection(
   if (p1Position === 'left' || p1Position === 'right') {
     distance1 = (p1.y() + p1.height() / 2) / rect1?.height;
   }
-  let rect2 = { width: 20, height: 20, left: x2, top: y2 };
+  let rect2 = { width: 2, height: 2, left: x2, top: y2 };
 
   if ('container' in p2) {
-    rect2 = (p2 as any).container?.bounds as any;
+    const parent = ((p2.container) as NgBondContainer).parent();
+    rect2 = { width: parent?.width() || 0, height: parent?.height() || 0, left: parent?.gX() || 0, top: parent?.gY() || 0 };
 
     if (p2Position === 'bottom' || p2Position === 'top') {
       const p2NgBond = p2 as NgBondProperty;

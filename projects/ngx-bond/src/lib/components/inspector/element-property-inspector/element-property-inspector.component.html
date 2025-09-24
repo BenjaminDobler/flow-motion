@@ -27,6 +27,8 @@
             </select>
           } @else if (prop.type === 'range') {
             <input style="width: 80px" [attr.type]="prop.type" [attr.min]="prop.min" [attr.max]="prop.max" [attr.step]="prop.step" [(ngModel)]="directiveGroup.directive[prop.name]" />
+          } @else if (prop.type === 'DOMRect') {
+            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }}, {{ directiveGroup.directive[prop.name]().height }}
           } @else {
             <input style="width: 80px" [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
           }
@@ -42,7 +44,9 @@
                 <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
               }
             </select>
-          } @else {
+          }  @else if (prop.type === 'DOMRect') {
+            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }}, {{ directiveGroup.directive[prop.name]().height }}
+          }@else {
             <input [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
           }
         </div>

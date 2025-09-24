@@ -36,6 +36,8 @@ import { NgBondContainerHost } from '../../types/types';
   exportAs: 'bondcontainer',
   host: {
     '[style.touchAction]': "'none'",
+    '[class.selected]': 'isSelected()',
+    '[class.approached]': 'isApproached()',
   },
 })
 export class NgBondContainer implements NGBondItem, OnDestroy {
@@ -100,6 +102,22 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       setterName: 'rotate',
       isSignal: true,
       serializable: true,
+    },
+    {
+      name: 'bounds',
+      type: 'DOMRect',
+      setterName: 'setBounds',
+      isSignal: true,
+      serializable: true,
+      readonly: true,
+    },
+    {
+      name: 'globalBounds',
+      type: 'DOMRect',
+      setterName: 'setGlobalBounds',
+      isSignal: true,
+      serializable: true,
+      readonly: true,
     },
   ];
 
@@ -173,6 +191,9 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   public resizeOffset = 10;
 
+  isSelected = signal(false);
+  isApproached = signal(false);
+
   ngBondService = inject(NgBondService, { optional: true });
   selectionManager = inject(SelectionManager, { optional: true });
 
@@ -183,6 +204,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   disabled$ = new BehaviorSubject<boolean>(false);
 
   inited = signal(false);
+
+  ignoreSelectionManagement = model<boolean>(false);
 
   children = signal<NGBondItem[]>([]);
 
@@ -312,6 +335,14 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   enable() {
     this.disabled$.next(false);
+  }
+
+  selected(value: boolean) {
+    this.isSelected.set(value);
+  }
+
+  approached(value: boolean) {
+    this.isApproached.set(value);
   }
 
   private updateWidth(w: number) {

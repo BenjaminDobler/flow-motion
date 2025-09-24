@@ -5,6 +5,7 @@ import { NgBondContainer } from '../components/ng-bond-container/ng-bond-contain
 import { snap } from 'gsap';
 import { ComponentFactory } from './component.factory';
 import { getAlignmentHelpLines } from './alignment';
+import { GeometryUtils } from '@richapps/ngx-bond';
 
 export class SelectionManager {
   readonly disabled = signal(false);
@@ -22,9 +23,8 @@ export class SelectionManager {
   helpLines = computed(() => {
     const dragTarget = this.dragTarget();
     let lines: { x1: number; y1: number; x2: number; y2: number; snapX: number; snapY: number }[] = [];
-    if (dragTarget) {
-      const roots = this.rootChildren();
-
+    if (dragTarget && dragTarget.ignoreSelectionManagement() !== true) {
+      const roots = this.rootChildren().filter((c) => c.ignoreSelectionManagement() !== true);
       roots.forEach((root) => {
         if (root !== dragTarget) {
           lines = getAlignmentHelpLines(dragTarget, root, 10);
@@ -49,8 +49,8 @@ export class SelectionManager {
   dropTargets = computed(() => {
     const dropTargets: NgBondContainer[] = [];
     const dragTarget = this.dragTarget();
-    if (dragTarget) {
-      const roots = this.rootChildren();
+    if (dragTarget && dragTarget.ignoreSelectionManagement() !== true) {
+      const roots = this.rootChildren().filter((c) => c.ignoreSelectionManagement() !== true);
 
       roots.forEach((root) => {
         // check if root intersects with dragTarget
@@ -116,6 +116,24 @@ export class SelectionManager {
         });
       }
     });
+
+    this.keyManager.keyDown$.subscribe((evt) => {
+      if (this.keyManager.keydownMap.has('Escape')) {
+        this.unselectAll();
+      } else if (evt.key === 'ArrowRight') {
+        const xBy = this.keyManager.isKeyDown('Shift') ? 10 : 1;
+        this.moveBy(xBy, 0, this.dragTarget() as NgBondContainer);
+      } else if (evt.key === 'ArrowLeft') {
+        const xBy = this.keyManager.isKeyDown('Shift') ? -10 : -1;
+        this.moveBy(xBy, 0, this.dragTarget() as NgBondContainer);
+      } else if (evt.key === 'ArrowUp') {
+        const yBy = this.keyManager.isKeyDown('Shift') ? -10 : -1;
+        this.moveBy(0, yBy, this.dragTarget() as NgBondContainer);
+      } else if (evt.key === 'ArrowDown') {
+        const yBy = this.keyManager.isKeyDown('Shift') ? 10 : 1;
+        this.moveBy(0, yBy, this.dragTarget() as NgBondContainer);
+      }
+    });
   }
 
   setAll(targets: NgBondContainer[]) {
@@ -134,20 +152,25 @@ export class SelectionManager {
         });
         this.selectionMap.set(target, true);
         this.selectionTargets.set([target]);
+        target.selected(true);
       } else {
         this.unselect(target);
+        target.selected(false);
       }
     } else if (this.keyManager.keydownMap.has('Shift')) {
       this.selectionMap.set(target, true);
       this.selectionTargets.update((selections) => [...selections, target]);
+      target.selected(true);
     } else {
       if (this.selectionTargets().length > 0) {
         this.selectionTargets().forEach((t) => {
           this.selectionMap.delete(t);
+          t.selected(false);
         });
       }
       this.selectionMap.set(target, true);
       this.selectionTargets.set([target]);
+      target.selected(true);
     }
   }
 
@@ -155,6 +178,7 @@ export class SelectionManager {
     if (this.selectionMap.has(target)) {
       this.selectionMap.delete(target);
       this.selectionTargets.update((targets) => targets.filter((x) => x !== target));
+      target.selected(false);
     }
   }
 
@@ -318,5 +342,20 @@ export class SelectionManager {
 
   enableSelection() {
     this.disabled.set(false);
+  }
+
+  mouseMove(x: number, y: number) {
+    this.rootChildren().forEach((target) => {
+
+      const dist  = GeometryUtils.Distance({ x, y }, target.globalBounds());
+      
+      if (dist < 20) {
+        target.approached(true);
+        
+      } else {
+        target.approached(false);
+      }
+      
+    });
   }
 }

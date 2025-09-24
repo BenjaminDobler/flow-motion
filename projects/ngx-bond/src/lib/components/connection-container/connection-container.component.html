@@ -1,0 +1,97 @@
+<svg style="position: absolute; left: 0; top: 0; pointer-events: none;" width="100%" height="100%">
+  <defs>
+    <!-- A marker to be used as an arrowhead -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" fill="#fff" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  @for (link of dragService.links(); track $index) {
+    <path
+    style="pointer-events: all;"
+      connection
+      class="draw"
+      [attr.stroke]="link.properties.stroke()"
+      [attr.stroke-width]="link.properties.strokeWidth()"
+      [attr.d]="link.path()"
+      [attr.stroke-dasharray]="link.properties.strokeDasharray()"
+      fill="none"
+      [link]="link"
+    />
+
+    @let animate = link.properties.animate();
+    @if (animate && pathanimation()) {
+      <ng-container *ngTemplateOutlet="pathanimation(); context: { path: link.path() }"></ng-container>
+    } @else if (animate) {
+      @let duration = link.properties.animationBubbleDuration();
+      @let count = link.properties.animationBubbleCount();
+      @let step = duration / count;
+
+
+
+      
+      @for (count of countToArray(link.properties.animationBubbleCount()); track $index) {
+        <circle [attr.r]="link.properties.animationBubbleRadius()" fill="red">
+          <animateMotion [attr.dur]="duration + 's'" [attr.begin]="$index * step + 's'" repeatCount="indefinite" [attr.path]="link.path()" />
+        </circle>
+      }
+    }
+
+    <!-- @if (link().properties.animate) {
+      <g>
+        <circle r="3" fill="red">
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            begin="1s"
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            begin="2s"
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+
+        <circle r="3" fill="red">
+          <animateMotion
+            begin="3s"
+            dur="4s"
+            repeatCount="indefinite"
+            [attr.path]="link().path"
+          />
+        </circle>
+      </g>
+    } -->
+  }
+
+  @if (dragService.snapLink()) {
+    <path
+      class="draw"
+      [attr.stroke]="dragService.snapLink()?.properties?.stroke()"
+      [attr.stroke-width]="dragService.snapLink()?.properties?.strokeWidth()"
+      [attr.d]="dragService.snapLink()?.path()"
+      [attr.stroke-dasharray]="dragService.snapLink()?.properties?.strokeDasharray()"
+      fill="none"
+    />
+  }
+</svg>

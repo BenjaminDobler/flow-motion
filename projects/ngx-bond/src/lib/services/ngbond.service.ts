@@ -1,4 +1,4 @@
-import { computed, Signal, signal } from '@angular/core';
+import { computed, Signal, signal, WritableSignal } from '@angular/core';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
 import { LinkPosition, NgBondProperty } from '../components/ng-bond-property/ng-bond-property';
 import { getSimpleBezierPath } from '../components/util/connections/simple-bezier';
@@ -8,16 +8,36 @@ import { getMultiLinePath } from '../components/util/connections/multi-step';
 import { getDistance } from '../components/util/geo';
 import { NgBondWorld } from '@richapps/ngx-bond';
 
-export type Link = Signal<{
-  x1: number | undefined;
-  y1: number | undefined;
-  x2: number | undefined;
-  y2: number | undefined;
-  properties: LinkProperties;
-  path: string;
+// export type  LinkContent = {
+//   x1: number | undefined;
+//   y1: number | undefined;
+//   x2: number | undefined;
+//   y2: number | undefined;
+//   properties: LinkProperties;
+//   path: string;
+//   inputId: string;
+//   outputId: string;
+// };
+
+// export type Link = Signal<LinkContent>;
+
+export type Bound = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
+export interface Link {
+  x1: Signal<number | undefined>;
+  y1: Signal<number | undefined>;
+  x2: Signal<number | undefined>;
+  y2: Signal<number | undefined>;
   inputId: string;
   outputId: string;
-}>;
+  properties: LinkProperties;
+  path: Signal<string>;
+}
 
 export interface DragPoint {
   gX: Signal<number>;
@@ -27,15 +47,18 @@ export interface DragPoint {
 }
 
 export interface LinkProperties {
-  strokeWidth?: number;
-  stroke?: string;
-  strokeDasharray?: string;
-  curveType?: 'bezier' | 'straight' | 'multi-line' | 'orthogonal';
-  curveRadius?: number;
-  animate?: boolean;
+  strokeWidth: WritableSignal<number | undefined>;
+  stroke: WritableSignal<string | undefined>;
+  strokeDasharray: WritableSignal<string | undefined>;
+  curveType: WritableSignal<'bezier' | 'straight' | 'multi-line' | 'orthogonal' | undefined>;
+  curveRadius: WritableSignal<number | undefined>;
+  animate: WritableSignal<boolean | undefined>;
+  animationBubbleCount: WritableSignal<number>;
+  animationBubbleDuration: WritableSignal<number>;
+  animationBubbleRadius: WritableSignal<number>;
 }
 
-const defaultLinkProperties: LinkProperties = {
+const defaultLinkProperties: any = {
   strokeWidth: 2,
   stroke: 'cornflowerblue',
   strokeDasharray: '10',
@@ -53,7 +76,7 @@ export class NgBondService {
 
   world?: NgBondWorld;
 
-  defaultProperties = signal<LinkProperties>(defaultLinkProperties);
+  defaultProperties = signal<any>(defaultLinkProperties);
 
   registerDraggableElement(el: NgBondContainer) {
     this.dragElements.update((els) => [...els, el]);
@@ -78,12 +101,12 @@ export class NgBondService {
     if (!property1) {
       console.warn(`No property found for id: ${id1}`);
       return null;
-    } 
+    }
 
     const p1Position = property1.position();
     let p2Position: LinkPosition = 'left';
 
-    let p2: NgBondProperty | DragPoint;
+    let p2: NgBondProperty | DragPoint = id2 as DragPoint;
     if (typeof id2 === 'string') {
       const p2Property = this.getBrondPropertyById(id2);
       const property2 = p2Property?.injector.get(NgBondProperty);
@@ -105,46 +128,84 @@ export class NgBondService {
     }
 
     if (p1) {
-      const link = computed(() => {
-        const x1 = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : undefined;
-        const y1 = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : undefined;
-        const x2 = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : undefined;
-        const y2 = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : undefined;
+      //const link = computed(() => {
+      // const x1 = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : undefined;
+      // const y1 = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : undefined;
+      // const x2 = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : undefined;
+      // const y2 = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : undefined;
 
-        const defProps = this.defaultProperties();
-        const animate = property1.animatedLink();
+      const defProps = this.defaultProperties();
+      const animate = property1.animatedLink;
 
-        let pathFunction;
-        if (defProps?.curveType === 'bezier') {
-          pathFunction = getSimpleBezierPath;
-        } else if (defProps?.curveType === 'straight') {
-          pathFunction = getLinePath;
-        } else if (defProps?.curveType === 'orthogonal') {
-          pathFunction = getOrhogonalConnection;
-        } else {
-          pathFunction = getMultiLinePath;
-        }
+      const stroke = property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '';
+      const strokeWidth = property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2;
+      const curveType = linkProperties?.curveType || defProps.curveType || 'bezier';
+      const curveRadius = linkProperties?.curveRadius || defProps.curveRadius || 10;
+      console.log('Stroke for link:', stroke);
 
-        return {
-          x1,
-          y1,
-          x2,
-          y2,
-          inputId: id1,
-          outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
-          strokeWidth: property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2,
-          stroke: property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '',
-          properties: {
-            animate,
-            strokeWidth: property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2,
-            stroke: property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '',
-            strokeDasharray: linkProperties?.strokeDasharray || defProps.strokeDasharray || '10',
-          },
-          path: pathFunction(x1 ?? 0, y1 ?? 0, x2 ?? 0, y2 ?? 0, p1Position, p2Position, defProps?.curveRadius || 10, property1, p2),
-        };
-      });
+      const link: Link = {
+        x1: computed(() => (p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : undefined)),
+        y1: computed(() => (p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : undefined)),
+        x2: computed(() => (p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : undefined)),
+        y2: computed(() => (p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : undefined)),
+        inputId: id1,
+        outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
+        properties: {
+          animate: animate,
+          strokeWidth: signal(strokeWidth),
+          stroke: signal(stroke),
+          curveType: signal(curveType),
+          strokeDasharray: signal(linkProperties?.strokeDasharray || defProps.strokeDasharray || '10'),
+          curveRadius: signal(curveRadius),
+          animationBubbleCount: signal<number>(10),
+          animationBubbleDuration: signal<number>(4),
+          animationBubbleRadius: signal<number>(3),
+        },
+        path: computed(() => {
+          const cType = link.properties.curveType();
+          const curveRadius = link.properties.curveRadius();
+          let pathFunction;
+          if (cType === 'bezier') {
+            pathFunction = getSimpleBezierPath;
+          } else if (cType === 'straight') {
+            pathFunction = getLinePath;
+          } else if (cType === 'orthogonal') {
+            pathFunction = getOrhogonalConnection;
+          } else {
+            pathFunction = getMultiLinePath;
+          }
+          const x1 = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : 0;
+          const y1 = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : 0;
+          const x2 = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : 0;
+          const y2 = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : 0;
+          const p = pathFunction(x1 ?? 0, y1 ?? 0, x2 ?? 0, y2 ?? 0, p1Position, p2Position, curveRadius, property1, p2);
+          return p;
+        }),
+      };
+
+      //return link;
+
+      // return {
+      //   x1,
+      //   y1,
+      //   x2,
+      //   y2,
+      //   inputId: id1,
+      //   outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
+      //   strokeWidth: property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2,
+      //   stroke: property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '',
+      //   properties: {
+      //     animate,
+      //     strokeWidth: property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2,
+      //     stroke: property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '',
+      //     strokeDasharray: linkProperties?.strokeDasharray || defProps.strokeDasharray || '10',
+      //   },
+      //   path: pathFunction(x1 ?? 0, y1 ?? 0, x2 ?? 0, y2 ?? 0, p1Position, p2Position, defProps?.curveRadius || 10, property1, p2),
+      // };
+      //});
 
       if (add) {
+        console.log('Adding link:', link);
         this.links.update((x) => [...x, link]);
       }
       return link;
@@ -152,13 +213,13 @@ export class NgBondService {
     return null;
   }
 
-  snapLink?: any;
+  snapLink = signal<Link | null>(null);
   currentSnapTarget?: NgBondProperty;
   currentDragSource?: NgBondProperty;
 
   removePreview(link: any) {
     this.links.update((x) => x.filter((l) => l !== link));
-    this.snapLink = undefined;
+    this.snapLink.set(null);
   }
 
   startDragPreview(p: NgBondProperty) {
@@ -182,16 +243,25 @@ export class NgBondService {
       }
       if (this.currentDragSource && smalledDist < this.snapDistance() && smallestEl) {
         this.currentSnapTarget = smallestEl;
-        this.snapLink = this.createLink(
+        const l = this.createLink(
           this.currentDragSource.id(),
           smallestEl.id(),
           {
-            stroke: '#333',
+            stroke: signal('#333'),
+            strokeDasharray: signal('5,5'),
+            strokeWidth: signal(3),
+            curveType: signal('straight'),
+            curveRadius: signal(0),
+            animate: signal(false),
+            animationBubbleCount: signal(0),
+            animationBubbleDuration: signal(0),
+            animationBubbleRadius: signal(3)
           },
           false
         );
+        this.snapLink.set(l);
       } else {
-        this.snapLink = undefined;
+        this.snapLink.set(null);
         this.currentSnapTarget = undefined;
       }
     }
@@ -210,7 +280,7 @@ export class NgBondService {
     const p2 = this.dragElements().find((d) => d.id() === link().outputId);
 
     const property1 = p1?.injector.get(NgBondProperty);
-    const property2 = p2?.injector.get(NgBondProperty); 
+    const property2 = p2?.injector.get(NgBondProperty);
     if (!property1 || !property2) {
       console.warn(`No properties found for link: ${link()}`);
       return;

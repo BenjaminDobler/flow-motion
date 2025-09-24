@@ -25,6 +25,7 @@ export * from './lib/components/inspector/element-tree/element-tree.component';
 export * from './lib/components/inspector/alignment-inspector/alignment-inspector.component';
 export * from './lib/components/inspector/connection-inspector/connection-inspector.component';
 export * from './lib/components/editables/text-component/text-component.component';
+export * from './lib/components/inspector/link-properties/link-properties.component';
 
 
 export * from './lib/components/svg-canvas/svg-canvas.component';
@@ -34,3 +35,5 @@ export * from './lib/components/svg-canvas/svgcanvas';
 export * from './lib/components/svg-canvas/svgcanvas';
 
 export * from './lib/services/motion.path.service'
+
+export * from './lib/components/editables/connection.directive';

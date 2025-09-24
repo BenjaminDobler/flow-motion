@@ -42,16 +42,14 @@ path {
   }
 }
 
-svg {
-  &.pen-cursor {
-    cursor: url('/assets/cursor/pen.png'), auto;
-  }
+.pen-cursor {
+  cursor: url('/assets/cursor/pen.png'), auto;
+}
 
-  &.curve-cursor {
-    cursor: url('/assets/cursor/pen-curve.png'), auto;
-  }
+.curve-cursor {
+  cursor: url('/assets/cursor/pen-curve.png'), auto;
+}
 
-  &.pen-minus {
-    cursor: url('/assets/cursor/pen-minus.png'), auto;
-  }
+.pen-minus {
+  cursor: url('/assets/cursor/pen-minus.png'), auto;
 }

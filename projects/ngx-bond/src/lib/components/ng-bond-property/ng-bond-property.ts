@@ -1,26 +1,32 @@
-import { Directive, ElementRef, inject, input, model, output, Signal, signal, OnInit, OnDestroy, computed, forwardRef } from '@angular/core';
+import { Directive, ElementRef, inject, input, model, output, Signal, signal, OnInit, OnDestroy, computed, forwardRef, effect } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
+import { SelectionManager } from '@richapps/ngx-bond';
 export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
 
 @Directive({
   selector: '[bondproperty]',
   standalone: true,
   exportAs: 'bondproperty',
-  hostDirectives: [{
-    directive: forwardRef(() => NgBondContainer),
-    inputs: ['draggable', 'bondcontainer', 'positioning', 'bondcontainer:bondproperty'],
-  }],
+  hostDirectives: [
+    {
+      directive: forwardRef(() => NgBondContainer),
+      inputs: ['draggable', 'bondcontainer', 'positioning', 'bondcontainer:bondproperty'],
+    },
+  ],
   host: {
     '[class.has-link]': 'this.hasLink()',
     '[style.touchAction]': "'none'",
     '[positioning]': "'none'",
-    '[draggable]': 'false', 
+    '[draggable]': 'false',
   },
 })
 export class NgBondProperty {
+
+
+  selection = inject(SelectionManager);
   get height() {
     return this.container?.height || signal(0);
   }
@@ -67,6 +73,7 @@ export class NgBondProperty {
   container? = inject(NgBondContainer, { optional: true });
 
   constructor() {
+    console.log('NgBondProperty constructor:', this.id());
     const drag = makeDraggable(this.el.nativeElement);
 
     if (!this.ngBondService) {
@@ -108,6 +115,7 @@ export class NgBondProperty {
 
     drag.dragMove$.subscribe((move) => {
       console.log('Drag move:', this.id());
+      
       if (isFirstMove && this.id()) {
         this.ngBondService.currentDragSource = this;
         console.log('Creating drag preview for:', this.id());
@@ -116,12 +124,18 @@ export class NgBondProperty {
       }
       const offsetX = move.originalEvent.x - move.startOffsetX;
       const offsetY = move.originalEvent.y - move.startOffsetY;
+      
+      console.log('Offset:', offsetX, offsetY);
 
       const x = offsetX - parentRect.left;
       const y = offsetY - parentRect.top;
 
       const gX = x + parentRect.left - worldRect.left;
       const gY = y + parentRect.top - worldRect.top;
+
+            this.selection.mouseMove(gX, gY);
+
+      
 
       this.ngBondService.updateDragPreview(gX, gY);
 
@@ -137,6 +151,13 @@ export class NgBondProperty {
       if (currentPreview) {
         this.ngBondService.removePreview(currentPreview);
       }
+    });
+
+    effect(() => {
+      const pw = this.container?.parent?.()?.width();
+      const ph = this.container?.parent?.()?.height();
+
+      this.container?.updatePosition();
     });
   }
 
@@ -167,8 +188,7 @@ export class NgBondProperty {
   }
 
   ngAfterViewInit() {
-        console.log('NgBondProperty initialized:', this.id(),'gx: ' +  this.gX(),'x: '+ this.x());
-
+    console.log('NgBondProperty initialized:', this.id(), 'gx: ' + this.gX(), 'x: ' + this.x());
   }
 
   // updatePosition() {

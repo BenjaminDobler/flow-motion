@@ -122,9 +122,9 @@ export class SVGCanvas {
           this.svg.style.pointerEvents = 'auto';
         }
         console.log('set pen cursor class');
-        this.svg?.classList.add('pen-cursor');
+        document.body.classList.add('pen-cursor');
       } else {
-        this.svg?.classList.remove('pen-cursor');
+        document.body.classList.remove('pen-cursor');
         if (this.svg) {
           this.svg.style.pointerEvents = 'none';
         }
@@ -156,7 +156,7 @@ export class SVGCanvas {
 
       this.keyAltDown = event.altKey;
       if (this.keyAltDown) {
-        this.svg?.classList.add('alt-down');
+        document.body.classList.add('alt-down');
       }
       if (event.key === 'Meta') {
         this.keyMetaDown = true;
@@ -164,7 +164,7 @@ export class SVGCanvas {
     });
 
     fromEvent(window, 'keyup').subscribe((event: any) => {
-      this.svg?.classList.remove('alt-down');
+      document.body.classList.remove('alt-down');
       this.keyAltDown = false;
       this.keyMetaDown = false;
     });

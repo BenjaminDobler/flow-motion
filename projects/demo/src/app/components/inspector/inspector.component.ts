@@ -14,10 +14,11 @@ import {
   AlignmentInspectorComponent,
   ConnectionInspectorComponent,
   TextComponentComponent,
+  LinkPropertiesComponent,
 } from '@richapps/ngx-bond';
 import { InspectorTweenProperties } from '@richapps/ngx-bond-timeline';
 
-type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree' | 'tween';
+type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree' | 'tween' | 'link';
 type Tab = {
   label: string;
   value: tabType;
@@ -33,6 +34,7 @@ type Tab = {
     AlignmentInspectorComponent,
     ElementPropertyInspectorComponent,
     ElementPropertyInspectorComponent,
+    LinkPropertiesComponent,
     ElementTreeComponent,
     ConnectionInspectorComponent,
     InspectorTweenProperties,
@@ -50,6 +52,7 @@ export class InspectorComponent {
     { label: 'Element', value: 'element-inspector' },
     { label: 'Children', value: 'child-tree' },
     { label: 'Connection', value: 'properties' },
+    { label: 'Link', value: 'link' },
   ]);
 
   animationBubbleCount = signal(5);
@@ -64,10 +67,10 @@ export class InspectorComponent {
 
   updateAnimateLink(link: Link, evt: Event) {
     const target = evt.target as HTMLInputElement;
-    const container = this.bondService.getBrondPropertyById(link().inputId);
+    const container = this.bondService.getBrondPropertyById(link.inputId);
 
     if (!container) {
-      console.warn(`No container found for link inputId: ${link().inputId}`);
+      console.warn(`No container found for link inputId: ${link.inputId}`);
       return;
     }
 

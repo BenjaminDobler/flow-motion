@@ -35,3 +35,56 @@ export function touches(a: { x1: number; y1: number; x2: number; y2: number }, b
 
 	return true;
 }
+
+
+
+export class GeometryUtils
+{
+    public static Distance(point:{x:number, y:number}, rect:{left:number, top:number, width:number, height:number})
+    {
+        var xDist = this.MinXDistance(point, rect);
+        var yDist = this.MinYDistance(point, rect);
+        if (xDist == 0)
+        {
+            return yDist;
+        }
+        else if (yDist == 0)
+        {
+            return xDist;
+        }
+
+        return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
+    }
+
+    private static MinXDistance(point:{x:number, y:number}, rect:{left:number, top:number, width:number, height:number})
+    {
+        if (rect.left > point.x)
+        {
+            return rect.left - point.x;
+        }
+        else if (rect.left + rect.width < point.x)
+        {
+            return point.x - (rect.left + rect.width);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    private static MinYDistance(point:{x:number, y:number}, rect:{left:number, top:number, width:number, height:number})
+    {
+        if (rect.top + rect.height < point.y)
+        {
+            return point.y - (rect.top + rect.height);
+        }
+        else if (rect.top > point.y)
+        {
+            return rect.top - point.y;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}

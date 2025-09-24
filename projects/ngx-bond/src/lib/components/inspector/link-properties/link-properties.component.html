@@ -1,0 +1,26 @@
+@for (linkContainer of selectedLink(); track $index) {
+  @let dir = $any(getDirective(linkContainer));
+  HUNU
+  <div>
+    {{ dir.link().inputId }} > {{ dir.link().outputId }}
+
+    @for (prop of dir.inspectableProperties; track $index) {
+
+        <label>{{ prop.name }}</label>
+      @if (prop.type === 'select') {
+        <select [(ngModel)]="dir[prop.name]">
+          @for (option of prop.options; track $index) {
+            <option [selected]="dir[prop.name] === option">{{ option }}</option>
+          }
+        </select>
+      } @else if (prop.type === 'DOMRect') {
+        {{ dir[prop.name]().left }}, {{ dir[prop.name]().top }}, {{ dir[prop.name]().width }},
+        {{ dir[prop.name]().height }}
+      } @else if (prop.type === 'checkbox') {
+        <input type="checkbox" [checked]="dir[prop.name]" (change)="dir[prop.name].set($any($event.target).checked)" />
+      } @else {
+        <input [attr.type]="prop.type" [(ngModel)]="dir[prop.name]" />
+      }
+    }
+  </div>
+}

@@ -7,9 +7,14 @@ import { makeDraggable } from '../util/drag.util';
 import { touches } from '../../utils/geo.utils';
 import { ComponentFactory } from '../../services/component.factory';
 import { ImageComponent } from '../editables/image/image.component';
-import { NgBondContainer } from '@richapps/ngx-bond';
+import { ConnectionDirective } from '../editables/connection.directive';
+import { NgBondContainer } from '../ng-bond-container/ng-bond-container'; 
 import { toObservable } from '@angular/core/rxjs-interop';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, fromEvent } from 'rxjs';
+
+
+
+
 
 export interface NGBondItem {
   x: Signal<number>;
@@ -26,7 +31,7 @@ export interface NGBondItem {
 
 @Component({
   selector: 'ng-bond-world',
-  imports: [NgTemplateOutlet, DecimalPipe],
+  imports: [DecimalPipe],
   templateUrl: './ng-bond-world.component.html',
   styleUrl: './ng-bond-world.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,7 +53,6 @@ export class NgBondWorld implements NGBondItem {
   protected selectionManager: SelectionManager = inject(SelectionManager);
 
   disabled$ = toObservable(this.selectionManager.disabled);
-  public pathanimation = input<TemplateRef<unknown>>();
   private keymanager: KeyManager = inject(KeyManager);
 
   @ViewChild('insert_slot', { read: ViewContainerRef })
@@ -56,8 +60,7 @@ export class NgBondWorld implements NGBondItem {
 
   id = signal<string>('world');
 
-  animationBubbleCount = input<number>(10);
-  animationBubbleDuration = input<number>(4);
+
 
   children = signal<NGBondItem[]>([]);
   x = signal(0);
@@ -119,6 +122,10 @@ export class NgBondWorld implements NGBondItem {
     this.disabled$.subscribe(dis$)
     const drag = makeDraggable(this.el.nativeElement, dis$);
 
+    fromEvent<MouseEvent>(window, 'mousemove').subscribe((evt) => {
+      this.selectionManager.mouseMove(evt.clientX - this.rect!.left, evt.clientY - this.rect!.top);
+    });
+
     drag.dragStart$.subscribe((evt) => {
       if (this.selectionManager.disabled()) {
         return;
@@ -162,13 +169,9 @@ export class NgBondWorld implements NGBondItem {
     });
   }
 
-  onConnectionClick(link: Link) {
-    console.log('Connection clicked', link);
-  }
 
-  protected countToArray(count: number) {
-    return Array(count).fill(0);
-  }
+
+
 
   wasDrag = false;
   onClick(evt: MouseEvent) {

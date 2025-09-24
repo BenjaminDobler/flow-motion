@@ -32,5 +32,13 @@
       <button (click)="componentFactory.serializeComponents()">Serialize</button>
       <button (click)="componentFactory.loadSerialized()">Load</button>
     </div>
+  } @else if (selected() === 'link') {
+    <div>
+      <h3>Link Properties</h3>
+
+      <link-properties></link-properties>
+
+    </div>
   }
+      
 </div>

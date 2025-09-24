@@ -3,10 +3,11 @@ import { ComponentFactory, KeyManager, MotionPathService, NgBondContainer, NgBon
 import { PropertyContainerComponent } from '../../components/property-container/property-container.component';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
 import { MotionPathComponent, TimelineComponent, TimelineService } from '@richapps/ngx-bond-timeline';
+import { ConnectionContainerComponent } from '../../../../../ngx-bond/src/lib/components/connection-container/connection-container.component';
 
 @Component({
   selector: 'app-root',
-  imports: [NgBondContainer, NgBondProperty, SvgCanvasComponent, NgBondWorld, PropertyContainerComponent, InspectorComponent, TimelineComponent, MotionPathComponent],
+  imports: [NgBondContainer, NgBondProperty, SvgCanvasComponent, NgBondWorld, ConnectionContainerComponent, PropertyContainerComponent, InspectorComponent, TimelineComponent, MotionPathComponent],
   templateUrl: './simple.component.html',
   styleUrl: './simple.component.scss',
   providers: [],

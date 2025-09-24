@@ -23,7 +23,9 @@
 </ng-template>
 
 <div style="display: flex; height: 100%">
-  <ng-bond-world [animationBubbleCount]="inspector.animationBubbleCount()" [animationBubbleDuration]="inspector.animationBubbleDuration()">
+  <ng-bond-world>
+    <connection-container [animationBubbleCount]="inspector.animationBubbleCount()" [animationBubbleDuration]="inspector.animationBubbleDuration()"></connection-container>
+
     @for (table of tables; track $index) {
       <div class="card" [bondcontainer]="table.name" [x]="200" [y]="200">
         <div class="card-header">

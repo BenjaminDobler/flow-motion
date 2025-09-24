@@ -22,10 +22,10 @@ export class ConnectionInspectorComponent {
 
   updateAnimateLink(link: Link, evt: Event) {
     const target = evt.target as HTMLInputElement;
-    const container = this.bondService.getBrondPropertyById(link().inputId);
+    const container = this.bondService.getBrondPropertyById(link.inputId);
 
     if (!container) {
-      console.warn(`No container found for link inputId: ${link().inputId}`);
+      console.warn(`No container found for link inputId: ${link.inputId}`);
       return;
     }
 
