@@ -8,13 +8,9 @@ import { touches } from '../../utils/geo.utils';
 import { ComponentFactory } from '../../services/component.factory';
 import { ImageComponent } from '../editables/image/image.component';
 import { ConnectionDirective } from '../editables/connection.directive';
-import { NgBondContainer } from '../ng-bond-container/ng-bond-container'; 
+import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, fromEvent } from 'rxjs';
-
-
-
-
 
 export interface NGBondItem {
   x: Signal<number>;
@@ -60,8 +56,6 @@ export class NgBondWorld implements NGBondItem {
 
   id = signal<string>('world');
 
-
-
   children = signal<NGBondItem[]>([]);
   x = signal(0);
   y = signal(0);
@@ -76,7 +70,6 @@ export class NgBondWorld implements NGBondItem {
   rect: DOMRect | null = null;
 
   componentFactory = inject(ComponentFactory);
-
 
   constructor() {
     this.componentFactory.world = this;
@@ -118,8 +111,8 @@ export class NgBondWorld implements NGBondItem {
   ngAfterViewInit() {
     this.rect = this.el.nativeElement.getBoundingClientRect();
 
-    const dis$ = new BehaviorSubject(false)
-    this.disabled$.subscribe(dis$)
+    const dis$ = new BehaviorSubject(false);
+    this.disabled$.subscribe(dis$);
     const drag = makeDraggable(this.el.nativeElement, dis$);
 
     fromEvent<MouseEvent>(window, 'mousemove').subscribe((evt) => {
@@ -169,10 +162,6 @@ export class NgBondWorld implements NGBondItem {
     });
   }
 
-
-
-
-
   wasDrag = false;
   onClick(evt: MouseEvent) {
     if (this.wasDrag) {
@@ -208,18 +197,11 @@ export class NgBondWorld implements NGBondItem {
     }
     reader.readAsDataURL(e.dataTransfer?.files[0]);
     reader.onload = () => {
-      const image = new Image();
-      image.src = reader.result as string;
-
       this.componentFactory.addComponent(ImageComponent, {
         src: reader.result as string,
         x: e.pageX - this.rect!.left,
         y: e.pageY - this.rect!.top,
       });
-
-      image.onload = () => {
-        console.log('Image loaded', image);
-      };
     };
   }
 }

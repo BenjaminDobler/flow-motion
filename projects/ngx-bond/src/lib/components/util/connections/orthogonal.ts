@@ -16,12 +16,9 @@ export function getOrhogonalConnection(
   p2: NgBondProperty | DragPoint
 ) {
 
-  console.log('POSITIONS', p1Position, p2Position);
-
 
   const parent = ((p1.container) as NgBondContainer).parent();
   const rect1 = { width: parent?.width() || 0, height: parent?.height() || 0, left: parent?.gX(), top: parent?.gY() };
-  console.log('RECT1', rect1);
 
   let distance1 = 0;
   let distance2 = 0;

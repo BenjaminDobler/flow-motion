@@ -1,13 +1,22 @@
-<svg style="position: absolute; left: 0; top: 0; pointer-events: none;" width="100%" height="100%">
+<svg style="position: absolute; left: 0; top: 0; pointer-events: none" width="100%" height="100%">
   <defs>
     <!-- A marker to be used as an arrowhead -->
     <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" fill="#fff" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
+
+    <filter x="0" y="0" width="1" height="1" id="solid">
+      <feFlood flood-color="black" result="bg" />
+      <feMerge>
+        <feMergeNode in="bg" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
   </defs>
   @for (link of dragService.links(); track $index) {
     <path
-    style="pointer-events: all;"
+      id="link-{{ $index }}"
+      style="pointer-events: all"
       connection
       class="draw"
       [attr.stroke]="link.properties.stroke()"
@@ -18,6 +27,12 @@
       [link]="link"
     />
 
+    @if (link.properties.textOnPath() !== '') {
+      <text font-size="20" >
+        <textPath [attr.startOffset]="link.properties.totalLength()/2" text-anchor="middle" dominant-baseline="middle" [attr.href]="'#link-' + $index">{{ link.properties.textOnPath() }}</textPath>
+      </text>
+    }
+
     @let animate = link.properties.animate();
     @if (animate && pathanimation()) {
       <ng-container *ngTemplateOutlet="pathanimation(); context: { path: link.path() }"></ng-container>
@@ -26,9 +41,6 @@
       @let count = link.properties.animationBubbleCount();
       @let step = duration / count;
 
-
-
-      
       @for (count of countToArray(link.properties.animationBubbleCount()); track $index) {
         <circle [attr.r]="link.properties.animationBubbleRadius()" fill="red">
           <animateMotion [attr.dur]="duration + 's'" [attr.begin]="$index * step + 's'" repeatCount="indefinite" [attr.path]="link.path()" />
@@ -95,3 +107,13 @@
     />
   }
 </svg>
+
+@for (link of dragService.links(); track $index) {
+  @if (link.properties.textOnPath() !== '') {
+    <div [style.transform]="`translate(${link.properties.midPoint().x}px, ${link.properties.midPoint().y}px)`" style="position: absolute; left: 0; top: 0; pointer-events: none">
+      <div style="transform: translateX(-50%);">
+        {{ link.properties.textOnPath() }}
+      </div>
+    </div>
+  }
+}

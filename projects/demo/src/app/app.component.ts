@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ComponentFactory, KeyManager, MotionPathService, NgBondService, SelectionManager, SVGCanvas, TextComponentComponent } from '@richapps/ngx-bond';
+import { ComponentFactory, ImageComponent, KeyManager, MotionPathService, NgBondService, SelectionManager, SVGCanvas, TextComponentComponent } from '@richapps/ngx-bond';
 
 import { RouterModule } from '@angular/router';
 import { TimelineService } from '@richapps/ngx-bond-timeline';
@@ -69,7 +69,20 @@ export class AppComponent {
     this.componentFactory.addComponent();
   }
 
-  addImage() {}
+  async addImage() {
+    const [fileHandle] = await window.showOpenFilePicker();
+    const file = await fileHandle.getFile();
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.componentFactory.addComponent(ImageComponent, {
+        src: reader.result as string,
+        x: 100,
+        y: 100,
+      });
+    };
+  }
 
   addText() {
     this.componentFactory.addComponent(TextComponentComponent, { resizable: false, bgColor: 'transparent' });

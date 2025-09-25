@@ -81,7 +81,6 @@ export class ElementPropertyInspectorComponent {
   }
 
   getComponentInstance(element: any) {
-    console.log('get component instance for', element);
     return this.componentFactory.containerElementMap.get(element)?.instance;
   }
 }

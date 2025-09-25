@@ -24,8 +24,6 @@ export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
   },
 })
 export class NgBondProperty {
-
-
   selection = inject(SelectionManager);
   get height() {
     return this.container?.height || signal(0);
@@ -73,7 +71,6 @@ export class NgBondProperty {
   container? = inject(NgBondContainer, { optional: true });
 
   constructor() {
-    console.log('NgBondProperty constructor:', this.id());
     const drag = makeDraggable(this.el.nativeElement);
 
     if (!this.ngBondService) {
@@ -114,18 +111,14 @@ export class NgBondProperty {
     });
 
     drag.dragMove$.subscribe((move) => {
-      console.log('Drag move:', this.id());
-      
+
       if (isFirstMove && this.id()) {
         this.ngBondService.currentDragSource = this;
-        console.log('Creating drag preview for:', this.id());
         currentPreview = this.ngBondService.createLink(this.id(), dragPreview) as any;
         isFirstMove = false;
       }
       const offsetX = move.originalEvent.x - move.startOffsetX;
       const offsetY = move.originalEvent.y - move.startOffsetY;
-      
-      console.log('Offset:', offsetX, offsetY);
 
       const x = offsetX - parentRect.left;
       const y = offsetY - parentRect.top;
@@ -133,9 +126,7 @@ export class NgBondProperty {
       const gX = x + parentRect.left - worldRect.left;
       const gY = y + parentRect.top - worldRect.top;
 
-            this.selection.mouseMove(gX, gY);
-
-      
+      this.selection.mouseMove(gX, gY);
 
       this.ngBondService.updateDragPreview(gX, gY);
 
@@ -186,72 +177,4 @@ export class NgBondProperty {
     }
     return position;
   }
-
-  ngAfterViewInit() {
-    console.log('NgBondProperty initialized:', this.id(), 'gx: ' + this.gX(), 'x: ' + this.x());
-  }
-
-  // updatePosition() {
-  //   const itemElement = this.el?.nativeElement;
-  //   let worldRect = { left: 0, top: 0 };
-  //   if (this.dragWorld) {
-  //     const worldElement = this.dragWorld.el.nativeElement;
-  //     worldRect = worldElement.getBoundingClientRect();
-  //   }
-
-  //   const parentRect = this.parent().getBoundingClientRect();
-  //   const itemRect = itemElement.getBoundingClientRect();
-
-  //   // this.bounds.height = itemRect.height;
-  //   // this.bounds.width = itemRect.width;
-  //   // this.bounds.left = itemRect.left - parentRect.left;
-  //   // this.bounds.top = itemRect.top - parentRect.top;
-  //   this.width.set(itemRect.width);
-  //   this.height.set(itemRect.height);
-  //   const x = itemRect.left - parentRect.left;
-  //   const y = itemRect.top - parentRect.top;
-  //   this.x.set(x);
-  //   this.y.set(y);
-
-  //   const gX = parentRect.left + x - worldRect.left;
-  //   const gY = parentRect.top + y - worldRect.top;
-
-  //   this.gX.set(gX);
-  //   this.gY.set(gY);
-  // }
-
-  // private parent() {
-  //   const itemElement = this.el?.nativeElement;
-  //   let parentElement = itemElement.parentElement;
-  //   if (this.container) {
-  //     parentElement = this.container.el.nativeElement;
-  //   }
-  //   return parentElement;
-  // }
-
-  // // bounds = {
-  // //   left: this.gX(),
-  // //   top: this.gY(),
-  // //   width: 0,
-  // //   height: 0,
-  // // }
-
-  // // get bounds() {
-  // //   const rect = this.el.nativeElement.getBoundingClientRect();
-  // //   return {
-  // //     left: this.gX(),
-  // //     top: this.gY(),
-  // //     width: rect.width,
-  // //     height: rect.height,
-  // //   };
-  // // }
-
-  // ngOnInit() {
-  //   this.ngBondService.registerDraggableElement(this);
-  //   this.updatePosition();
-  // }
-
-  // ngOnDestroy() {
-  //   this.ngBondService.removeDraggableElement(this);
-  // }
 }

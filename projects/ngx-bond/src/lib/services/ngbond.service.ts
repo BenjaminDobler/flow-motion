@@ -28,6 +28,90 @@ export type Bound = {
   height: number;
 };
 
+const inspectableLinkProperties = [
+  {
+    name: 'stroke',
+    type: 'color',
+    setterName: 'stroke',
+    isSignal: true,
+    event: 'strokeChanged',
+    serializable: true,
+  },
+  {
+    name: 'textOnPath',
+    type: 'text',
+    setterName: 'textOnPath',
+    isSignal: true,
+    event: 'textOnPathChanged',
+    serializable: true,
+  },
+  {
+    name: 'strokeWidth',
+    type: 'number',
+    setterName: 'strokeWidth',
+    isSignal: true,
+    event: 'strokeWidthChanged',
+    serializable: true,
+  },
+  {
+    name: 'strokeDasharray',
+    type: 'string',
+    setterName: 'strokeDasharray',
+    isSignal: true,
+    event: 'strokeDasharrayChanged',
+    serializable: true,
+  },
+  {
+    name: 'curveRadius',
+    type: 'number',
+    setterName: 'curveRadius',
+    isSignal: true,
+    event: 'curveRadiusChanged',
+    serializable: true,
+  },
+  {
+    name: 'animationBubbleCount',
+    type: 'number',
+    setterName: 'animationBubbleCount',
+    isSignal: true,
+    event: 'animationBubbleCountChanged',
+    serializable: true,
+  },
+  {
+    name: 'animationBubbleDuration',
+    type: 'number',
+    setterName: 'animationBubbleDuration',
+    isSignal: true,
+    event: 'animationBubbleDurationChanged',
+    serializable: true,
+  },
+  {
+    name: 'animationBubbleRadius',
+    type: 'number',
+    setterName: 'animationBubbleRadius',
+    isSignal: true,
+    event: 'animationBubbleRadiusChanged',
+    serializable: true,
+  },
+  {
+    name: 'animate',
+    type: 'checkbox',
+    setterName: 'animate',
+    isSignal: true,
+    event: 'animateChanged',
+    serializable: true,
+  },
+  {
+    name: 'curveType',
+    type: 'select',
+    options: ['bezier', 'straight', 'multi-line', 'orthogonal'],
+    setterName: 'curveType',
+    isSignal: true,
+    event: 'curveTypeChanged',
+    serializable: true,
+  },
+];
+
 export interface Link {
   x1: Signal<number | undefined>;
   y1: Signal<number | undefined>;
@@ -37,6 +121,7 @@ export interface Link {
   outputId: string;
   properties: LinkProperties;
   path: Signal<string>;
+  inspectableProperties: any;
 }
 
 export interface DragPoint {
@@ -56,6 +141,9 @@ export interface LinkProperties {
   animationBubbleCount: WritableSignal<number>;
   animationBubbleDuration: WritableSignal<number>;
   animationBubbleRadius: WritableSignal<number>;
+  textOnPath: WritableSignal<string>;
+  midPoint: WritableSignal<{ x: number; y: number }>;
+  totalLength: WritableSignal<number>;
 }
 
 const defaultLinkProperties: any = {
@@ -64,6 +152,7 @@ const defaultLinkProperties: any = {
   strokeDasharray: '10',
   curveType: 'bezier',
   curveRadius: 10,
+  textOnPath: '',
 };
 
 export class NgBondService {
@@ -92,11 +181,8 @@ export class NgBondService {
   }
 
   createLink(id1: string, id2: string | DragPoint, linkProperties?: LinkProperties, add = true) {
-    console.log('create link called with:', id1, id2, linkProperties, add);
     const p1 = this.getBrondPropertyById(id1);
     const property1 = p1?.injector.get(NgBondProperty);
-
-    console.log('property 1:', property1);
 
     if (!property1) {
       console.warn(`No property found for id: ${id1}`);
@@ -128,11 +214,6 @@ export class NgBondService {
     }
 
     if (p1) {
-      //const link = computed(() => {
-      // const x1 = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : undefined;
-      // const y1 = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : undefined;
-      // const x2 = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : undefined;
-      // const y2 = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : undefined;
 
       const defProps = this.defaultProperties();
       const animate = property1.animatedLink;
@@ -141,7 +222,6 @@ export class NgBondService {
       const strokeWidth = property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2;
       const curveType = linkProperties?.curveType || defProps.curveType || 'bezier';
       const curveRadius = linkProperties?.curveRadius || defProps.curveRadius || 10;
-      console.log('Stroke for link:', stroke);
 
       const link: Link = {
         x1: computed(() => (p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : undefined)),
@@ -150,6 +230,7 @@ export class NgBondService {
         y2: computed(() => (p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : undefined)),
         inputId: id1,
         outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
+        inspectableProperties: inspectableLinkProperties,
         properties: {
           animate: animate,
           strokeWidth: signal(strokeWidth),
@@ -160,6 +241,9 @@ export class NgBondService {
           animationBubbleCount: signal<number>(10),
           animationBubbleDuration: signal<number>(4),
           animationBubbleRadius: signal<number>(3),
+          textOnPath: signal<string>(''),
+          midPoint: signal<{ x: number; y: number }>({ x: 0, y: 0 }),
+          totalLength: signal<number>(0),
         },
         path: computed(() => {
           const cType = link.properties.curveType();
@@ -205,7 +289,6 @@ export class NgBondService {
       //});
 
       if (add) {
-        console.log('Adding link:', link);
         this.links.update((x) => [...x, link]);
       }
       return link;
@@ -255,7 +338,10 @@ export class NgBondService {
             animate: signal(false),
             animationBubbleCount: signal(0),
             animationBubbleDuration: signal(0),
-            animationBubbleRadius: signal(3)
+            animationBubbleRadius: signal(3),
+            textOnPath: signal(''),
+            midPoint: signal({ x: 0, y: 0 }),
+            totalLength: signal(0),
           },
           false
         );

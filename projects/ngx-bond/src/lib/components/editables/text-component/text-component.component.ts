@@ -1,11 +1,11 @@
 import { afterNextRender, Component, effect, ElementRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgBondContainer, NgBondContainerHost } from '@richapps/ngx-bond';
+import { NgBondContainer, NgBondContainerHost, NgBondProperty } from '@richapps/ngx-bond';
 import { fromEvent } from 'rxjs';
 
 @Component({
   selector: 'lib-text-component',
-  imports: [FormsModule],
+  imports: [FormsModule, NgBondProperty],
   templateUrl: './text-component.component.html',
   styleUrl: './text-component.component.scss',
   host: {
@@ -56,6 +56,7 @@ export class TextComponentComponent extends NgBondContainerHost {
   @ViewChild('insert_slot', { read: ViewContainerRef })
   insertSlot!: ViewContainerRef;
 
+  rand = Math.floor(Math.random() * 1000);
 
   type = 'text';
 
@@ -70,8 +71,6 @@ export class TextComponentComponent extends NgBondContainerHost {
 
   fontWeight = model('normal');
   fontWeightChanged = output<string>();
-
-
 
   textInput = viewChild<ElementRef<HTMLInputElement>>('textInput');
 
@@ -110,7 +109,6 @@ export class TextComponentComponent extends NgBondContainerHost {
     });
 
     this.container.onInitialized.subscribe(() => {
-
       setTimeout(() => {
         this.measureSize();
       }, 2000);

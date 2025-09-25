@@ -1,2 +1,10 @@
 <input name="tx-input" [style.fontSize]="fontSize()" [style.color]="color()" [style.fontWeight]="fontWeight()" #textInput type="text" [(ngModel)]="text" />
 <ng-template #insert_slot></ng-template>
+
+<div [bondproperty]="'prop1' + rand" positioning="none" [draggable]="false" class="connector left-connector"></div>
+
+<div [bondproperty]="'prop2' + rand" positioning="none" [draggable]="false" class="connector right-connector"></div>
+
+<div [bondproperty]="'prop3' + rand" positioning="none" [draggable]="false" class="connector top-connector"></div>
+
+<div [bondproperty]="'prop4' + rand" positioning="none" [draggable]="false" class="connector bottom-connector"></div>

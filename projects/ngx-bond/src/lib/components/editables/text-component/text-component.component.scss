@@ -19,4 +19,59 @@
 
     border: none;
   }
+
+  --connector-size: 10px;
+  --connector-offset: calc(var(--connector-size) / 2 * -1);
+
+  &.approached {
+    .connector {
+      visibility: visible;
+    }
+  }
+}
+
+
+.connector {
+  visibility: hidden;
+  background: #dedede;
+}
+
+.left-connector {
+  position: absolute;
+  border-radius: 100%;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--connector-size);
+  height: var(--connector-size);
+}
+
+.right-connector {
+  position: absolute;
+  border-radius: 100%;
+  right: calc(var(--connector-offset));
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--connector-size);
+  height: var(--connector-size);
+}
+
+.top-connector {
+  position: absolute;
+  border-radius: 100%;
+  top: calc(var(--connector-offset));
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--connector-size);
+  height: var(--connector-size);
+}
+
+.bottom-connector {
+  position: absolute;
+  border-radius: 100%;
+  bottom: calc(var(--connector-offset));
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--connector-size);
+  height: var(--connector-size);
 }
