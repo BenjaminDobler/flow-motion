@@ -1,9 +1,11 @@
 :host {
-  display: block;
+  display: flex;
   position: absolute;
   width: 100px;
   height: 100px;
   background: #555;
+  align-items: center;
+  justify-content: center;
 
   // &.selected {
   //   .connector {
@@ -65,4 +67,13 @@
   transform: translateX(-50%);
   width: var(--connector-size);
   height: var(--connector-size);
+}
+
+
+textarea {
+  field-sizing: content;
+  resize: none;
+  background: transparent;
+  width: auto;
+  text-align: center;
 }

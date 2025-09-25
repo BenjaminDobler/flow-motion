@@ -1,5 +1,7 @@
 <ng-template #insert_slot></ng-template>
 
+<textarea [style.fontSize]="fontSize()" [style.color]="color()" [style.fontWeight]="fontWeight()" #textArea></textarea>
+
 <div [bondproperty]="'prop1' + rand" positioning="none" [draggable]="false" class="connector left-connector"></div>
 
 <div [bondproperty]="'prop2' + rand" positioning="none" [draggable]="false" class="connector right-connector"></div>

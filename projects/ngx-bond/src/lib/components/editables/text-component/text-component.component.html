@@ -1,4 +1,4 @@
-<input name="tx-input" [style.fontSize]="fontSize()" [style.color]="color()" [style.fontWeight]="fontWeight()" #textInput type="text" [(ngModel)]="text" />
+<textarea name="tx-input" [readOnly]="false" [contentEditable]="true" [style.fontSize]="fontSize()" [style.color]="color()" [style.fontWeight]="fontWeight()" #textInput [(ngModel)]="text"></textarea>
 <ng-template #insert_slot></ng-template>
 
 <div [bondproperty]="'prop1' + rand" positioning="none" [draggable]="false" class="connector left-connector"></div>

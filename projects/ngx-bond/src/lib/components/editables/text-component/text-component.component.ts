@@ -1,6 +1,6 @@
 import { afterNextRender, Component, effect, ElementRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgBondContainer, NgBondContainerHost, NgBondProperty } from '@richapps/ngx-bond';
+import { NgBondContainer, NgBondContainerHost, NgBondProperty, SelectionManager } from '@richapps/ngx-bond';
 import { fromEvent } from 'rxjs';
 
 @Component({
@@ -9,10 +9,12 @@ import { fromEvent } from 'rxjs';
   templateUrl: './text-component.component.html',
   styleUrl: './text-component.component.scss',
   host: {
+    '(dblclick)': 'onDblClick($event)',
     '[class.editable]': 'editable()',
   },
 })
 export class TextComponentComponent extends NgBondContainerHost {
+  selection = inject(SelectionManager);
   static inspectableProperties = [
     {
       name: 'text',
@@ -141,5 +143,19 @@ export class TextComponentComponent extends NgBondContainerHost {
     // const rect = this.textInput()?.nativeElement.getBoundingClientRect();
     // this.container.width.set(rect?.width || 100);
     // this.container.height.set(rect?.height || 100);
+  }
+
+  onDblClick(evt: MouseEvent) {
+    this.selection.disabled.set(true);
+    this.selection.unselectAll();
+    evt.stopPropagation();
+    evt.preventDefault();
+    // if (this.path()) {
+    //   const path = this.path();
+    //   path.canvas.selectedPathElement = path;
+    //   this.selection.unselectAll();
+    //   evt.stopPropagation();
+    //   evt.preventDefault();
+    // }
   }
 }

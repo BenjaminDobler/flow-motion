@@ -134,7 +134,6 @@ export class SVGCanvas {
   }
 
   init(svg: SVGElement) {
-    console.log('init svg canvas', svg);
     this.svg = svg;
     this.initKeyboard();
     this.initMouseGuestures();
@@ -142,7 +141,6 @@ export class SVGCanvas {
 
   initKeyboard() {
     fromEvent(window, 'keydown').subscribe((event: any) => {
-      console.log('keydown', event);
       if (event.code === 'Escape') {
       }
 
@@ -274,7 +272,6 @@ export class SVGCanvas {
           return mouseMove$.pipe(
             tap((dragMoveEvent) => {
               if (moves === 3) {
-                console.log('drag control point out');
                 const previousPoint = this.selectedPathElement?.points()[this.selectedPathElement?.points().length - 2];
                 if (previousPoint && !previousPoint.controlPoint1) {
                   previousPoint.controlPoint2 = new Point(this.selectedPathElement as Path, 'control');
@@ -371,7 +368,6 @@ export class SVGCanvas {
     const newPath = new Path(this);
     this.paths.set([...this.paths(), newPath]);
     if (d) {
-      console.log('set new path d', d);
       newPath.d.set(d);
     }
 
@@ -402,7 +398,6 @@ export class SVGCanvas {
   }
 
   generatePointsFromPath(path: SVGPathElement) {
-    console.log('Generating points from path', path);
     const segments = (path as any).getPathData();
 
     const points: Point[] = [];
@@ -472,7 +467,6 @@ export class SVGCanvas {
     let points = this.selectedPathElement?.points() || [];
 
     if (segment.type === 'L') {
-      console.log('over line segment', segment);
       const p = points.find((p) => p.x === segment.values[0] && p.y === segment.values[1]);
       if (p) {
         const pointIndex = points.indexOf(p);
@@ -487,7 +481,6 @@ export class SVGCanvas {
             takeUntil(mouseUp$),
             finalize(() => {
               if (moveCount < 3) {
-                console.log('move on line');
                 const p = new Point(this.selectedPathElement as Path, 'point');
                 p.x = clickEvent.clientX - parentRect.left;
                 p.y = clickEvent.clientY - parentRect.top;
@@ -561,7 +554,6 @@ export class SVGCanvas {
     }
     const segIndex = isInWhichSegment(evt.target, evt.clientX - parentRect.left, evt.clientY - parentRect.top);
     const segment = evt.target.getPathData()[segIndex];
-    console.log('over segment', segment, segIndex);
 
     if (segment.type === 'C') {
       // find the point for t=0.5 for the given cubic bezier segment
@@ -588,9 +580,7 @@ export class SVGCanvas {
   }
 
   onPointClick(point: Point) {
-    console.log('on point click');
     if (this.keyAltDown) {
-      console.log('delete point');
 
       this.selectedPathElement?.points.update((points) => {
         return points.filter((p) => p !== point);
@@ -600,7 +590,6 @@ export class SVGCanvas {
       //point.destroy();
       this.draw();
     } else if (this.mode() === 'pen' && this.selectedPathElement?.points()[0] === point) {
-      console.log('close the path!');
       this.selectedPathElement.isClosed.set(true);
       this.draw();
     }
@@ -796,7 +785,6 @@ export class SVGCanvas {
   }
 
   fromHistory() {
-    console.log('from history');
     const state = this.history.pop();
 
     // this.selectedPathElement?.points().forEach((p) => {

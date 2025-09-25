@@ -19,7 +19,6 @@ export class KeyManager {
     });
 
     this.keyDown$.subscribe((evt) => {
-      console.log('key down', evt.key);
       this.keydownMap.set(evt.key, true);
       this.keysDown.update((x) => [...x, evt.key]);
     });

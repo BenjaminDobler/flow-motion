@@ -1,5 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
-import { ComponentFactory, KeyManager, MotionPathService, NgBondContainer, NgBondProperty, NgBondService, NgBondWorld, PathDirectiveDirective, SelectionManager, SVGCanvas, SvgCanvasComponent } from '@richapps/ngx-bond';
+import {
+  ComponentFactory,
+  KeyManager,
+  MotionPathService,
+  NgBondContainer,
+  NgBondProperty,
+  NgBondService,
+  NgBondWorld,
+  PathDirectiveDirective,
+  SelectionManager,
+  SVGCanvas,
+  SvgCanvasComponent,
+} from '@richapps/ngx-bond';
 import { PropertyContainerComponent } from '../../components/property-container/property-container.component';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
 import { MotionPathComponent, TimelineComponent, TimelineService } from '@richapps/ngx-bond-timeline';
@@ -40,7 +52,6 @@ export class SimpleComponent {
   }
 
   onDoubleClick(event: MouseEvent) {
-    console.log('double click', event);
     const canvas = this.svgCanvas();
     if (canvas) {
       if (this.svg.selectedPathElement && this.selection.disabled()) {
@@ -48,21 +59,20 @@ export class SimpleComponent {
         this.svg.mode.set('select');
         const path = this.svg.selectedPathElement;
         this.svg.unselectPath();
-        // this.selection.select(canvas.selectedPathElement);
-        console.log('children', this.componentFactory.containerElementMap);
 
         this.componentFactory.containerElementMap.forEach((container: any, key: NgBondContainer) => {
-          console.log(key, container);
           container.directives.forEach((dir: any) => {
-            console.log('dir', typeof dir);
             if (dir.type === 'path-directive') {
-              console.log('found path directive', dir);
               if ((dir as PathDirectiveDirective).path() === path) {
                 this.selection.select(key);
               }
             }
           });
         });
+      } else {
+        if (this.selection.disabled()) {
+          this.selection.disabled.set(false);
+        }
       }
     }
   }
