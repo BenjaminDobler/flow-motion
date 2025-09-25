@@ -362,13 +362,17 @@ export class NgBondService {
   }
 
   removeLink(link: any) {
-    const p1 = this.dragElements().find((d) => d.id() === link().inputId);
-    const p2 = this.dragElements().find((d) => d.id() === link().outputId);
+    console.log('removing link', link);
+    const p1 = this.dragElements().find((d) => d.id() === link.inputId);
+    const p2 = this.dragElements().find((d) => d.id() === link.outputId);
+
+    console.log('p1', p1);
+    console.log('p2', p2);
 
     const property1 = p1?.injector.get(NgBondProperty);
     const property2 = p2?.injector.get(NgBondProperty);
     if (!property1 || !property2) {
-      console.warn(`No properties found for link: ${link()}`);
+      console.warn(`No properties found for link: ${link}`);
       return;
     }
 
