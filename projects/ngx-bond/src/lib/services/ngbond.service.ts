@@ -28,7 +28,7 @@ export type Bound = {
   height: number;
 };
 
-const inspectableLinkProperties = [
+export const inspectableLinkProperties = [
   {
     name: 'stroke',
     type: 'color',

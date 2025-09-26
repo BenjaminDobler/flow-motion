@@ -2,10 +2,10 @@
 
 <img [src]="src()" style="width: 100%;height: 100%;" alt="Image" />
 
-<div [bondproperty]="'prop1' + rand" positioning="none" [draggable]="false" class="connector left-connector"></div>
+<div [bondproperty]="'prop' + container.id() + '-left'" positioning="none" [draggable]="false" class="connector left-connector"></div>
 
-<div [bondproperty]="'prop2' + rand" positioning="none" [draggable]="false" class="connector right-connector"></div>
+<div [bondproperty]="'prop' + container.id() + '-right'" positioning="none" [draggable]="false" class="connector right-connector"></div>
 
-<div [bondproperty]="'prop3' + rand" positioning="none" [draggable]="false" class="connector top-connector"></div>
+<div [bondproperty]="'prop' + container.id() + '-top'" positioning="none" [draggable]="false" class="connector top-connector"></div>
 
-<div [bondproperty]="'prop4' + rand" positioning="none" [draggable]="false" class="connector bottom-connector"></div>
+<div [bondproperty]="'prop' + container.id() + '-bottom'" positioning="none" [draggable]="false" class="connector bottom-connector"></div>

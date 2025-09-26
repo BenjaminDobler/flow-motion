@@ -73,6 +73,10 @@ export class NgBondProperty {
   constructor() {
     const drag = makeDraggable(this.el.nativeElement);
 
+    if (this.container) {
+      this.container.type = 'link-target';
+    }
+
     if (!this.ngBondService) {
       return;
     }
@@ -150,6 +154,8 @@ export class NgBondProperty {
 
       this.container?.updatePosition();
     });
+
+    
   }
 
   position(): LinkPosition {

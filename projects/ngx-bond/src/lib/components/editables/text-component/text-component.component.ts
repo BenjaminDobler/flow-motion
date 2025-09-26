@@ -1,6 +1,6 @@
 import { afterNextRender, Component, effect, ElementRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgBondContainer, NgBondContainerHost, NgBondProperty, SelectionManager } from '@richapps/ngx-bond';
+import { NgBondContainer, NgBondProperty, SelectionManager } from '@richapps/ngx-bond';
 import { fromEvent } from 'rxjs';
 
 @Component({
@@ -13,7 +13,7 @@ import { fromEvent } from 'rxjs';
     '[class.editable]': 'editable()',
   },
 })
-export class TextComponentComponent extends NgBondContainerHost {
+export class TextComponentComponent {
   selection = inject(SelectionManager);
   static inspectableProperties = [
     {
@@ -81,7 +81,6 @@ export class TextComponentComponent extends NgBondContainerHost {
   editable = signal(false);
 
   constructor() {
-    super();
     effect(() => {
       this.textChanged.emit(this.text());
       setTimeout(() => {

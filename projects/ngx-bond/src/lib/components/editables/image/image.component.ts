@@ -1,12 +1,11 @@
-import { Component, effect, forwardRef, input, output } from '@angular/core';
-import { NgBondContainerHost, NgBondProperty } from '@richapps/ngx-bond';
+import { Component, effect, forwardRef, inject, input, output } from '@angular/core';
+import { NgBondContainer, NgBondProperty } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-image',
   imports: [NgBondProperty],
   templateUrl: './image.component.html',
   styleUrl: './image.component.scss',
-  providers: [{ provide: NgBondContainerHost, useExisting: forwardRef(() => ImageComponent) }],
 })
 export class ImageComponent {
   static inspectableProperties = [
@@ -25,6 +24,8 @@ export class ImageComponent {
   type = 'image';
 
   rand = Math.floor(Math.random() * 1000);
+
+  container = inject(NgBondContainer);
 
   get inspectableProperties() {
     return ImageComponent.inspectableProperties;

@@ -1,7 +1,5 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import { DecimalPipe } from '@angular/common';
 import {
   Link,
   NgBondContainer,
@@ -16,9 +14,9 @@ import {
   TextComponentComponent,
   LinkPropertiesComponent,
 } from '@richapps/ngx-bond';
-import { InspectorTweenProperties } from '@richapps/ngx-bond-timeline';
+import { InspectorTweenProperties, TimelineService } from '@richapps/ngx-bond-timeline';
 
-type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree' | 'tween' | 'link';
+type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree' | 'tween';
 type Tab = {
   label: string;
   value: tabType;
@@ -28,7 +26,6 @@ type Tab = {
   selector: 'bond-inspector',
   imports: [
     FormsModule,
-    DecimalPipe,
     ConnectionInspectorComponent,
     ElementTreeComponent,
     AlignmentInspectorComponent,
@@ -47,12 +44,12 @@ export class InspectorComponent {
   protected selected = signal<tabType>('element-inspector');
   protected selectionManager: SelectionManager = inject(SelectionManager);
   protected componentFactory = inject(ComponentFactory);
+  protected timelineService = inject(TimelineService);
 
   protected tabs = signal<Tab[]>([
     { label: 'Element', value: 'element-inspector' },
     { label: 'Children', value: 'child-tree' },
     { label: 'Connection', value: 'properties' },
-    { label: 'Link', value: 'link' },
   ]);
 
   animationBubbleCount = signal(5);
@@ -89,5 +86,48 @@ export class InspectorComponent {
 
   addText() {
     this.componentFactory.addComponent(TextComponentComponent, { resizable: false, bgColor: 'transparent' });
+  }
+
+  serialize() {
+    const components = this.componentFactory.serializeComponents();
+    const timelineData = this.timelineService.timeline();
+    console.log('Timeline Data:', timelineData);
+
+    components.timeline = timelineData;
+
+    localStorage.setItem('serialized', JSON.stringify(components, null, 2));
+    console.log('Serialized:', JSON.stringify(components, null, 2));
+  }
+
+  loadSerialized() {
+    const serialized = localStorage.getItem('serialized');
+
+    if (serialized) {
+      const serializedObj: any = JSON.parse(serialized);
+
+      this.componentFactory.loadSerialized(serializedObj);
+
+      const timelineData = serializedObj.timeline;
+      timelineData.groups.forEach((g: any) => {
+        g.tracks.forEach((track: any) => {
+          track.tweens = track.tweens.map((tween: any) => {
+            console.log(tween);
+            const start = track.keyframes.find((kf: any) => kf.time === tween.start.time);
+            const end = track.keyframes.find((kf: any) => kf.time === tween.end.time);
+
+            if (start && end) {
+              tween.start = start;
+              tween.end = end;
+            }
+            return tween;
+          });
+        });
+      });
+
+      setTimeout(() => {
+        this.timelineService.timeline.set(serializedObj.timeline);
+        this.timelineService.createGsapTimeline();
+      }, 500);
+    }
   }
 }

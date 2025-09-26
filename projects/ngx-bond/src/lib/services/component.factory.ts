@@ -1,5 +1,5 @@
 import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
-import { NgBondContainer, NGBondItem, NgBondWorld, PathDirectiveDirective, SelectionManager } from '@richapps/ngx-bond';
+import { inspectableLinkProperties, NgBondContainer, NGBondItem, NgBondProperty, NgBondService, NgBondWorld, PathDirectiveDirective, SelectionManager } from '@richapps/ngx-bond';
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
 import { TestComponentComponent } from '../components/editables/test-component/test-component.component';
@@ -15,6 +15,7 @@ const componentNameToClass = {
 @Injectable()
 export class ComponentFactory {
   selectionManager = inject(SelectionManager);
+  bondService = inject(NgBondService);
   componentAdded = new Subject<string>();
   propertyChanged = new Subject<{ id: string; property: string; value: any }>();
   componentCount = 0;
@@ -126,7 +127,11 @@ export class ComponentFactory {
     };
 
     const getChildren = (item: NGBondItem, parent: any) => {
-      item.children().forEach((child) => {
+
+      item.children().filter((child) => {
+        const c = child as NgBondContainer;
+        return c.type !== 'link' && c.type !== 'link-target';
+      }).forEach((child) => {
         const container = this.containerElementMap.get(child as NgBondContainer);
 
         const el: any = {};
@@ -193,7 +198,26 @@ export class ComponentFactory {
       getChildren(this.world, serialized);
     }
 
-    localStorage.setItem('serialized', JSON.stringify(serialized, null, 2));
+    const links: { inputId: string; outputId: string, props: any }[] = [];
+    this.bondService.links().forEach((link) => {
+      console.log('Link:', link);
+
+      const props: any = {};
+      inspectableLinkProperties.forEach((prop) => {
+        if (prop.serializable) {
+          console.log('setter name ', prop.setterName);
+          props[prop.setterName] = (link.properties as any)[prop.setterName]();
+        }
+      });
+          
+      
+      links.push({ inputId: link.inputId, outputId: link.outputId, props });
+    });
+
+    serialized.links = links;
+
+    
+
     return serialized;
   }
 
@@ -239,6 +263,14 @@ export class ComponentFactory {
     data.elements.forEach((element: any) => {
       addChildren(element, host);
     });
+
+    setTimeout(() => {
+      data.links.forEach((link: any) => {
+
+        this.bondService.createLink(link.inputId, link.outputId, link.props);
+      });
+    }, 200);
+
   }
 
   groupSelected() {

@@ -1,5 +1,4 @@
-import { afterEveryRender, ChangeDetectionStrategy, Component, effect, ElementRef, forwardRef, inject, input, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
-import { NgBondContainerHost } from '../../../types/types';
+import { afterEveryRender, ChangeDetectionStrategy, Component, effect, ElementRef, forwardRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 @Component({
@@ -7,13 +6,12 @@ import { NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
   imports: [NgBondProperty],
   templateUrl: './test-component.component.html',
   styleUrl: './test-component.component.scss',
-  providers: [{ provide: NgBondContainerHost, useExisting: forwardRef(() => TestComponentComponent) }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(dblclick)': 'onDblClick($event)',
   },
 })
-export class TestComponentComponent extends NgBondContainerHost {
+export class TestComponentComponent {
   // backgroundColor = input('#00ff00');
 
   static inspectableProperties = [
@@ -68,17 +66,19 @@ export class TestComponentComponent extends NgBondContainerHost {
 
   textareaEl = viewChild<ElementRef<HTMLTextAreaElement>>('textArea');
 
-  text = signal('');
+  text = model('');
   textChanged = output<string>();
-  fontSize = signal('16px');
+  fontSize = model('16px');
   fontSizeChanged = output<string>();
-  color = signal('white');
+  color = model('white');
   colorChanged = output<string>();
-  fontWeight = signal<'normal' | 'bold' | 'bolder' | 'lighter' | number>('normal');
+  fontWeight = model<'normal' | 'bold' | 'bolder' | 'lighter' | number>('normal');
   fontWeightChanged = output<'normal' | 'bold' | 'bolder' | 'lighter' | number>();
+  container = inject(NgBondContainer);
+
+
 
   constructor() {
-    super();
 
     effect(() => {
       const text = this.text();
@@ -103,7 +103,8 @@ export class TestComponentComponent extends NgBondContainerHost {
 
   onDblClick(evt: MouseEvent) {
     this.selection.disabled.set(true);
-    this.selection.unselectAll();
+    
+    //this.selection.unselectAll();
     evt.stopPropagation();
     evt.preventDefault();
     this.focusTextarea();

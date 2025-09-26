@@ -28,7 +28,6 @@ import { BehaviorSubject, distinctUntilChanged, filter, fromEvent, race, Subject
 import { NgBondService } from '../../services/ngbond.service';
 import { SelectionManager } from '../../services/selection.manager';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { NgBondContainerHost } from '../../types/types';
 
 @Directive({
   selector: '[bondcontainer]',
@@ -41,7 +40,6 @@ import { NgBondContainerHost } from '../../types/types';
   },
 })
 export class NgBondContainer implements NGBondItem, OnDestroy {
-  host = inject(NgBondContainerHost, { optional: true });
 
   injector = inject(Injector);
 
@@ -108,7 +106,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'DOMRect',
       setterName: 'setBounds',
       isSignal: true,
-      serializable: true,
+      serializable: false,
       readonly: true,
     },
     {
@@ -116,7 +114,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'DOMRect',
       setterName: 'setGlobalBounds',
       isSignal: true,
-      serializable: true,
+      serializable: false,
       readonly: true,
     },
   ];

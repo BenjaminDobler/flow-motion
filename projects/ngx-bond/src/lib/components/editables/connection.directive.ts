@@ -12,7 +12,7 @@ import { svgPathBbox } from 'svg-path-bbox';
   ],
 })
 export class ConnectionDirective {
-  public type = 'connection-directive';
+  public type = 'link';
 
   
 

@@ -21,6 +21,9 @@
     <alignment-inspector></alignment-inspector>
 
     <element-property-inspector style="margin-top: 10px"></element-property-inspector>
+
+    <link-properties></link-properties>
+
     <inspector-tween-properties></inspector-tween-properties>
   } @else if (selected() === 'child-tree') {
     <div>
@@ -29,16 +32,8 @@
       <element-tree></element-tree>
 
       <button (click)="componentFactory.groupSelected()">Group</button>
-      <button (click)="componentFactory.serializeComponents()">Serialize</button>
-      <button (click)="componentFactory.loadSerialized()">Load</button>
-    </div>
-  } @else if (selected() === 'link') {
-    <div>
-      <h3>Link Properties</h3>
-
-      <link-properties></link-properties>
-
+      <button (click)="serialize()">Serialize</button>
+      <button (click)="loadSerialized()">Load</button>
     </div>
   }
-      
 </div>

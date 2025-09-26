@@ -176,6 +176,10 @@ export class PathDirectiveDirective {
 
     // const debouncedPathChange = toSignal(toObservable(this.d).pipe(distinctUntilChanged(), debounceTime(500)));
 
+    if (this.container) {
+      this.container.type = 'link';
+    }
+
     effect(() => {
       const d = this.path()?.d() || '';
 

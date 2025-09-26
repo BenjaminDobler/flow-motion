@@ -16,7 +16,7 @@ export class LinkPropertiesComponent {
 
   selectedLink = computed(()=>{
     const sel = this.selection.selectionTargets();
-    return sel.filter(s => s.type === 'connection-directive');
+    return sel.filter(s => s.type === 'link');
 
   });
 
