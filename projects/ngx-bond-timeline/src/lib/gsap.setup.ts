@@ -22,8 +22,6 @@ export const configureGsap = () => {
       },
       render(progress: any, data: any) {
         const interpolated = data.interp(progress);
-        console.log('set prog ', interpolated);
-
         data.target[prop].set(interpolated);
       },
     });
