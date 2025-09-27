@@ -136,10 +136,10 @@ export class SelectionManager {
         this.selectionTargets().forEach((t) => {
           this.componentFactory?.removeComponent(t);
         });
+      } else if (evt.key === 'g' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
+        this.componentFactory?.groupSelected();
       }
     });
-
-
   }
 
   setAll(targets: NgBondContainer[]) {
@@ -352,16 +352,13 @@ export class SelectionManager {
 
   mouseMove(x: number, y: number) {
     this.rootChildren().forEach((target) => {
+      const dist = GeometryUtils.Distance({ x, y }, target.globalBounds());
 
-      const dist  = GeometryUtils.Distance({ x, y }, target.globalBounds());
-      
       if (dist < 20) {
         target.approached(true);
-        
       } else {
         target.approached(false);
       }
-      
     });
   }
 }
