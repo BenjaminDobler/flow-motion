@@ -1,5 +1,5 @@
 import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
-import { inspectableLinkProperties, NgBondContainer, NGBondItem, NgBondProperty, NgBondService, NgBondWorld, PathDirectiveDirective, SelectionManager } from '@richapps/ngx-bond';
+import { inspectableLinkProperties, NgBondContainer, NGBondItem, NgBondProperty, NgBondService, NgBondWorld, Path, PathDirectiveDirective, SelectionManager, SVGCanvas } from '@richapps/ngx-bond';
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
 import { ContainerComponent } from '../components/editables/container-component/container-component.component';
@@ -22,6 +22,7 @@ export class ComponentFactory {
   componentCount = 0;
   containerElementMap = new Map<NgBondContainer, { instance: any; directives: any[]; propertyDirectiveMap: Map<string, any>; componentRef: any }>();
   world?: NgBondWorld;
+  svgCanvas = inject(SVGCanvas);
 
   constructor() {
     this.selectionManager.componentFactory = this;
@@ -137,31 +138,49 @@ export class ComponentFactory {
           const container = this.containerElementMap.get(child as NgBondContainer);
 
           const el: any = {};
-          el.name = container?.instance.constructor.name;
+
           el.elementProperties = [];
           el.directives = [];
           el.id = child.id();
           el.elements = [];
 
-          container?.instance?.inspectableProperties?.forEach((prop: any) => {
-            if (prop.serializable) {
-              try {
-                if (prop.isSignal) {
-                  el.elementProperties.push({
-                    name: prop.setterName,
-                    value: container.instance[prop.setterName](),
-                  });
-                } else {
-                  el.elementProperties.push({
-                    name: prop.setterName,
-                    value: container.instance[prop.setterName],
-                  });
+          if (container?.instance) {
+            el.name = container?.instance.constructor.name;
+
+            container?.instance?.inspectableProperties?.forEach((prop: any) => {
+              if (prop.serializable) {
+                try {
+                  if (prop.isSignal) {
+                    el.elementProperties.push({
+                      name: prop.setterName,
+                      value: container.instance[prop.setterName](),
+                    });
+                  } else {
+                    el.elementProperties.push({
+                      name: prop.setterName,
+                      value: container.instance[prop.setterName],
+                    });
+                  }
+                } catch (error) {
+                  console.error('Error serializing property:', prop.setterName, error);
                 }
-              } catch (error) {
-                console.error('Error serializing property:', prop.setterName, error);
               }
+            });
+          } else {
+            // No container instance found probably svg path
+            console.log('No container instance found for', child);
+            console.log(container);
+            const pathDirective = container?.directives.find((d: any) => {
+              return d instanceof PathDirectiveDirective;
+            });
+
+            if (pathDirective) {
+              const path = pathDirective.path();
+              el.pathData = path.serialize();
+
+              el.name = 'SVGPath';
             }
-          });
+          }
 
           // Serialize the directives if needed
           container?.directives.forEach((directive: any) => {
@@ -260,7 +279,22 @@ export class ComponentFactory {
     };
 
     data.elements.forEach((element: any) => {
-      addChildren(element, host);
+      console.log('Adding element', element.name);
+      if (element.name === 'SVGPath') {
+        // Special handling for SVGPath since it has no component class
+        console.log('Adding SVG Path', element);
+        const pathDirectiveProps = element.directives.find((d: any) => d.name === '_PathDirectiveDirective')?.properties;
+        const pathData = element.pathData;
+
+        const p = Path.deserialize(pathData, this.svgCanvas);
+        this.svgCanvas.paths.update((paths) => {
+          return [...paths, p];
+        });
+        console.log(pathDirectiveProps);
+        p.draw();
+      } else {
+        addChildren(element, host);
+      }
     });
 
     setTimeout(() => {
