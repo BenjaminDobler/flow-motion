@@ -1,6 +1,6 @@
 <ng-template #insert_slot></ng-template>
 
-<textarea [style.fontSize]="fontSize()" [style.color]="color()" [style.fontWeight]="fontWeight()" #textArea></textarea>
+<textarea [style.fontSize]="fontSize()" [style.color]="color()" [(ngModel)]="text" [style.fontWeight]="fontWeight()" #textArea></textarea>
 
 <div [bondproperty]="'prop' + container.id() + '-left'" positioning="none" [draggable]="false" class="connector left-connector"></div>
 

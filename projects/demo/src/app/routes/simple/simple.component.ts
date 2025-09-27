@@ -19,7 +19,7 @@ import { ConnectionContainerComponent } from '../../../../../ngx-bond/src/lib/co
 
 @Component({
   selector: 'app-root',
-  imports: [NgBondContainer, NgBondProperty, SvgCanvasComponent, NgBondWorld, ConnectionContainerComponent, PropertyContainerComponent, InspectorComponent, TimelineComponent, MotionPathComponent],
+  imports: [SvgCanvasComponent, NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent],
   templateUrl: './simple.component.html',
   styleUrl: './simple.component.scss',
   providers: [],

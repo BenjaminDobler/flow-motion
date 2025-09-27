@@ -8,18 +8,6 @@ import { getMultiLinePath } from '../components/util/connections/multi-step';
 import { getDistance } from '../components/util/geo';
 import { NgBondWorld } from '@richapps/ngx-bond';
 
-// export type  LinkContent = {
-//   x1: number | undefined;
-//   y1: number | undefined;
-//   x2: number | undefined;
-//   y2: number | undefined;
-//   properties: LinkProperties;
-//   path: string;
-//   inputId: string;
-//   outputId: string;
-// };
-
-// export type Link = Signal<LinkContent>;
 
 export type Bound = {
   left: number;
@@ -93,6 +81,14 @@ export const inspectableLinkProperties = [
     event: 'animationBubbleRadiusChanged',
     serializable: true,
   },
+    {
+    name: 'animationBubbleColor',
+    type: 'color',
+    setterName: 'animationBubbleColor',
+    isSignal: true,
+    event: 'animationBubbleColorChanged',
+    serializable: true,
+  },
   {
     name: 'animate',
     type: 'checkbox',
@@ -141,6 +137,7 @@ export interface LinkProperties {
   animationBubbleCount: WritableSignal<number>;
   animationBubbleDuration: WritableSignal<number>;
   animationBubbleRadius: WritableSignal<number>;
+  animationBubbleColor: WritableSignal<string>;
   textOnPath: WritableSignal<string>;
   midPoint: WritableSignal<{ x: number; y: number }>;
   totalLength: WritableSignal<number>;
@@ -241,6 +238,7 @@ export class NgBondService {
           animationBubbleCount: signal<number>(10),
           animationBubbleDuration: signal<number>(4),
           animationBubbleRadius: signal<number>(3),
+          animationBubbleColor: signal<string>('#333'),
           textOnPath: signal<string>(''),
           midPoint: signal<{ x: number; y: number }>({ x: 0, y: 0 }),
           totalLength: signal<number>(0),
@@ -339,6 +337,7 @@ export class NgBondService {
             animationBubbleCount: signal(0),
             animationBubbleDuration: signal(0),
             animationBubbleRadius: signal(3),
+            animationBubbleColor: signal('#333'),
             textOnPath: signal(''),
             midPoint: signal({ x: 0, y: 0 }),
             totalLength: signal(0),

@@ -42,7 +42,7 @@
       @let step = duration / count;
 
       @for (count of countToArray(link.properties.animationBubbleCount()); track $index) {
-        <circle [attr.r]="link.properties.animationBubbleRadius()" fill="red">
+        <circle [attr.r]="link.properties.animationBubbleRadius()" [attr.fill]="link.properties.animationBubbleColor()">
           <animateMotion [attr.dur]="duration + 's'" [attr.begin]="$index * step + 's'" repeatCount="indefinite" [attr.path]="link.path()" />
         </circle>
       }

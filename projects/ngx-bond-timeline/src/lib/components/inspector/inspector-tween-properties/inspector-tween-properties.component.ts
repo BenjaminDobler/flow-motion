@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { TimelineService } from '../../../services/timeline.service';
-import { ElementPropertyInspectorComponent, SelectionManager, SVGCanvas } from '@richapps/ngx-bond';
+import { SelectionManager, SVGCanvas } from '@richapps/ngx-bond';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'inspector-tween-properties',
-  imports: [FormsModule, ElementPropertyInspectorComponent],
+  imports: [FormsModule],
   templateUrl: './inspector-tween-properties.component.html',
   styleUrl: './inspector-tween-properties.component.scss',
 })

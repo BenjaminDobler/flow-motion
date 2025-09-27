@@ -1,9 +1,10 @@
 import { afterEveryRender, ChangeDetectionStrategy, Component, effect, ElementRef, forwardRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-test-component',
-  imports: [NgBondProperty],
+  imports: [NgBondProperty, FormsModule],
   templateUrl: './test-component.component.html',
   styleUrl: './test-component.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -82,6 +83,7 @@ export class TestComponentComponent {
 
     effect(() => {
       const text = this.text();
+      console.log('Text changed:', text);
       this.textChanged.emit(text);
     });
 
@@ -109,6 +111,8 @@ export class TestComponentComponent {
     evt.preventDefault();
     this.focusTextarea();
   }
+
+
 
   private focusTextarea() {
     const textareaEl = this.textareaEl();

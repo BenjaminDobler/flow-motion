@@ -14,15 +14,9 @@ import { svgPathBbox } from 'svg-path-bbox';
 export class ConnectionDirective {
   public type = 'link';
 
-  
-
-  
-
   link = model.required<Link>();
 
   container = inject(NgBondContainer, { optional: true });
-
-  
 
   pathMidpoint = signal<{ x: number; y: number }>({ x: 0, y: 0 });
 
@@ -31,8 +25,6 @@ export class ConnectionDirective {
     if (this.container) {
       this.container.type = this.type;
     }
-
-
 
     effect(() => {
       const link = this.link();
@@ -43,7 +35,6 @@ export class ConnectionDirective {
       this.pathMidpoint.set({ x: point.x, y: point.y });
       this.link().properties.midPoint.set({ x: point.x, y: point.y });
       this.link().properties.totalLength.set(totalLength);
-      
     });
 
     effect(() => {
@@ -57,7 +48,5 @@ export class ConnectionDirective {
       this.container?.x.set(rect.x);
       this.container?.y.set(rect.y);
     });
-
-    
   }
 }
