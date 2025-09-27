@@ -1,18 +1,21 @@
-<div >
-  <div (click)="toggleSelection()">{{ child().id() }} {{ component()?.type }}</div>
-  @let type = component()?.type;
-  @if (type === 'image') {
-    <i class="pi pi-image"></i>
-  } @else if (type === 'video') {
-    <i class="pi pi-video"></i>
-  } @else if (type === 'container') {
-    <i class="pi pi-box"></i>
-  } @else if (type === 'text') {
-    <i class="pi pi-language"></i>
-  }
-  <button (click)="remove()">Removem</button>
+<div>
+  <div (click)="toggleSelection()">
+    {{ child().id() }} {{ component()?.type }}
+    @let type = component()?.type;
+    @if (type === 'image') {
+      <i class="pi pi-image"></i>
+    } @else if (type === 'video') {
+      <i class="pi pi-video"></i>
+    } @else if (type === 'container') {
+      <i class="pi pi-box"></i>
+    } @else if (type === 'text') {
+      <i class="pi pi-language"></i>
+    }
+  </div>
 </div>
 
 @for (c of child().children(); track $index) {
-  <tree-child (onremove)="remove(c)" style="margin-left: 20px" [child]="c"></tree-child>
+  @if (c.type !== 'link-target') {
+    <tree-child (onremove)="remove(c)" style="margin-left: 20px" [child]="c"></tree-child>
+  }
 }

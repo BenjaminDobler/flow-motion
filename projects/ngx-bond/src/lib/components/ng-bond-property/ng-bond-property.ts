@@ -75,6 +75,8 @@ export class NgBondProperty {
 
     if (this.container) {
       this.container.type = 'link-target';
+    } else {
+      console.warn('NgBondProperty must be used within a NgBondContainer');
     }
 
     if (!this.ngBondService) {

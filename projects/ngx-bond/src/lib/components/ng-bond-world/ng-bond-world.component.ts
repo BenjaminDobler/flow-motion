@@ -21,6 +21,7 @@ export interface NGBondItem {
   gY: Signal<number>;
   id: Signal<string>;
   children: Signal<NGBondItem[]>;
+  type: string;
   addChild: (child: NGBondItem) => void;
   removeChild: (child: NGBondItem) => void;
   detachChild?: (viewRef: ComponentRef<any>) => void;
@@ -48,6 +49,8 @@ export class NgBondWorld implements NGBondItem {
   public el: ElementRef<HTMLElement> = inject(ElementRef);
   protected dragService: NgBondService = inject(NgBondService);
   protected selectionManager: SelectionManager = inject(SelectionManager);
+
+  type = 'world';
 
   disabled$ = toObservable(this.selectionManager.disabled);
   private keymanager: KeyManager = inject(KeyManager);
