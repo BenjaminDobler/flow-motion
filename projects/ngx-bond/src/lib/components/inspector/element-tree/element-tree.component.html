@@ -1,3 +1,3 @@
 @for (child of bondService.world?.children(); track $index) {
-  <tree-child [child]="child"></tree-child>
+  <tree-child (onremove)="removeComponent($event)" [child]="child"></tree-child>
 }

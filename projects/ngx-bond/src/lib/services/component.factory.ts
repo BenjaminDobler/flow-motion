@@ -2,12 +2,12 @@ import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewCont
 import { inspectableLinkProperties, NgBondContainer, NGBondItem, NgBondProperty, NgBondService, NgBondWorld, PathDirectiveDirective, SelectionManager } from '@richapps/ngx-bond';
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
-import { TestComponentComponent } from '../components/editables/test-component/test-component.component';
+import { ContainerComponent } from '../components/editables/container-component/container-component.component';
 import { ImageComponent } from '../components/editables/image/image.component';
 import { TextComponentComponent } from '../components/editables/text-component/text-component.component';
 
 const componentNameToClass = {
-  _TestComponentComponent: TestComponentComponent,
+  _ContainerComponent: ContainerComponent,
   _ImageComponent: ImageComponent,
   _TextComponentComponent: TextComponentComponent,
 };
@@ -17,6 +17,7 @@ export class ComponentFactory {
   selectionManager = inject(SelectionManager);
   bondService = inject(NgBondService);
   componentAdded = new Subject<string>();
+  componentRemoved = new Subject<string>();
   propertyChanged = new Subject<{ id: string; property: string; value: any }>();
   componentCount = 0;
   containerElementMap = new Map<NgBondContainer, { instance: any; directives: any[]; propertyDirectiveMap: Map<string, any>; componentRef: any }>();
@@ -26,7 +27,7 @@ export class ComponentFactory {
     this.selectionManager.componentFactory = this;
   }
 
-  addComponent(componentClass: { new (...args: any[]): void } = TestComponentComponent, inputs: any = {}, defaultID?: string, host?: any): ComponentRef<any> | undefined {
+  addComponent(componentClass: { new (...args: any[]): void } = ContainerComponent, inputs: any = {}, defaultID?: string, host?: any): ComponentRef<any> | undefined {
     let id = 'some-id-' + this.componentCount;
     this.componentCount++;
 
@@ -81,7 +82,6 @@ export class ComponentFactory {
     }
 
     const bondContainerInstance = componentRef.injector.get(NgBondContainer);
-    // const backgroundColorDirectiveInstance = componentRef.injector.get(BackgroundColorPropertyDirective);
 
     const directiveInstances = directives.map((d) => componentRef.injector.get(d as any));
 
@@ -127,60 +127,34 @@ export class ComponentFactory {
     };
 
     const getChildren = (item: NGBondItem, parent: any) => {
+      item
+        .children()
+        .filter((child) => {
+          const c = child as NgBondContainer;
+          return c.type !== 'link' && c.type !== 'link-target';
+        })
+        .forEach((child) => {
+          const container = this.containerElementMap.get(child as NgBondContainer);
 
-      item.children().filter((child) => {
-        const c = child as NgBondContainer;
-        return c.type !== 'link' && c.type !== 'link-target';
-      }).forEach((child) => {
-        const container = this.containerElementMap.get(child as NgBondContainer);
+          const el: any = {};
+          el.name = container?.instance.constructor.name;
+          el.elementProperties = [];
+          el.directives = [];
+          el.id = child.id();
+          el.elements = [];
 
-        const el: any = {};
-        el.name = container?.instance.constructor.name;
-        el.elementProperties = [];
-        el.directives = [];
-        el.id = child.id();
-        el.elements = [];
-
-        container?.instance?.inspectableProperties?.forEach((prop: any) => {
-          if (prop.serializable) {
-            try {
-              if (prop.isSignal) {
-                el.elementProperties.push({
-                  name: prop.setterName,
-                  value: container.instance[prop.setterName](),
-                });
-              } else {
-                el.elementProperties.push({
-                  name: prop.setterName,
-                  value: container.instance[prop.setterName],
-                });
-              }
-            } catch (error) {
-              console.error('Error serializing property:', prop.setterName, error);
-            }
-          }
-        });
-
-        // Serialize the directives if needed
-        container?.directives.forEach((directive: any) => {
-          el.directives.push({
-            name: directive.constructor.name,
-            properties: [],
-          });
-
-          directive.inspectableProperties.forEach((prop: any) => {
-            // serialized[key][prop.setterName] = directive[prop.setterName];
+          container?.instance?.inspectableProperties?.forEach((prop: any) => {
             if (prop.serializable) {
               try {
                 if (prop.isSignal) {
-                  el.directives[el.directives.length - 1].properties.push({
+                  el.elementProperties.push({
                     name: prop.setterName,
-                    value: directive[prop.setterName](),
+                    value: container.instance[prop.setterName](),
                   });
                 } else {
-                  el.directives[el.directives.length - 1].properties.push({
+                  el.elementProperties.push({
                     name: prop.setterName,
-                    value: directive[prop.setterName],
+                    value: container.instance[prop.setterName],
                   });
                 }
               } catch (error) {
@@ -188,17 +162,45 @@ export class ComponentFactory {
               }
             }
           });
+
+          // Serialize the directives if needed
+          container?.directives.forEach((directive: any) => {
+            el.directives.push({
+              name: directive.constructor.name,
+              properties: [],
+            });
+
+            directive.inspectableProperties.forEach((prop: any) => {
+              // serialized[key][prop.setterName] = directive[prop.setterName];
+              if (prop.serializable) {
+                try {
+                  if (prop.isSignal) {
+                    el.directives[el.directives.length - 1].properties.push({
+                      name: prop.setterName,
+                      value: directive[prop.setterName](),
+                    });
+                  } else {
+                    el.directives[el.directives.length - 1].properties.push({
+                      name: prop.setterName,
+                      value: directive[prop.setterName],
+                    });
+                  }
+                } catch (error) {
+                  console.error('Error serializing property:', prop.setterName, error);
+                }
+              }
+            });
+          });
+          parent.elements.push(el);
+          getChildren(child, el);
         });
-        parent.elements.push(el);
-        getChildren(child, el);
-      });
     };
 
     if (this.world) {
       getChildren(this.world, serialized);
     }
 
-    const links: { inputId: string; outputId: string, props: any }[] = [];
+    const links: { inputId: string; outputId: string; props: any }[] = [];
     this.bondService.links().forEach((link) => {
       console.log('Link:', link);
 
@@ -209,14 +211,11 @@ export class ComponentFactory {
           props[prop.setterName] = (link.properties as any)[prop.setterName]();
         }
       });
-          
-      
+
       links.push({ inputId: link.inputId, outputId: link.outputId, props });
     });
 
     serialized.links = links;
-
-    
 
     return serialized;
   }
@@ -266,11 +265,9 @@ export class ComponentFactory {
 
     setTimeout(() => {
       data.links.forEach((link: any) => {
-
         this.bondService.createLink(link.inputId, link.outputId, link.props);
       });
     }, 200);
-
   }
 
   groupSelected() {
@@ -312,19 +309,30 @@ export class ComponentFactory {
 
     setTimeout(() => {
       this.selectionManager.selectionTargets().forEach((target) => {
+        console.log('Moving target to group', target);
         const container = this.containerElementMap.get(target as NgBondContainer);
         if (container) {
-          const compRef: ComponentRef<any> = container.componentRef;
-          const i = this.world?.worldHost.indexOf(compRef.hostView);
-          this.world?.worldHost.detach(i);
-          this.world?.removeChild(compRef.instance);
+          const x = target.gX() - minX;
+          const y = target.gY() - minY;
 
-          (group.instance as unknown as TestComponentComponent).insertSlot.insert(compRef.hostView);
+          const parent = target.parent();
+          if (parent && parent.detachChild) {
+            parent.detachChild(container.componentRef);
+            parent.removeChild(target);
+          }
+          // const compRef: ComponentRef<any> = container.componentRef;
+          // const i = this.world?.worldHost.indexOf(compRef.hostView);
+          // this.world?.worldHost.detach(i);
+          // this.world?.removeChild(compRef.instance);
+
+          (group.instance as unknown as ContainerComponent).insertSlot.insert(container.componentRef.hostView);
           target.parentContainer = bondContainerInstance;
           target.parent.set(bondContainerInstance);
           bondContainerInstance.addChild(target);
-          target.x.set(target.x() - minX);
-          target.y.set(target.y() - minY);
+
+          console.log('New local position:', x, y);
+          target.x.set(x);
+          target.y.set(y);
         }
       });
     }, 100);
@@ -337,14 +345,13 @@ export class ComponentFactory {
     const newChildX = child.gX() - target.gX();
     const newChildY = child.gY() - target.gY();
 
-    const compRef: ComponentRef<any> = childContainer?.componentRef;
-    const i = this.world?.worldHost.indexOf(compRef.hostView);
-    this.world?.worldHost.detach(i);
-    this.world?.removeChild(compRef.instance);
+    const parent = child.parent();
+    if (parent && parent.detachChild) {
+      parent.detachChild(childContainer?.componentRef);
+      parent.removeChild(child);
+    }
 
-    child.parent()?.removeChild(child);
-
-    (targetContainer?.instance as unknown as TestComponentComponent).insertSlot.insert(compRef.hostView);
+    (targetContainer?.instance as unknown as ContainerComponent).insertSlot.insert(childContainer?.componentRef.hostView);
     //child.parentContainer = target;
     child.parent.set(target);
     target.addChild(child);
@@ -398,5 +405,26 @@ export class ComponentFactory {
       });
 
     this.componentAdded.next(container.id());
+  }
+
+  removeComponent(item: NgBondContainer) {
+    const container = this.containerElementMap.get(item);
+    this.selectionManager.unselect(item);
+
+    item.parent()?.removeChild(item);
+
+    const parent = item.parent();
+
+    if (container && container.componentRef) {
+      if (parent) {
+        parent.removeChild(item);
+        if (parent.detachChild) {
+          parent.detachChild(container.componentRef);
+        }
+        container.componentRef.destroy();
+      }
+    }
+    this.containerElementMap.delete(item);
+    this.componentRemoved.next(item.id());
   }
 }

@@ -54,6 +54,13 @@ export class TimelineService {
         return { ...currentTimeline };
       });
     });
+
+    this.componentFactory.componentRemoved.subscribe((id) => {
+      this.timeline.update((currentTimeline) => {
+        currentTimeline.groups = currentTimeline.groups.filter((g) => g.name !== id);
+        return { ...currentTimeline };
+      });
+    });
   }
 
   setPosition(pos: number) {

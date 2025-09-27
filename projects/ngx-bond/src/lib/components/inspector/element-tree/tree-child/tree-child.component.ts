@@ -14,6 +14,7 @@ export class TreeChildComponent {
   selection = inject(SelectionManager);
   child = input.required<NGBondItem>();
   onselect = output<NGBondItem>();
+  onremove = output<NGBondItem>();
 
   selected = computed(() => {
     return this.selection.selectionTargets().includes(this.child() as NgBondContainer);
@@ -27,4 +28,10 @@ export class TreeChildComponent {
     const container = this.selection.componentFactory?.containerElementMap.get(this.child() as NgBondContainer);
     return container?.instance;
   });
+
+  remove(child?: NGBondItem) {
+    this.onremove.emit(child || this.child());
+  }
+
+
 }

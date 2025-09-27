@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { NgBondService, SelectionManager } from '@richapps/ngx-bond';
+import { ComponentFactory, NgBondService, SelectionManager } from '@richapps/ngx-bond';
 import { TreeChildComponent } from './tree-child/tree-child.component';
 
 @Component({
@@ -11,5 +11,11 @@ import { TreeChildComponent } from './tree-child/tree-child.component';
 export class ElementTreeComponent {
   bondService = inject(NgBondService);
   selection = inject(SelectionManager);
+  components = inject(ComponentFactory);
+
+  removeComponent(item: any) {
+    this.components.removeComponent(item);
+    //this.selection.clearSelection();
+  }
 
 }

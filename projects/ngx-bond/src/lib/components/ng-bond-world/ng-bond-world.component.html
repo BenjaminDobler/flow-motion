@@ -9,8 +9,9 @@
 </svg>
 
 <div class="content-container" [style.transform]="`scale(${dragService.scale()})`">
-  <ng-content></ng-content>
+  
   <ng-template #insert_slot></ng-template>
+  <ng-content></ng-content>
 </div>
 
 

@@ -25,36 +25,32 @@
   </div>
 } -->
 
-
 @for (linkContainer of selectedLink(); track $index) {
   @let dir = $any(getDirective(linkContainer));
   @let link = dir.link();
   @let inspectableLinkProperties = link.inspectableProperties;
 
-
   <div>
     {{ dir.link().inputId }} > {{ dir.link().outputId }}
 
     @for (prop of inspectableLinkProperties; track $index) {
-
+      <div class="property">
         <label>{{ prop.name }}</label>
-      @if (prop.type === 'select') {
-        <select [(ngModel)]="link.properties[prop.name]">
-          @for (option of prop.options; track $index) {
-            <option [selected]="link.properties[prop.name]() === option">{{ option }}</option>
-          }
-        </select>
-      } @else if (prop.type === 'DOMRect') {
-        {{ dir[prop.name]().left }}, {{ dir[prop.name]().top }}, {{ dir[prop.name]().width }},
-        {{ dir[prop.name]().height }}
-      } @else if (prop.type === 'checkbox') {
-        <input type="checkbox" [(ngModel)]="link.properties[prop.name]" />
-      } @else {
-        <input [attr.type]="prop.type" [(ngModel)]="link.properties[prop.name]" />
-      }
+        @if (prop.type === 'select') {
+          <select [(ngModel)]="link.properties[prop.name]">
+            @for (option of prop.options; track $index) {
+              <option [selected]="link.properties[prop.name]() === option">{{ option }}</option>
+            }
+          </select>
+        } @else if (prop.type === 'DOMRect') {
+          {{ dir[prop.name]().left }}, {{ dir[prop.name]().top }}, {{ dir[prop.name]().width }},
+          {{ dir[prop.name]().height }}
+        } @else if (prop.type === 'checkbox') {
+          <input type="checkbox" [(ngModel)]="link.properties[prop.name]" />
+        } @else {
+          <input [attr.type]="prop.type" [(ngModel)]="link.properties[prop.name]" />
+        }
+      </div>
     }
   </div>
 }
-
-
-

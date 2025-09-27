@@ -1,19 +1,18 @@
-import { afterEveryRender, ChangeDetectionStrategy, Component, effect, ElementRef, forwardRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
+import { afterEveryRender, ChangeDetectionStrategy, Component, ComponentRef, effect, ElementRef, forwardRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { FormsModule } from '@angular/forms';
 @Component({
-  selector: 'app-test-component',
+  selector: 'container-component',
   imports: [NgBondProperty, FormsModule],
-  templateUrl: './test-component.component.html',
-  styleUrl: './test-component.component.scss',
+  templateUrl: './container-component.component.html',
+  styleUrl: './container-component.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(dblclick)': 'onDblClick($event)',
   },
 })
-export class TestComponentComponent {
-  // backgroundColor = input('#00ff00');
+export class ContainerComponent {
 
   static inspectableProperties = [
     {
@@ -52,7 +51,7 @@ export class TestComponentComponent {
   ];
 
   get inspectableProperties() {
-    return TestComponentComponent.inspectableProperties;
+    return ContainerComponent.inspectableProperties;
   }
 
   type = 'container';
@@ -77,10 +76,7 @@ export class TestComponentComponent {
   fontWeightChanged = output<'normal' | 'bold' | 'bolder' | 'lighter' | number>();
   container = inject(NgBondContainer);
 
-
-
   constructor() {
-
     effect(() => {
       const text = this.text();
       console.log('Text changed:', text);
@@ -105,14 +101,17 @@ export class TestComponentComponent {
 
   onDblClick(evt: MouseEvent) {
     this.selection.disabled.set(true);
-    
+
     //this.selection.unselectAll();
     evt.stopPropagation();
     evt.preventDefault();
     this.focusTextarea();
   }
 
-
+  detachChild(viewRef: ComponentRef<any>) {
+        const index = this.insertSlot.indexOf(viewRef.hostView);
+        this.insertSlot.detach(index);
+  }
 
   private focusTextarea() {
     const textareaEl = this.textareaEl();

@@ -132,8 +132,14 @@ export class SelectionManager {
       } else if (evt.key === 'ArrowDown') {
         const yBy = this.keyManager.isKeyDown('Shift') ? 10 : 1;
         this.moveBy(0, yBy, this.dragTarget() as NgBondContainer);
+      } else if (evt.key === 'Backspace' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
+        this.selectionTargets().forEach((t) => {
+          this.componentFactory?.removeComponent(t);
+        });
       }
     });
+
+
   }
 
   setAll(targets: NgBondContainer[]) {

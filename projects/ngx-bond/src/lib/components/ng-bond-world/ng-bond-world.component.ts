@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, Signal, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ComponentRef, computed, effect, ElementRef, inject, input, Signal, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { SelectionManager } from '../../services/selection.manager';
@@ -23,6 +23,7 @@ export interface NGBondItem {
   children: Signal<NGBondItem[]>;
   addChild: (child: NGBondItem) => void;
   removeChild: (child: NGBondItem) => void;
+  detachChild?: (viewRef: ComponentRef<any>) => void;
 }
 
 @Component({
@@ -92,6 +93,11 @@ export class NgBondWorld implements NGBondItem {
   removeChild(child: NGBondItem) {
     this.children.update((c) => c.filter((cChild) => cChild !== child));
     this.selectionManager.rootChildren.update((c) => c.filter((cChild) => cChild !== (child as NgBondContainer)));
+  }
+
+  detachChild(viewRef: ComponentRef<any>) {
+    const i = this.worldHost.indexOf(viewRef.hostView);
+    this.worldHost.detach(i);
   }
 
   selectionRect = computed(() => {
