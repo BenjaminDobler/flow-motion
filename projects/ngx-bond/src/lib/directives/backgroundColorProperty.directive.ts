@@ -1,4 +1,4 @@
-import { Directive, effect, ElementRef, inject, Input, model, output, signal } from '@angular/core';
+import { computed, Directive, effect, ElementRef, inject, Input, model, output, signal } from '@angular/core';
 
 @Directive({
   selector: '[backgroundColorProperty]',
@@ -39,6 +39,54 @@ export class BackgroundColorPropertyDirective {
       serializable: true,
       options: ['visible', 'hidden', 'scroll', 'auto'],
     },
+    {
+      name: 'shadowEnabled',
+      type: 'checkbox',
+      setterName: 'shadowEnabled',
+      isSignal: true,
+      event: 'shadowEnabledChanged',
+      serializable: true,
+    },
+    {
+      name: 'shadowHorizontalOffset',
+      type: 'number',
+      setterName: 'shadowHorizontalOffset',
+      isSignal: true,
+      event: 'shadowHorizontalOffsetChanged',
+      serializable: true,
+    },
+    {
+      name: 'shadowVerticalOffset',
+      type: 'number',
+      setterName: 'shadowVerticalOffset',
+      isSignal: true,
+      event: 'shadowVerticalOffsetChanged',
+      serializable: true,
+    },
+    {
+      name: 'shadowBlurRadius',
+      type: 'number',
+      setterName: 'shadowBlurRadius',
+      isSignal: true,
+      event: 'shadowBlurRadiusChanged',
+      serializable: true,
+    },
+    {
+      name: 'shadowSpread',
+      type: 'number',
+      setterName: 'shadowSpread',
+      isSignal: true,
+      event: 'shadowSpreadChanged',
+      serializable: true,
+    },
+    {
+      name: 'shadowColor',
+      type: 'color',
+      setterName: 'shadowColor',
+      isSignal: true,
+      event: 'shadowColorChanged',
+      serializable: true,
+    },
   ];
 
   get inspectableProperties() {
@@ -58,6 +106,31 @@ export class BackgroundColorPropertyDirective {
 
   opacity = model(1);
   opacityChanged = output<number>();
+
+  shadowEnabled = model(false);
+  shadowEnabledChanged = output<boolean>();
+
+  shadowHorizontalOffset = model(0);
+  shadowHorizontalOffsetChanged = output<number>();
+
+  shadowVerticalOffset = model(0);
+  shadowVerticalOffsetChanged = output<number>();
+
+  shadowBlurRadius = model(0);
+  shadowBlurRadiusChanged = output<number>();
+
+  shadowSpread = model(0);
+  shadowSpreadChanged = output<number>();
+
+  shadowColor = model('#000000');
+  shadowColorChanged = output<string>();
+
+  shadowCss = computed(() => {
+    if (!this.shadowEnabled()) {
+      return 'none';
+    }
+    return `${this.shadowHorizontalOffset()}px ${this.shadowVerticalOffset()}px ${this.shadowBlurRadius()}px ${this.shadowSpread()}px ${this.shadowColor()}`;
+  });
 
   constructor() {
     effect(() => {
@@ -82,6 +155,40 @@ export class BackgroundColorPropertyDirective {
       const ov = this.overflow();
       this.overflowChanged.emit(ov);
       this.el.nativeElement.style.overflow = ov;
+    });
+
+    effect(() => {
+      const se = this.shadowEnabled();
+      this.shadowEnabledChanged.emit(se);
+    });
+
+    effect(() => {
+      const sho = this.shadowHorizontalOffset();
+      this.shadowHorizontalOffsetChanged.emit(sho);
+    });
+    
+    effect(() => {
+      const svo = this.shadowVerticalOffset();
+      this.shadowVerticalOffsetChanged.emit(svo);
+    });
+
+    effect(() => {
+      const sbr = this.shadowBlurRadius();
+      this.shadowBlurRadiusChanged.emit(sbr);
+    });
+
+    effect(() => {
+      const ss = this.shadowSpread();
+      this.shadowSpreadChanged.emit(ss);
+    });
+
+    effect(() => {
+      const sc = this.shadowColor();
+      this.shadowColorChanged.emit(sc);
+    });
+
+    effect(() => {
+      this.el.nativeElement.style.boxShadow = this.shadowCss();
     });
   }
 }

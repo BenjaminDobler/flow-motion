@@ -1,0 +1,33 @@
+<div class="ng-split-container">
+  <ng-content></ng-content>
+  @for(divider of dividers; track $index) {
+  <div
+    draggable="false"
+    class="divider"
+    [draggable]
+    [resizable]="false"
+    [positioning]="'transform'"
+    (positionUpdated)="onDividerUpdated($event, $index)"
+    [axis]="direction()"
+    [style.transform]="`translate(${divider.x()}px, ${divider.y()}px)`"
+    [style.height]="divider.height + 'px'"
+    [style.width]="divider.width + 'px'"
+    [maxX]="direction() === 'horizontal' ? divider.maxX : undefined"
+    [minX]="direction() === 'horizontal' ? divider.minX : undefined"
+    [maxY]="direction() === 'vertical' ? divider.maxY : undefined"
+    [minY]="direction() === 'vertical' ? divider.minY : undefined"
+  >
+    <div
+      [style.cursor]="direction() === 'horizontal' ? 'ew-resize' : 'ns-resize'"
+      [style.width]="direction() === 'horizontal' ? '30px' : '100%'"
+      [style.height]="direction() === 'horizontal' ? '100%' : '30px'"
+      [style.transform]="
+        direction() === 'horizontal'
+          ? 'translateX(-50%)'
+          : 'translateY(-50%)'
+      "
+      style="background: rgba(0, 255, 0, 0.001)"
+    ></div>
+  </div>
+  }
+</div>

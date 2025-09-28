@@ -18,6 +18,9 @@
       ],
       "ngx-bond-timeline": [
         "./dist/ngx-bond-timeline"
+      ],
+      "@richapps/ngx-split": [
+        "./projects/ngx-split/src/public-api.ts"
       ]
     },
     "skipLibCheck": true,

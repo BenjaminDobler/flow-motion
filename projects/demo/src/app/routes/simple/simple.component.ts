@@ -16,10 +16,11 @@ import { PropertyContainerComponent } from '../../components/property-container/
 import { InspectorComponent } from '../../components/inspector/inspector.component';
 import { MotionPathComponent, TimelineComponent, TimelineService } from '@richapps/ngx-bond-timeline';
 import { ConnectionContainerComponent } from '../../../../../ngx-bond/src/lib/components/connection-container/connection-container.component';
+import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 
 @Component({
   selector: 'app-root',
-  imports: [SvgCanvasComponent, NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent],
+  imports: [SvgCanvasComponent, NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent],
   templateUrl: './simple.component.html',
   styleUrl: './simple.component.scss',
   providers: [],
