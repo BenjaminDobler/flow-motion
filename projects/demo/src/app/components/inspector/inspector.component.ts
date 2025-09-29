@@ -16,7 +16,7 @@ import {
 } from '@richapps/ngx-bond';
 import { InspectorTweenProperties, TimelineService } from '@richapps/ngx-bond-timeline';
 
-type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'child-tree' | 'tween';
+type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'tween';
 type Tab = {
   label: string;
   value: tabType;
@@ -27,12 +27,9 @@ type Tab = {
   imports: [
     FormsModule,
     ConnectionInspectorComponent,
-    ElementTreeComponent,
     AlignmentInspectorComponent,
     ElementPropertyInspectorComponent,
-    ElementPropertyInspectorComponent,
     LinkPropertiesComponent,
-    ElementTreeComponent,
     ConnectionInspectorComponent,
     InspectorTweenProperties,
   ],
@@ -48,7 +45,6 @@ export class InspectorComponent {
 
   protected tabs = signal<Tab[]>([
     { label: 'Element', value: 'element-inspector' },
-    { label: 'Children', value: 'child-tree' },
     { label: 'Connection', value: 'properties' },
   ]);
 

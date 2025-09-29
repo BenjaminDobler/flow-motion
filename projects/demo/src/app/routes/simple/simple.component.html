@@ -1,18 +1,23 @@
-<ng-split direction="horizontal" style="height: 100%; width: 100%" >
+<ng-split direction="vertical" style="height: 100%; width: 100%">
   <ng-split-panel>
-    <ng-split direction="vertical" style="height: 100%; width: 100%">
+    <ng-split direction="horizontal" style="height: 100%; width: 100%">
+      <ng-split-panel [flex]="'240'"></ng-split-panel>
+      <child-inspector></child-inspector>
       <ng-split-panel>
-        <ng-bond-world>
-          <svg-canvas #svgCanvas></svg-canvas>
-          <connection-container style="width: 100%; height: 100%; position: absolute; left: 0; top: 0"></connection-container>
-        </ng-bond-world>
+        <div style="width: 100%;height: 100%;background: #222;padding: 30px">
+          <ng-bond-world>
+            <svg-canvas #svgCanvas></svg-canvas>
+            <connection-container style="width: 100%; height: 100%; position: absolute; left: 0; top: 0"></connection-container>
+          </ng-bond-world>
+        </div>
       </ng-split-panel>
-      <ng-split-panel [flex]="'200px'">
-        <timeline></timeline>
+      <ng-split-panel #sidebar [flex]="'260px'">
+        <bond-inspector #inspector></bond-inspector>
       </ng-split-panel>
     </ng-split>
   </ng-split-panel>
-  <ng-split-panel #sidebar [flex]="'300px'">
-    <bond-inspector #inspector></bond-inspector>
+
+  <ng-split-panel [minWidth]="50" [flex]="'200px'">
+    <timeline></timeline>
   </ng-split-panel>
 </ng-split>
