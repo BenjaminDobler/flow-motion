@@ -5,6 +5,10 @@
       <path d="M 0 0 L 10 5 L 0 10 z" />
     </marker>
 
+    <marker id="arrow2" stroke="context-stroke" fill="context-stroke" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+
     <filter x="0" y="0" width="1" height="1" id="solid">
       <feFlood flood-color="black" result="bg" />
       <feMerge>
@@ -25,11 +29,15 @@
       [attr.stroke-dasharray]="link.properties.strokeDasharray()"
       fill="none"
       [link]="link"
+      marker-end="url(#arrow2)"
+      marker-start="url(#arrow2)"
+    />
+
     />
 
     @if (link.properties.textOnPath() !== '') {
-      <text font-size="20" >
-        <textPath [attr.startOffset]="link.properties.totalLength()/2" text-anchor="middle" dominant-baseline="middle" [attr.href]="'#link-' + $index">{{ link.properties.textOnPath() }}</textPath>
+      <text font-size="20">
+        <textPath [attr.startOffset]="link.properties.totalLength() / 2" text-anchor="middle" dominant-baseline="middle" [attr.href]="'#link-' + $index">{{ link.properties.textOnPath() }}</textPath>
       </text>
     }
 
@@ -111,7 +119,7 @@
 @for (link of dragService.links(); track $index) {
   @if (link.properties.textOnPath() !== '') {
     <div [style.transform]="`translate(${link.properties.midPoint().x}px, ${link.properties.midPoint().y}px)`" style="position: absolute; left: 0; top: 0; pointer-events: none">
-      <div style="transform: translateX(-50%);">
+      <div style="transform: translateX(-50%)">
         {{ link.properties.textOnPath() }}
       </div>
     </div>

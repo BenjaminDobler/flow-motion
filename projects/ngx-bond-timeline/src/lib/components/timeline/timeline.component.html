@@ -13,11 +13,10 @@
         </div>
 
         @for (track of group.tracks; track $index) {
-          @if (track.keyframes.length > 1) {
             <div class="label">
               {{ track.name }}
             </div>
-          }
+          
         }
       }
     </div>
@@ -36,7 +35,6 @@
           <div class="track group" style="flex: 1"></div>
         </div>
         @for (track of group.tracks; track $index) {
-          @if (track.keyframes.length > 1) {
           <div class="track-container">
             <div class="track-spacer"></div>
 
@@ -80,7 +78,7 @@
               }
             </div>
           </div>
-        }
+        
         }
       }
       <div [style.transform]="`translateX(${timelineService.position() / mpp + 10}px)`" class="pos-line"></div>

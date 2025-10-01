@@ -429,6 +429,9 @@ export class ComponentFactory {
     pathDirective.inspectableProperties
       .filter((p) => p.event)
       .forEach((p) => {
+        console.log('Subscribing to path event', p.event, id);
+        console.log((pathDirective as any)[p.event as any]);
+
         (pathDirective as any)[p.event as any].subscribe((evt: any) => {
           this.propertyChanged.next({
             id,

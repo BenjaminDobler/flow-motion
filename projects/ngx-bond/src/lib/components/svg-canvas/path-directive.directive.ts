@@ -1,7 +1,8 @@
-import { afterNextRender, computed, Directive, effect, ElementRef, inject, Injector, input, model, output, signal, untracked } from '@angular/core';
+import { afterNextRender, computed, Directive, effect, ElementRef, EventEmitter, inject, Injector, input, model, output, signal, untracked } from '@angular/core';
 import { ComponentFactory, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { Path } from './path';
 import { Subject, takeUntil } from 'rxjs';
+import { Point } from './point';
 
 @Directive({
   selector: '[appPathDirective]',
@@ -16,6 +17,7 @@ import { Subject, takeUntil } from 'rxjs';
   ],
 })
 export class PathDirectiveDirective {
+  [key: string]: any; // Add index signature to allow dynamic property assignment
   componentFactory = inject(ComponentFactory);
 
   public type = 'path-directive';
@@ -180,6 +182,57 @@ export class PathDirectiveDirective {
     // resizeObserver.observe(this.container.el?.nativeElement);
 
     // const debouncedPathChange = toSignal(toObservable(this.d).pipe(distinctUntilChanged(), debounceTime(500)));
+    let previousPoints: Point[] = [];
+
+    effect(() => {
+      const path = this.path();
+      const points = this.path()?.points();
+      console.log('Points changed', points?.length);
+
+      // find all new points recognized by their id
+      const newPoints = points.filter((p) => !previousPoints.includes(p));
+      // find all removed points recognized by their id
+      const removedPoints = previousPoints.filter((p) => !points.includes(p));
+
+      newPoints.forEach((p) => {
+        this['point-position-changed-' + p.id] = new EventEmitter();// new Subject<{ x: number; y: number }>();
+
+        console.log('ppp ', this['point-position-' + p.id]);
+
+
+        
+        console.log('point added', p.id);
+
+
+
+        this.componentFactory.containerElementMap.get(this.container)?.propertyDirectiveMap.set('point-position-' + p.id, this);
+
+
+        this.inspectableProperties.push({
+          name: 'point-position-' + p.id,
+          type: 'position',
+          setterName: 'point-position-' + p.id,
+          isSignal: false,
+          event: 'point-position-changed-' + p.id,
+          serializable: false,
+        });
+
+        const sub = p.positionChanged.subscribe(() => {
+          if (this.dragging()) {
+            return;
+          }
+          console.log('Point moved, updating path bounding box ', p.id, p.x, p.y);
+
+          this.componentFactory.propertyChanged.next({ id: this.container.id(), property: 'point-position-' + p.id, value: { x: p.x, y: p.y, id: p.id } });
+        });
+      });
+
+      removedPoints.forEach((p) => {
+        console.log('Point removed, unsubscribing ', p.id);
+      });
+
+      previousPoints = [...points];
+    });
 
     effect(() => {
       const d = this.path()?.d() || '';

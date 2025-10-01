@@ -120,6 +120,7 @@ export class TimelineService {
       if (element) {
         group.tracks.forEach((track) => {
           const targetDirective = e?.propertyDirectiveMap.get(track.name);
+          console.log('targetDirective', targetDirective);
           const prop = targetDirective.inspectableProperties.find((p: any) => p.setterName === track.name);
           const isSignal = prop?.isSignal || false;
           const animationProp = isSignal ? `signal_${track.name}` : track.name;

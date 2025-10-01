@@ -157,6 +157,7 @@ export class PathDirectiveDirective {
   });
 
   constructor() {
+    console.log('Path directive constructor', this.path());
     // const resizeObserver = new ResizeObserver((entries) => {
     //   for (const entry of entries) {
     //     if (entry.contentBoxSize) {
@@ -275,6 +276,20 @@ export class PathDirectiveDirective {
     afterNextRender(() => {
       this.container.id.set(this.path().id());
       this.componentFactory.addSvgContainer(this.container, [this]);
+    });
+
+    console.log('Path directive created for path', this.path());
+
+    effect(() => {
+      const path = this.path();
+      console.log('Path effect', path);
+      if (!path) {
+        return;
+      }
+      
+      const points = this.path()?.points();
+      
+      console.log('Points changed', points);
     });
   }
 

@@ -49,4 +49,38 @@ export const configureGsap = () => {
       data.target.y.set(data.interp(progress).y);
     },
   });
+
+  for (let id = 0; id < 100; id++) {
+    gsap.registerPlugin({
+      name: `point-position-${id}`,
+      get(target: any) {
+        const point = target
+          .path()
+          .points()
+          .find((p: any) => p.id === id);
+        return {
+          x: point.x,
+          y: point.y,
+        };
+      },
+      init(target: any, endValue: any, b: any) {
+        const point = target
+          .path()
+          .points()
+          .find((p: any) => p.id === id);
+
+        const currentValue = {
+          x: point.x | 0,
+          y: point.y | 0,
+        };
+        const data: any = this;
+        data.target = point;
+        data.interp = gsap.utils.interpolate(currentValue, endValue);
+      },
+      render(progress: any, data: any) {
+        data.target.x = data.interp(progress).x;
+        data.target.y = data.interp(progress).y;
+      },
+    });
+  }
 };

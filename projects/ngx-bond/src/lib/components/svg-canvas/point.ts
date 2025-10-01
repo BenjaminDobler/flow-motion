@@ -4,7 +4,7 @@ import { Path } from './path';
 let pointCount = 0;
 
 export class Point {
-  id = 'point-' + pointCount++;
+  id = pointCount++;
 
   private _x: number = 0;
   public get x(): number {
@@ -28,14 +28,18 @@ export class Point {
   opposite?: Point;
   centerPoint?: Point;
 
+  positionChanged = new Subject<{x: number, y: number}>();
+
   //ref: SVGCircleElement;
+
 
   destroy$ = new Subject<void>();
 
   constructor(
     private path: Path,
     public type: 'point' | 'control' | 'nearest-point' | 'curve'
-  ) {}
+  ) {
+  }
 
   update() {
     // if (this.draw) {
@@ -43,6 +47,7 @@ export class Point {
 
     // }
     this.path.draw();
+    this.positionChanged.next({x: this.x, y: this.y});
   }
 
   serialize(): any {

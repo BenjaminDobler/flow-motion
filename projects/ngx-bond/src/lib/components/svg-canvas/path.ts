@@ -12,9 +12,22 @@ export class Path {
   id = signal<string>('');
   isClosed = signal<boolean>(false);
 
+  pointCount = 0;
+
   constructor(public canvas: SVGCanvas) {
     this.id.set('path-' + idCount++);
   }
+
+  inspectableProperties = [
+    {
+      name: 'point-position-' + this.id,
+      type: 'position',
+      setterName: 'point-position',
+      isSignal: false,
+      event: 'point-position-changed-' + this.id,
+      serializable: false,
+    },
+  ];
 
   moveBy(dx: number, dy: number) {
     this.points().forEach((p) => {

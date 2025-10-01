@@ -46,19 +46,6 @@ export class AppComponent {
         console.log('Image loaded', image);
       };
     };
-
-    // reader.onload = () => {
-    //   const image = new Image();
-    //   image.src = reader.result;
-    //   image.onload = () => {
-    //     const canvas = document.querySelector('canvas');
-    //     canvas.width = image.width;
-    //     canvas.height = image.height;
-    //     const context = canvas.getContext('2d');
-    //     context.filter = 'blur(10px)';
-    //     context.drawImage(image, 0, 0);
-    //   };
-    // };
   }
 
   addPath() {

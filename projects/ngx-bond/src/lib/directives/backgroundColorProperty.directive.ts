@@ -87,6 +87,16 @@ export class BackgroundColorPropertyDirective {
       event: 'shadowColorChanged',
       serializable: true,
     },
+    {
+      name: 'shadowColorAlpha',
+      type: 'range',
+      min: 0,
+      max: 255,
+      setterName: 'shadowColorAlpha',
+      isSignal: true,
+      event: 'shadowColorAlphaChanged',
+      serializable: true,
+    },
   ];
 
   get inspectableProperties() {
@@ -94,6 +104,7 @@ export class BackgroundColorPropertyDirective {
   }
 
   el: ElementRef = inject(ElementRef);
+
 
   backgroundColorChanged = output<string>();
   backgroundColor = model('#333333');
@@ -110,26 +121,36 @@ export class BackgroundColorPropertyDirective {
   shadowEnabled = model(false);
   shadowEnabledChanged = output<boolean>();
 
+
+  // box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
   shadowHorizontalOffset = model(0);
   shadowHorizontalOffsetChanged = output<number>();
 
-  shadowVerticalOffset = model(0);
+  shadowVerticalOffset = model(7);
   shadowVerticalOffsetChanged = output<number>();
 
-  shadowBlurRadius = model(0);
+  shadowBlurRadius = model(29);
   shadowBlurRadiusChanged = output<number>();
 
   shadowSpread = model(0);
   shadowSpreadChanged = output<number>();
 
-  shadowColor = model('#000000');
+  shadowColor = model('#64646f33');
   shadowColorChanged = output<string>();
+
+  shadowColorAlpha = model(51);
+  shadowColorAlphaChanged = output<number>();
 
   shadowCss = computed(() => {
     if (!this.shadowEnabled()) {
       return 'none';
     }
-    return `${this.shadowHorizontalOffset()}px ${this.shadowVerticalOffset()}px ${this.shadowBlurRadius()}px ${this.shadowSpread()}px ${this.shadowColor()}`;
+
+    const a = this.shadowColorAlpha();
+    const as = a + '';
+    const alpha = a == 255 ? '' : parseInt(as).toString(16).padStart(2, '0');
+    return `${this.shadowHorizontalOffset()}px ${this.shadowVerticalOffset()}px ${this.shadowBlurRadius()}px ${this.shadowSpread()}px ${this.shadowColor()}${alpha}`;
   });
 
   constructor() {
@@ -166,7 +187,7 @@ export class BackgroundColorPropertyDirective {
       const sho = this.shadowHorizontalOffset();
       this.shadowHorizontalOffsetChanged.emit(sho);
     });
-    
+
     effect(() => {
       const svo = this.shadowVerticalOffset();
       this.shadowVerticalOffsetChanged.emit(svo);
@@ -185,6 +206,11 @@ export class BackgroundColorPropertyDirective {
     effect(() => {
       const sc = this.shadowColor();
       this.shadowColorChanged.emit(sc);
+    });
+
+    effect(() => {
+      const sca = this.shadowColorAlpha();
+      this.shadowColorAlphaChanged.emit(sca);
     });
 
     effect(() => {
