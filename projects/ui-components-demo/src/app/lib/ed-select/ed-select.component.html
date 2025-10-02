@@ -1,0 +1,11 @@
+<label (click)="toggleDropdown()" class="custom-select">
+  <span>{{ label() }}</span>
+</label>
+
+<ng-template cdk-portal cdkPortal class="dropdown">
+  <div class="custom-dropdown-menu">
+    <div class="dropdown-options-container">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</ng-template>

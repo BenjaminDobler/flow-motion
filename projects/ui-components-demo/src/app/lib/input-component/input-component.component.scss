@@ -1,0 +1,44 @@
+:host {
+  display: inline-block;
+  background: var(--form-bg);
+  border-radius: 0.3125rem;
+  font-size: 11px;
+  border: solid 1px transparent;
+  &:hover {
+    border: solid 1px var(--form-border);
+  }
+  &:focus-within {
+    border: solid 1px var(--form-border-highlight);
+  }
+  box-sizing: border-box;
+}
+
+label {
+  display: flex;
+  gap: 5px;
+  height: 1.5rem;
+  align-items: center;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  justify-content: center;
+  color: var(--form-item-color);
+  font-family: var(--font-family);
+}
+
+input {
+  width: 60px;
+  background: transparent;
+  outline: none;
+  border: none;
+  font-family: var(--font-family);
+  font-size: 0.6875rem;
+  line-height: 1.5rem;
+  color: var(--form-item-color);
+}
+

@@ -1,0 +1,35 @@
+:host {
+  display: inline-block;
+  background: #2C2C2C;
+  border-radius: 0.3125rem;
+  font-size: 11px;
+  border: solid 1px #444444;
+  padding-left: 6px;
+  padding-right: 6px;
+  &:hover {
+    border: solid 1px var(--form-border);
+  }
+  &:focus-within {
+    border: solid 1px var(--form-border-highlight);
+  }
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+label {
+  display: flex;
+  gap: 5px;
+  height: 1.5rem;
+  align-items: center;
+  font-family: var(--font-family);
+  font-size: 0.6875rem;
+  line-height: 1.5rem;
+  color: var(--form-item-color);
+}
+
+
+.custom-dropdown-menu {
+  background: #000;
+  padding: 10px;
+  border-radius: 0.3125rem;
+}
