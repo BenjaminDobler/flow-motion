@@ -37,3 +37,5 @@ export * from './lib/components/svg-canvas/svgcanvas';
 export * from './lib/services/motion.path.service'
 
 export * from './lib/components/editables/connection.directive';
+
+export * from './lib/components/util/drag.util'

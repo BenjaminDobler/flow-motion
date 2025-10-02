@@ -1,6 +1,6 @@
 :host {
   display: inline-block;
-  background: #2C2C2C;
+  background: var(--form-bg);
   border-radius: 0.3125rem;
   font-size: 11px;
   border: solid 1px #444444;
