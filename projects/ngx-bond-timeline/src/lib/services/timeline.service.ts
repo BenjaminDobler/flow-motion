@@ -2,7 +2,7 @@ import { inject, outputBinding, signal, ViewContainerRef } from '@angular/core';
 
 import { gsap } from 'gsap';
 import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from '../model/timeline';
-import { ComponentFactory, NgBondContainer, NgBondService } from '@richapps/ngx-bond';
+import { ComponentFactory, InspectableProperty, NgBondContainer, NgBondService } from '@richapps/ngx-bond';
 import { configureGsap } from '../gsap.setup';
 
 export class TimelineService {
@@ -120,9 +120,8 @@ export class TimelineService {
       if (element) {
         group.tracks.forEach((track) => {
           const targetDirective = e?.propertyDirectiveMap.get(track.name);
-          console.log('targetDirective', targetDirective);
-          const prop = targetDirective.inspectableProperties.find((p: any) => p.setterName === track.name);
-          const isSignal = prop?.isSignal || false;
+          const prop: InspectableProperty = targetDirective.inspectableProperties.find((p: any) => p.setterName === track.name);
+          const isSignal = !prop?.isGetter;
           const animationProp = isSignal ? `signal_${track.name}` : track.name;
 
           track.keyframes.forEach((keyframe, index) => {

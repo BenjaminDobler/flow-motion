@@ -1,12 +1,7 @@
 import { Component, Input, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { InputComponent } from './lib/input-component/input-component.component';
-import { ColorComponent } from './lib/color/color.component';
-import { EdSelectComponent } from "./lib/ed-select/ed-select.component";
-import { EdSelectOptionComponent } from './lib/ed-select/ed-select-option/ed-select-option.component';
-import { InputGroupComponent } from './lib/input-group/input-group.component';
 import { FormsModule } from '@angular/forms';
-import { RadiusIconComponent } from "./lib/icons/radius-icon/radius-icon.component";
+import { ColorComponent, EdSelectComponent, EdSelectOptionComponent, InputComponent, InputGroupComponent, RadiusIconComponent } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-root',
@@ -18,4 +13,6 @@ export class App {
   protected readonly title = signal('ui-components-demo');
 
   width = signal(100);
+
+  selectedOption = signal('Option 1');
 }

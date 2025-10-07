@@ -1,5 +1,5 @@
 import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
-import { inspectableLinkProperties, NgBondContainer, NGBondItem, NgBondProperty, NgBondService, NgBondWorld, Path, PathDirectiveDirective, SelectionManager, SVGCanvas } from '@richapps/ngx-bond';
+import { inspectableLinkProperties, InspectableProperty, NgBondContainer, NGBondItem, NgBondProperty, NgBondService, NgBondWorld, Path, PathDirectiveDirective, SelectionManager, SVGCanvas } from '@richapps/ngx-bond';
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
 import { ContainerComponent } from '../components/editables/container-component/container-component.component';
@@ -29,6 +29,7 @@ export class ComponentFactory {
   }
 
   addComponent(componentClass: { new (...args: any[]): void } = ContainerComponent, inputs: any = {}, defaultID?: string, host?: any): ComponentRef<any> | undefined {
+    console.log('add component ', inputs);
     let id = 'some-id-' + this.componentCount;
     this.componentCount++;
 
@@ -43,21 +44,21 @@ export class ComponentFactory {
     const directives = [NgBondContainer, BackgroundColorPropertyDirective];
 
     const directiveSetup = directives.map((d) => {
-      const bindings = d.inspectableProperties
-        .filter((p) => p.event)
-        .map((p) => {
-          return outputBinding(p.event as string, (evt: any) => {
-            this.propertyChanged.next({
-              id,
-              property: p.setterName,
-              value: evt,
-            });
-          });
-        });
+      // const bindings = d.inspectableProperties
+      //   .filter((p) => p.event)
+      //   .map((p) => {
+      //     return outputBinding(p.event as string, (evt: any) => {
+      //       this.propertyChanged.next({
+      //         id,
+      //         property: p.name,
+      //         value: evt,
+      //       });
+      //     });
+      //   });
 
       return {
         type: d,
-        bindings,
+        bindings: [],
       };
     });
 
@@ -70,12 +71,29 @@ export class ComponentFactory {
       directives: directiveSetup,
     });
 
+    // directives.map((d) => {
+    //   const bindings = d.inspectableProperties
+    //     .filter((p) => p.event)
+    //     .forEach((p) => {
+    //       console.log('Setting up event binding for', p.name, 'on', d.name);
+    //       console.log(componentRef.instance);
+    //       (componentRef.instance as any)[p.name].subscribe((evt: any) => {
+    //         this.propertyChanged.next({
+    //           id,
+    //           property: p.name,
+    //           value: evt,
+    //         });
+    //       });
+    //     });
+    // });
+
     if ((componentRef.instance as any).inspectableProperties) {
       for (const prop of (componentRef.instance as any).inspectableProperties) {
-        (componentRef.instance as any)[prop.event].subscribe((evt: any) => {
+        const eventProp = prop.event ? prop.event : prop.name;
+        (componentRef.instance as any)[eventProp].subscribe((evt: any) => {
           this.propertyChanged.next({
             id,
-            property: prop.setterName,
+            property: prop.name,
             value: evt,
           });
         });
@@ -93,15 +111,30 @@ export class ComponentFactory {
       componentRef,
     });
 
+    directiveInstances.forEach((dInstance) => {
+      dInstance.inspectableProperties.forEach((prop: any) => {
+        const eventProp = prop.event ? prop.event : prop.name;
+        if ((dInstance as any)[eventProp] && !prop.readonly) {
+          (dInstance as any)[eventProp].subscribe((evt: any) => {
+            this.propertyChanged.next({
+              id,
+              property: prop.name,
+              value: evt,
+            });
+          });
+        }
+      });
+    });
+
     directiveInstances.forEach((dInstance: any) => {
       dInstance.inspectableProperties.forEach((p: any) => {
-        this.containerElementMap.get(bondContainerInstance)?.propertyDirectiveMap.set(p.setterName, dInstance);
+        this.containerElementMap.get(bondContainerInstance)?.propertyDirectiveMap.set(p.name, dInstance);
       });
     });
 
     if ((componentClass as any).inspectableProperties) {
       (componentClass as any).inspectableProperties.forEach((p: any) => {
-        this.containerElementMap.get(bondContainerInstance)?.propertyDirectiveMap.set(p.setterName, componentRef.instance);
+        this.containerElementMap.get(bondContainerInstance)?.propertyDirectiveMap.set(p.name, componentRef.instance);
       });
     }
 
@@ -122,6 +155,89 @@ export class ComponentFactory {
     return componentRef;
   }
 
+  deserializeComponent() {}
+
+  serializeComponent(child: NGBondItem) {
+    const container = this.containerElementMap.get(child as NgBondContainer);
+
+    const el: any = {};
+
+    el.elementProperties = [];
+    el.directives = [];
+    el.id = child.id();
+    el.elements = [];
+
+    if (container?.instance) {
+      el.name = container?.instance.constructor.name;
+
+      container?.instance?.inspectableProperties?.forEach((prop: InspectableProperty) => {
+        console.log('inspectable props', prop);
+        if (!prop.noneSerializable) {
+          try {
+            if (!prop.isGetter) {
+              el.elementProperties.push({
+                name: prop.name,
+                value: container.instance[prop.name](),
+              });
+            } else {
+              el.elementProperties.push({
+                name: prop.name,
+                value: container.instance[prop.name],
+              });
+            }
+          } catch (error) {
+            console.error('Error serializing property:', prop.name, error);
+          }
+        }
+      });
+    } else {
+      // No container instance found probably svg path
+      console.log('No container instance found for', child);
+      console.log(container);
+      const pathDirective = container?.directives.find((d: any) => {
+        return d instanceof PathDirectiveDirective;
+      });
+
+      if (pathDirective) {
+        const path = pathDirective.path();
+        el.pathData = path.serialize();
+
+        el.name = 'SVGPath';
+      }
+    }
+
+    // Serialize the directives if needed
+    container?.directives.forEach((directive: any) => {
+      el.directives.push({
+        name: directive.constructor.name,
+        properties: [],
+      });
+
+      directive.inspectableProperties.forEach((prop: InspectableProperty) => {
+        // serialized[key][prop.name] = directive[prop.name];
+        if (!prop.noneSerializable) {
+          try {
+            if (!prop.isGetter) {
+              el.directives[el.directives.length - 1].properties.push({
+                name: prop.name,
+                value: directive[prop.name](),
+              });
+            } else {
+              el.directives[el.directives.length - 1].properties.push({
+                name: prop.name,
+                value: directive[prop.name],
+              });
+            }
+          } catch (error) {
+            console.error('Error serializing property:', prop.name, error);
+          }
+        }
+      });
+    });
+    console.log(el.elementProperties);
+    return el;
+  }
+
   serializeComponents() {
     const serialized: any = {
       elements: [],
@@ -135,81 +251,7 @@ export class ComponentFactory {
           return c.type !== 'link' && c.type !== 'link-target';
         })
         .forEach((child) => {
-          const container = this.containerElementMap.get(child as NgBondContainer);
-
-          const el: any = {};
-
-          el.elementProperties = [];
-          el.directives = [];
-          el.id = child.id();
-          el.elements = [];
-
-          if (container?.instance) {
-            el.name = container?.instance.constructor.name;
-
-            container?.instance?.inspectableProperties?.forEach((prop: any) => {
-              if (prop.serializable) {
-                try {
-                  if (prop.isSignal) {
-                    el.elementProperties.push({
-                      name: prop.setterName,
-                      value: container.instance[prop.setterName](),
-                    });
-                  } else {
-                    el.elementProperties.push({
-                      name: prop.setterName,
-                      value: container.instance[prop.setterName],
-                    });
-                  }
-                } catch (error) {
-                  console.error('Error serializing property:', prop.setterName, error);
-                }
-              }
-            });
-          } else {
-            // No container instance found probably svg path
-            console.log('No container instance found for', child);
-            console.log(container);
-            const pathDirective = container?.directives.find((d: any) => {
-              return d instanceof PathDirectiveDirective;
-            });
-
-            if (pathDirective) {
-              const path = pathDirective.path();
-              el.pathData = path.serialize();
-
-              el.name = 'SVGPath';
-            }
-          }
-
-          // Serialize the directives if needed
-          container?.directives.forEach((directive: any) => {
-            el.directives.push({
-              name: directive.constructor.name,
-              properties: [],
-            });
-
-            directive.inspectableProperties.forEach((prop: any) => {
-              // serialized[key][prop.setterName] = directive[prop.setterName];
-              if (prop.serializable) {
-                try {
-                  if (prop.isSignal) {
-                    el.directives[el.directives.length - 1].properties.push({
-                      name: prop.setterName,
-                      value: directive[prop.setterName](),
-                    });
-                  } else {
-                    el.directives[el.directives.length - 1].properties.push({
-                      name: prop.setterName,
-                      value: directive[prop.setterName],
-                    });
-                  }
-                } catch (error) {
-                  console.error('Error serializing property:', prop.setterName, error);
-                }
-              }
-            });
-          });
+          const el = this.serializeComponent(child);
           parent.elements.push(el);
           getChildren(child, el);
         });
@@ -226,8 +268,8 @@ export class ComponentFactory {
       const props: any = {};
       inspectableLinkProperties.forEach((prop) => {
         if (prop.serializable) {
-          console.log('setter name ', prop.setterName);
-          props[prop.setterName] = (link.properties as any)[prop.setterName]();
+          console.log('setter name ', prop.name);
+          props[prop.name] = (link.properties as any)[prop.name]();
         }
       });
 
@@ -239,20 +281,7 @@ export class ComponentFactory {
     return serialized;
   }
 
-  loadSerialized(content?: string) {
-    let data: any;
-    if (!content) {
-      const serialized = localStorage.getItem('serialized');
-      if (!serialized) {
-        return;
-      }
-      data = JSON.parse(serialized);
-    } else {
-      data = content;
-    }
-
-    const host = this.world?.worldHost;
-
+  deserializeElement(element: any, host?: any) {
     const addChildren = (el: any, componentHost: any) => {
       const componentClass = componentNameToClass[el.name as keyof typeof componentNameToClass];
 
@@ -278,23 +307,41 @@ export class ComponentFactory {
       }, 1);
     };
 
+    console.log('Adding element', element.name);
+    if (element.name === 'SVGPath') {
+      // Special handling for SVGPath since it has no component class
+      console.log('Adding SVG Path', element);
+      const pathDirectiveProps = element.directives.find((d: any) => d.name === '_PathDirectiveDirective')?.properties;
+      const pathData = element.pathData;
+
+      const p = Path.deserialize(pathData, this.svgCanvas);
+      this.svgCanvas.paths.update((paths) => {
+        return [...paths, p];
+      });
+      console.log(pathDirectiveProps);
+      p.draw();
+    } else {
+      addChildren(element, host);
+    }
+  }
+
+  loadSerialized(content?: string) {
+    let data: any;
+    if (!content) {
+      const serialized = localStorage.getItem('serialized');
+      if (!serialized) {
+        return;
+      }
+      data = JSON.parse(serialized);
+    } else {
+      data = content;
+    }
+
+    const host = this.world?.worldHost;
+
     data.elements.forEach((element: any) => {
       console.log('Adding element', element.name);
-      if (element.name === 'SVGPath') {
-        // Special handling for SVGPath since it has no component class
-        console.log('Adding SVG Path', element);
-        const pathDirectiveProps = element.directives.find((d: any) => d.name === '_PathDirectiveDirective')?.properties;
-        const pathData = element.pathData;
-
-        const p = Path.deserialize(pathData, this.svgCanvas);
-        this.svgCanvas.paths.update((paths) => {
-          return [...paths, p];
-        });
-        console.log(pathDirectiveProps);
-        p.draw();
-      } else {
-        addChildren(element, host);
-      }
+      this.deserializeElement(element, host);
     });
 
     setTimeout(() => {
@@ -302,6 +349,27 @@ export class ComponentFactory {
         this.bondService.createLink(link.inputId, link.outputId, link.props);
       });
     }, 200);
+  }
+
+  clipboard: any[]= [];
+
+  copySelected() {
+    this.clipboard = [];
+    this.selectionManager.selectionTargets().forEach((target) => {
+      const el = this.serializeComponent(target);
+      this.clipboard.push(el);
+    });
+    console.log('Copied to clipboard', this.clipboard);
+  }
+
+  paste() {
+    const host = this.world?.worldHost;
+
+    this.clipboard.forEach((element: any) => {
+      console.log('Pasting element', element.name);
+      element.id = element.id + '-copy-' + Math.floor(Math.random() * 1000);
+      this.deserializeElement(element, host);
+    });
   }
 
   groupSelected() {
@@ -407,11 +475,11 @@ export class ComponentFactory {
     const id = container.id();
 
     pathDirective.inspectableProperties.forEach((p: any) => {
-      this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.setterName, pathDirective);
+      this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.name, pathDirective);
     });
 
     container.inspectableProperties.forEach((p: any) => {
-      this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.setterName, container);
+      this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.name, container);
     });
 
     container.inspectableProperties
@@ -420,7 +488,7 @@ export class ComponentFactory {
         (container as any)[p.event as any].subscribe((evt: any) => {
           this.propertyChanged.next({
             id,
-            property: p.setterName,
+            property: p.name,
             value: evt,
           });
         });
@@ -429,13 +497,10 @@ export class ComponentFactory {
     pathDirective.inspectableProperties
       .filter((p) => p.event)
       .forEach((p) => {
-        console.log('Subscribing to path event', p.event, id);
-        console.log((pathDirective as any)[p.event as any]);
-
         (pathDirective as any)[p.event as any].subscribe((evt: any) => {
           this.propertyChanged.next({
             id,
-            property: p.setterName,
+            property: p.name,
             value: evt,
           });
         });

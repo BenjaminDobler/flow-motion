@@ -11,8 +11,6 @@
     border: solid 1px var(--form-border-highlight);
   }
   box-sizing: border-box;
-
-  
 }
 
 :host-context(input-group) {
@@ -33,6 +31,8 @@ label {
   gap: 3px;
   height: 1.5rem;
   align-items: center;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
 }
 
 .icon {
@@ -59,12 +59,11 @@ input {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
 }
-

@@ -28,6 +28,7 @@ import { BehaviorSubject, distinctUntilChanged, filter, fromEvent, race, Subject
 import { NgBondService } from '../../services/ngbond.service';
 import { SelectionManager } from '../../services/selection.manager';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { InspectableProperty } from '@richapps/ngx-bond';
 
 @Directive({
   selector: '[bondcontainer]',
@@ -43,45 +44,39 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   injector = inject(Injector);
 
-  static inspectableProperties = [
+  static inspectableProperties: InspectableProperty[] = [
     {
       name: 'x',
+      alias: 'X',
+      category: 'Position',
       type: 'number',
-      setterName: 'x',
-      isSignal: true,
-      serializable: true,
       group: {
         name: 'Position',
       },
     },
     {
       name: 'y',
+      alias: 'Y',
+      category: 'Position',
       type: 'number',
-      setterName: 'y',
-      isSignal: true,
-      serializable: true,
       group: {
         name: 'Position',
       },
     },
     {
       name: 'width',
-      event: 'widthUpdated',
+      alias: 'W',
+      category: 'Layout',
       type: 'number',
-      setterName: 'width',
-      isSignal: true,
-      serializable: true,
       group: {
         name: 'Size',
       },
     },
     {
       name: 'height',
-      evenet: 'heightUpdated',
+      category: 'Layout',
+      alias: 'H',
       type: 'number',
-      setterName: 'height',
-      isSignal: true,
-      serializable: true,
       group: {
         name: 'Size',
       },
@@ -90,31 +85,22 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       name: 'position',
       event: 'positionUpdated',
       type: 'number',
-      setterName: 'position',
-      isSignal: true,
-      serializable: false,
+      noneSerializable: true,
     },
     {
       name: 'rotate',
       type: 'number',
-      setterName: 'rotate',
-      isSignal: true,
-      serializable: true,
     },
     {
       name: 'bounds',
       type: 'DOMRect',
-      setterName: 'setBounds',
-      isSignal: true,
-      serializable: false,
+      noneSerializable: true,
       readonly: true,
     },
     {
       name: 'globalBounds',
       type: 'DOMRect',
-      setterName: 'setGlobalBounds',
-      isSignal: true,
-      serializable: false,
+      noneSerializable: true,
       readonly: true,
     },
   ];
@@ -269,6 +255,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   parent = signal<NGBondItem | null>(null);
 
   constructor() {
+    
     this.parent.set(this.parentContainer || this.world || null);
 
     this.parent()?.addChild(this);

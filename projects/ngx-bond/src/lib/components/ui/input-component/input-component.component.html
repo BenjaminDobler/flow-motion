@@ -1,0 +1,32 @@
+<label>
+  @if (prefix() && prefix() !== '') {
+    <div class="icon">
+      <span>{{ prefix() }}</span>
+    </div>
+  }
+
+  @if (prefixIcon()) {
+    {{ suffixIcon() }}
+
+    <div class="icon">
+      <!-- <ng-container *ngTemplateOutlet="prefixIcon()"></ng-container> -->
+      <ed-icon [icon]="prefixIcon()"></ed-icon>
+    </div>
+  }
+
+  <div>
+    <input [(ngModel)]="value" [attr.type]="type()" />
+  </div>
+  @if (suffix() && suffix() !== '') {
+    <div class="icon">
+      <span>{{ suffix() }}</span>
+    </div>
+  }
+
+  @if (suffixIcon()) {
+    <div class="icon">
+      <!-- <ng-container *ngTemplateOutlet="suffixIcon()"></ng-container> -->
+      <ed-icon [icon]="prefixIcon()"></ed-icon>
+    </div>
+  }
+</label>

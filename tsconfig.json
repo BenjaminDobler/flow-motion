@@ -92,6 +92,12 @@
     },
     {
       "path": "./projects/ui-components-demo/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/editor/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/editor/tsconfig.spec.json"
     }
   ]
 }

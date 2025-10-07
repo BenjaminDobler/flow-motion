@@ -1,20 +1,45 @@
-import { Component, computed, contentChildren, effect, ElementRef, inject, model, output, viewChild } from '@angular/core';
+import { Component, computed, contentChildren, effect, ElementRef, forwardRef, inject, model, output, viewChild } from '@angular/core';
 import { EdSelectOptionComponent } from './ed-select-option/ed-select-option.component';
 import { CdkPortal } from '@angular/cdk/portal';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'ed-select',
   imports: [CdkPortal],
   templateUrl: './ed-select.component.html',
   styleUrl: './ed-select.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => EdSelectComponent),
+      multi: true,
+    },
+  ],
 })
-export class EdSelectComponent {
+export class EdSelectComponent implements ControlValueAccessor {
   selected = model<any>();
   options = contentChildren<EdSelectOptionComponent>(EdSelectOptionComponent);
 
   contentTemplate = viewChild<CdkPortal>(CdkPortal);
 
+  writeValue(value: any): void {
+    console.log('writeValue', value);
+    this.selected.set(value);
+  }
+
+  registerOnChange(fn: any): void {
+    this.selected.subscribe(fn);
+    this.selected.subscribe(()=>{
+      console.log('selected changed', this.selected());
+    })
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  private onTouched: any = () => {};
   private overlayRef: OverlayRef | null = null;
 
   private elementRef = inject<any>(ElementRef);
@@ -24,8 +49,8 @@ export class EdSelectComponent {
   overlay = inject(Overlay);
 
   label = computed(() => {
-    const selectedOption = this.selectedOption();
-    return selectedOption ? selectedOption.elementRef.nativeElement.textContent.trim() : 'Select...';
+    const selected = this.selected();
+    return selected ? selected : 'Select...';
   });
 
   selectedOption = computed(() => {
@@ -33,20 +58,15 @@ export class EdSelectComponent {
   });
 
   constructor() {
-    effect(() => {
-      console.log(this.options());
-    });
 
     effect(() => {
-      console.log('selected changed', this.selected());
-      const selected = this.selectedOption();
+      const selected = this.selected();
       this.change.emit(selected ? selected.value : null);
       this.hide();
     });
   }
 
   toggleDropdown() {
-    console.log('toggleDropdown');
     this.showDropdown();
   }
 
@@ -59,7 +79,6 @@ export class EdSelectComponent {
   }
 
   hide() {
-    console.log('hide');
     if (this.overlayRef) {
       this.overlayRef.dispose();
       this.overlayRef = null;

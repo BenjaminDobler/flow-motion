@@ -55,12 +55,17 @@
       <input-component #inp type="number" [value]="100"></input-component>
     </div>
     <div class="properties-panel_row">
-      <ed-select>
-        <ed-select-option>Option 1</ed-select-option>
-        <ed-select-option>Option 2</ed-select-option>
-        <ed-select-option>Option 3</ed-select-option>
+      <ed-select [(ngModel)]="selectedOption">
+        <ed-select-option [value]="'Option 1'">Option 1</ed-select-option>
+        <ed-select-option [value]="'Option 2'">Option 2</ed-select-option>
+        <ed-select-option [value]="'Option 3'">Option 3</ed-select-option>
       </ed-select>
+      {{selectedOption()}}
     </div>
+
+        <div class="properties-panel_row">
+          <input type="range" >
+          </div>
   </div>
 
 </div>

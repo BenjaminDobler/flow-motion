@@ -26,7 +26,6 @@ export class PathDirectiveDirective {
       setterName: 'stroke',
       isSignal: true,
       event: 'strokeChanged',
-      serializable: true,
     },
     {
       name: 'strokeWidth',

@@ -1,0 +1,54 @@
+:host {
+  display: block;
+
+  background: var(--surface-color1);
+  height: 100%;
+  overflow: hidden;
+
+
+}
+
+.navigation {
+  width: 100%;
+  display: flex;
+  justify-items: stretch;
+  div {
+    flex-grow: 1;
+    text-align: center;
+    padding: 5px;
+    &.selected {
+      background: #2558ce;
+    }
+  }
+}
+
+.content {
+  //padding: 10px;
+  height: 100%;
+  overflow: scroll;
+}
+
+.bond-item {
+  margin-left: 20px;
+  cursor: pointer;
+  &.selected {
+    background: #2558ce;
+  }
+}
+
+.container {
+  margin-left: 5px;
+  margin-top: 10px !important;
+  font-weight: bold;
+}
+
+.tab-item {
+  padding: 5px;
+  cursor: pointer;
+  &:hover {
+    background: #2558ce;
+  }
+  &.selected {
+    background: #2558ce;
+  }
+}

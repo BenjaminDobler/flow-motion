@@ -52,7 +52,7 @@ export const configureGsap = () => {
 
   for (let id = 0; id < 100; id++) {
     gsap.registerPlugin({
-      name: `point-position-${id}`,
+      name: `signal_point-position-${id}`,
       get(target: any) {
         const point = target
           .path()

@@ -10,6 +10,7 @@ export * from './lib/services/ngbond.service';
 export * from './lib/services/selection.manager';
 export * from './lib/services/key.manager';
 export * from './lib/services/component.factory';
+export * from './lib/services/serialization.service';
 
 export * from './lib/utils/geo.utils';
 export * from './lib/components/util/geo';
@@ -39,3 +40,12 @@ export * from './lib/services/motion.path.service'
 export * from './lib/components/editables/connection.directive';
 
 export * from './lib/components/util/drag.util'
+
+export * from './lib/components/connection-container/connection-container.component';
+
+export * from './lib/components/ui/color/color.component';
+export * from './lib/components/ui/ed-select/ed-select.component';
+export * from './lib/components/ui/ed-select/ed-select-option/ed-select-option.component';
+export * from './lib/components/ui/icons/radius-icon/radius-icon.component';
+export * from './lib/components/ui/input-component/input-component.component';
+export * from './lib/components/ui/input-group/input-group.component';

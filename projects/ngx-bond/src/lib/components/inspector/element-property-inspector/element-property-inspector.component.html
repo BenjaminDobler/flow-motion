@@ -1,9 +1,60 @@
 @for (element of selectionManager.selectionTargets(); track $index) {
-
   <div style="margin-bottom: 10px">ID {{ element.id() }}</div>
 
+  @for (category of categories(); track $index) {
+    <div class="properties-panel">
+      <div class="properties-panel_header">
+        <h2>{{ category.name }}</h2>
+      </div>
+
+      @for (group of category.groups; track $index) {
+        @if (group.name === 'ungrouped') {
+          @for (prop of group.props; track $index) {
+            <div class="properties-panel_row">
+              @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
+                {{prop.suffixIcon}}
+                <input-component [prefix]="prop.alias" [prefixIcon]="prop.prefixIcon" [suffixIcon]="prop.suffixIcon" [suffix]="prop.suffix" [type]="prop.type" [(ngModel)]="prop.target[prop.name]"></input-component>
+              } @else if (prop.type === 'select') {
+                <ed-select [(ngModel)]="prop.target[prop.name]" (ngModelChange)="onSelectChanged($event)" >
+                  @for (option of prop.options; track $index) {
+                    <ed-select-option [value]="option">{{ option }}</ed-select-option>
+                  }
+                </ed-select>
+              } @else if (prop.type === 'color') {
+                <color [(ngModel)]="prop.target[prop.name]"></color>
+              } @else {
+                <div>
+                  {{ prop.name }} {{prop.type}}
+                </div>
+              }
+            </div>
+          }
+        } @else {
+          <div class="properties-panel_row">
+            @for (prop of group.props; track $index) {
+              @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
+                <input-component [prefix]="prop.alias" [prefixIcon]="prop.prefixIcon" [suffixIcon]="prop.suffixIcon" [suffix]="prop.suffix" [type]="prop.type" [(ngModel)]="prop.target[prop.name]"></input-component>
+              } @else if (prop.type === 'select') {
+                <ed-select [(ngModel)]="prop.target[prop.name]">
+                  @for (option of prop.options; track $index) {
+                    <ed-select-option [value]="option">{{ option }}</ed-select-option>
+                  }
+                </ed-select>
+              } @else if (prop.type === 'color') {
+                <color [(ngModel)]="prop.target[prop.name]"></color>
+              } @else {
+                <div>
+                  {{ prop.name }}
+                </div>
+              }
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+<!-- 
   @for (compGroup of componentGroups(); track $index) {
-    <!-- <div>{{ compGroup.name }}</div> -->
     @for (prop of compGroup.props; track $index) {
       <div class="property-group">
         <label>{{ prop.name }}</label>
@@ -17,8 +68,10 @@
       <div class="property-group">
         <label>{{ directiveGroup.name }}</label>
         @for (prop of directiveGroup.props; track $index) {
-          <!-- {{ prop.name }} -->
-          @if (prop.type === 'select') {
+          @if (prop.type === 'number') {
+            <input-component [prefix]="prop.alias" [type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]"></input-component>
+
+          } @else if (prop.type === 'select') {
             <select [(ngModel)]="directiveGroup.directive[prop.name]">
               @for (option of prop.options; track $index) {
                 <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
@@ -27,7 +80,8 @@
           } @else if (prop.type === 'range') {
             <input style="width: 80px" [attr.type]="prop.type" [attr.min]="prop.min" [attr.max]="prop.max" [attr.step]="prop.step" [(ngModel)]="directiveGroup.directive[prop.name]" />
           } @else if (prop.type === 'DOMRect') {
-            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }}, {{ directiveGroup.directive[prop.name]().height }}
+            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }},
+            {{ directiveGroup.directive[prop.name]().height }}
           } @else {
             <input style="width: 80px" [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
           }
@@ -37,21 +91,25 @@
       @for (prop of directiveGroup.props; track $index) {
         <div class="property">
           <label>{{ prop.name }}</label>
-          @if (prop.type === 'select') {
+
+          @if (prop.type === 'number' || prop.type === 'text') {
+            <input-component [prefix]="prop.alias" [suffix]="prop.suffix" [type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]"></input-component>
+          } @else if (prop.type === 'select') {
             <select [(ngModel)]="directiveGroup.directive[prop.name]">
               @for (option of prop.options; track $index) {
                 <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
               }
             </select>
-          }  @else if (prop.type === 'DOMRect') {
-            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }}, {{ directiveGroup.directive[prop.name]().height }}
-          }@else {
+          } @else if (prop.type === 'DOMRect') {
+            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }},
+            {{ directiveGroup.directive[prop.name]().height }}
+          } @else {
             <input [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
           }
         </div>
       }
     }
-  }
+  } -->
 
   <!-- @for (dir of directives; track $index) {
     @for (prop of dir.inspectableProperties; track $index) {
@@ -74,3 +132,6 @@
     <input [attr.type]="prop.type" [(ngModel)]="componentInstance[prop.name]" />
   } -->
 }
+
+
+

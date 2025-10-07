@@ -1,6 +1,22 @@
-import { afterEveryRender, ChangeDetectionStrategy, Component, ComponentRef, effect, ElementRef, forwardRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  afterEveryRender,
+  ChangeDetectionStrategy,
+  Component,
+  ComponentRef,
+  effect,
+  ElementRef,
+  forwardRef,
+  inject,
+  input,
+  model,
+  output,
+  signal,
+  viewChild,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
-import { NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
+import { InspectableProperty, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'container-component',
@@ -13,39 +29,33 @@ import { FormsModule } from '@angular/forms';
   },
 })
 export class ContainerComponent {
-
-  static inspectableProperties = [
+  static inspectableProperties: InspectableProperty[] = [
     {
+      category: 'Typography',
       name: 'text',
       type: 'string',
-      setterName: 'text',
-      isSignal: true,
-      event: 'textChanged',
-      serializable: true,
     },
     {
+      category: 'Typography',
       name: 'fontSize',
-      type: 'string',
-      setterName: 'fontSize',
-      isSignal: true,
-      event: 'fontSizeChanged',
-      serializable: true,
+      type: 'number',
+      suffix: 'px',
+      group: {
+        name: 'fontSizeWeight',
+      },
     },
     {
+      category: 'Typography',
       name: 'color',
       type: 'color',
-      setterName: 'color',
-      isSignal: true,
-      event: 'colorChanged',
-      serializable: true,
     },
     {
+      category: 'Typography',
       name: 'fontWeight',
       type: 'select',
-      setterName: 'fontWeight',
-      isSignal: true,
-      event: 'fontWeightChanged',
-      serializable: true,
+      group: {
+        name: 'fontSizeWeight',
+      },
       options: ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900],
     },
   ];
@@ -67,37 +77,12 @@ export class ContainerComponent {
   textareaEl = viewChild<ElementRef<HTMLTextAreaElement>>('textArea');
 
   text = model('');
-  textChanged = output<string>();
-  fontSize = model('16px');
-  fontSizeChanged = output<string>();
+  fontSize = model(16);
   color = model('white');
-  colorChanged = output<string>();
   fontWeight = model<'normal' | 'bold' | 'bolder' | 'lighter' | number>('normal');
-  fontWeightChanged = output<'normal' | 'bold' | 'bolder' | 'lighter' | number>();
   container = inject(NgBondContainer);
 
-  constructor() {
-    effect(() => {
-      const text = this.text();
-      console.log('Text changed:', text);
-      this.textChanged.emit(text);
-    });
-
-    effect(() => {
-      const fontSize = this.fontSize();
-      this.fontSizeChanged.emit(fontSize);
-    });
-
-    effect(() => {
-      const color = this.color();
-      this.colorChanged.emit(color);
-    });
-
-    effect(() => {
-      const fontWeight = this.fontWeight();
-      this.fontWeightChanged.emit(fontWeight);
-    });
-  }
+  constructor() {}
 
   onDblClick(evt: MouseEvent) {
     this.selection.disabled.set(true);
@@ -109,8 +94,8 @@ export class ContainerComponent {
   }
 
   detachChild(viewRef: ComponentRef<any>) {
-        const index = this.insertSlot.indexOf(viewRef.hostView);
-        this.insertSlot.detach(index);
+    const index = this.insertSlot.indexOf(viewRef.hostView);
+    this.insertSlot.detach(index);
   }
 
   private focusTextarea() {

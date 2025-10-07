@@ -18,35 +18,19 @@ export class TextComponentComponent {
   static inspectableProperties = [
     {
       name: 'text',
-      type: 'string',
-      setterName: 'text',
-      isSignal: true,
-      event: 'textChanged',
-      serializable: true,
+      type: 'string'
     },
     {
       name: 'fontSize',
-      type: 'string',
-      setterName: 'fontSize',
-      isSignal: true,
-      event: 'fontSizeChanged',
-      serializable: true,
+      type: 'string'
     },
     {
       name: 'color',
-      type: 'color',
-      setterName: 'color',
-      isSignal: true,
-      event: 'colorChanged',
-      serializable: true,
+      type: 'color'
     },
     {
       name: 'fontWeight',
-      type: 'fontWeight',
-      setterName: 'fontWeight',
-      isSignal: true,
-      event: 'fontWeightChanged',
-      serializable: true,
+      type: 'fontWeight'
     },
   ];
 
@@ -63,16 +47,12 @@ export class TextComponentComponent {
   type = 'text';
 
   text = model('Hello World');
-  textChanged = output<string>();
 
   fontSize = model('16px');
-  fontSizeChanged = output<string>();
 
   color = model('white');
-  colorChanged = output<string>();
 
   fontWeight = model('normal');
-  fontWeightChanged = output<string>();
 
   textInput = viewChild<ElementRef<HTMLInputElement>>('textInput');
 
@@ -82,28 +62,9 @@ export class TextComponentComponent {
 
   constructor() {
     effect(() => {
-      this.textChanged.emit(this.text());
-      setTimeout(() => {
-        this.measureSize();
-      });
-    });
-
-    effect(() => {
-      this.fontSizeChanged.emit(this.fontSize());
-      setTimeout(() => {
-        this.measureSize();
-      });
-    });
-
-    effect(() => {
-      this.colorChanged.emit(this.color());
-      setTimeout(() => {
-        this.measureSize();
-      });
-    });
-
-    effect(() => {
-      this.fontWeightChanged.emit(this.fontWeight());
+      const t = this.text();
+      const s = this.fontSize();
+      const w = this.fontWeight();
       setTimeout(() => {
         this.measureSize();
       });

@@ -1,0 +1,34 @@
+<div class="header">
+  <div class="tool-container">
+    <button (click)="addPath()"><ed-icon icon="pen"></ed-icon></button>
+    <button (click)="addContainer()"><ed-icon icon="container"></ed-icon></button>
+    <button (click)="addImage()"><ed-icon icon="image"></ed-icon></button>
+    <button (click)="addText()"><ed-icon icon="text"></ed-icon></button>
+    <button (click)="save()">Save</button>
+    <button (click)="load()">Load</button>
+  </div>
+</div>
+<ng-split direction="vertical" style="height: 100%; width: 100%">
+  <ng-split-panel>
+    <ng-split direction="horizontal" style="height: 100%; width: 100%">
+      <ng-split-panel [flex]="'240'">
+        <child-inspector class="sidebar"></child-inspector>
+      </ng-split-panel>
+      <ng-split-panel>
+        <div style="width: 100%; height: 100%; background: #222; padding: 30px">
+          <ng-bond-world>
+            <svg-canvas #svgCanvas></svg-canvas>
+            <connection-container style="width: 100%; height: 100%; position: absolute; left: 0; top: 0"></connection-container>
+          </ng-bond-world>
+        </div>
+      </ng-split-panel>
+      <ng-split-panel #sidebar [flex]="'260px'">
+        <bond-inspector #inspector></bond-inspector>
+      </ng-split-panel>
+    </ng-split>
+  </ng-split-panel>
+
+  <ng-split-panel [minWidth]="50" [flex]="'200px'">
+    <timeline></timeline>
+  </ng-split-panel>
+</ng-split>

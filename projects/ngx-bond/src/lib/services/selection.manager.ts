@@ -138,6 +138,10 @@ export class SelectionManager {
         });
       } else if (evt.key === 'g' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
         this.componentFactory?.groupSelected();
+      } else if(evt.key === 'c' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
+        this.componentFactory?.copySelected();
+      } else if(evt.key === 'v' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
+        this.componentFactory?.paste();
       }
     });
   }

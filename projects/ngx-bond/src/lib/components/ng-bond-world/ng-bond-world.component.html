@@ -46,10 +46,10 @@
 </svg>
 @if (group) {
   <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x}px, ${group.y - 30}px)`">
-    <div style="transform: translateX(-50%); background: #2558ce; border-radius: 4px; padding: 3px">{{ group.x | number: '1.0-0' }} x {{ group.y | number: '1.0-0' }}</div>
+    <div class="group-info-pill">{{ group.x | number: '1.0-0' }} x {{ group.y | number: '1.0-0' }}</div>
   </div>
   <div style="position: absolute; left: 0; top: 0" [style.transform]="`translate(${group.x + group.width / 2}px, ${group.y + group.height + 5}px)`">
-    <div style="transform: translateX(-50%); background: #2558ce; border-radius: 4px; padding: 3px">{{ group.width | number: '1.0-0' }} x {{ group.height | number: '1.0-0' }}</div>
+    <div class="group-info-pill">{{ group.width | number: '1.0-0' }} x {{ group.height | number: '1.0-0' }}</div>
   </div>
 }
 

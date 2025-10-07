@@ -1,101 +1,83 @@
-import { computed, Directive, effect, ElementRef, inject, Input, model, output, signal } from '@angular/core';
+import { afterNextRender, computed, ContentChild, ContentChildren, Directive, effect, ElementRef, inject, Input, isSignal, model, output, signal, ViewChild, viewChild, ViewChildren } from '@angular/core';
+import { InspectableProperty } from '@richapps/ngx-bond';
 
 @Directive({
   selector: '[backgroundColorProperty]',
   exportAs: 'backgroundColorProperty',
+  host: {
+
+  },
 })
 export class BackgroundColorPropertyDirective {
-  static inspectableProperties = [
+  static inspectableProperties: InspectableProperty[] = [
     {
       name: 'backgroundColor',
       type: 'color',
-      setterName: 'backgroundColor',
-      isSignal: true,
-      event: 'backgroundColorChanged',
-      serializable: true,
     },
     {
       name: 'borderRadius',
       type: 'number',
-      setterName: 'borderRadius',
-      isSignal: true,
-      event: 'borderRadiusChanged',
-      serializable: true,
+      prefixIcon: 'iconRadius',
     },
     {
       name: 'opacity',
+      suffix: '%',
       type: 'number',
-      setterName: 'opacity',
-      isSignal: true,
-      event: 'opacityChanged',
-      serializable: true,
     },
     {
       name: 'overflow',
       type: 'select',
-      setterName: 'overflow',
-      isSignal: true,
-      event: 'overflowChanged',
-      serializable: true,
+      category: 'Layout',
       options: ['visible', 'hidden', 'scroll', 'auto'],
     },
     {
       name: 'shadowEnabled',
       type: 'checkbox',
-      setterName: 'shadowEnabled',
-      isSignal: true,
-      event: 'shadowEnabledChanged',
-      serializable: true,
+      category: 'Shadow',
     },
     {
       name: 'shadowHorizontalOffset',
       type: 'number',
-      setterName: 'shadowHorizontalOffset',
-      isSignal: true,
-      event: 'shadowHorizontalOffsetChanged',
-      serializable: true,
+      group: {
+        name: 'shadowPosition',
+      },
+      category: 'Shadow',
     },
     {
       name: 'shadowVerticalOffset',
       type: 'number',
-      setterName: 'shadowVerticalOffset',
-      isSignal: true,
-      event: 'shadowVerticalOffsetChanged',
-      serializable: true,
+      group: {
+        name: 'shadowPosition',
+      },
+      category: 'Shadow',
     },
     {
       name: 'shadowBlurRadius',
       type: 'number',
-      setterName: 'shadowBlurRadius',
-      isSignal: true,
-      event: 'shadowBlurRadiusChanged',
-      serializable: true,
+      group: {
+        name: 'shadowProps',
+      },
+      category: 'Shadow',
     },
     {
       name: 'shadowSpread',
       type: 'number',
-      setterName: 'shadowSpread',
-      isSignal: true,
-      event: 'shadowSpreadChanged',
-      serializable: true,
+      group: {
+        name: 'shadowProps',
+      },
+      category: 'Shadow',
     },
     {
       name: 'shadowColor',
       type: 'color',
-      setterName: 'shadowColor',
-      isSignal: true,
-      event: 'shadowColorChanged',
-      serializable: true,
+      category: 'Shadow',
     },
     {
       name: 'shadowColorAlpha',
       type: 'range',
       min: 0,
       max: 255,
-      setterName: 'shadowColorAlpha',
-      isSignal: true,
-      event: 'shadowColorAlphaChanged',
-      serializable: true,
+      category: 'Shadow',
     },
   ];
 
@@ -105,42 +87,29 @@ export class BackgroundColorPropertyDirective {
 
   el: ElementRef = inject(ElementRef);
 
+  content: any;
 
-  backgroundColorChanged = output<string>();
   backgroundColor = model('#333333');
 
   borderRadius = model(0);
-  borderRadiusChanged = output<number>();
 
   overflow = model('visible');
-  overflowChanged = output<string>();
 
   opacity = model(1);
-  opacityChanged = output<number>();
 
   shadowEnabled = model(false);
-  shadowEnabledChanged = output<boolean>();
-
-
-  // box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
   shadowHorizontalOffset = model(0);
-  shadowHorizontalOffsetChanged = output<number>();
 
   shadowVerticalOffset = model(7);
-  shadowVerticalOffsetChanged = output<number>();
 
   shadowBlurRadius = model(29);
-  shadowBlurRadiusChanged = output<number>();
 
   shadowSpread = model(0);
-  shadowSpreadChanged = output<number>();
 
   shadowColor = model('#64646f33');
-  shadowColorChanged = output<string>();
 
   shadowColorAlpha = model(51);
-  shadowColorAlphaChanged = output<number>();
 
   shadowCss = computed(() => {
     if (!this.shadowEnabled()) {
@@ -154,67 +123,69 @@ export class BackgroundColorPropertyDirective {
   });
 
   constructor() {
+
+    let content = this.el.nativeElement.querySelector('.content-container');
+    let inited = signal(false);
+
+    afterNextRender(()=>{
+      content = this.el.nativeElement.querySelector('.content-container');
+      console.log('content', content);
+      inited.set(true);
+    })
+
     effect(() => {
-      let bg = this.backgroundColor();
-      this.backgroundColorChanged.emit(bg);
-      this.el.nativeElement.style.backgroundColor = bg;
+      if (!inited()) return;
+
+      const backgroundColor = this.backgroundColor();
+      if (content) {
+        content.style.backgroundColor = backgroundColor;
+      } else {
+        this.el.nativeElement.style.backgroundColor = backgroundColor;
+      }
     });
 
     effect(() => {
-      const op = this.opacity();
-      this.opacityChanged.emit(op);
-      this.el.nativeElement.style.opacity = op.toString();
+      if (!inited()) return;
+
+      const opacity = this.opacity();
+      if (content) {
+        content.style.opacity = opacity;
+      } else {
+        this.el.nativeElement.style.opacity = opacity;
+      }
+    });
+
+    effect(() => {  
+      if (!inited()) return;
+
+      const borderRadius = this.borderRadius();
+      if (content) {
+        content.style.borderRadius = borderRadius + 'px';
+      } else {
+        this.el.nativeElement.style.borderRadius = borderRadius + 'px';
+      }
     });
 
     effect(() => {
-      const br = this.borderRadius();
-      this.borderRadiusChanged.emit(br);
-      this.el.nativeElement.style.borderRadius = `${br}px`;
-    });
+      if (!inited()) return;
+
+      const overflow = this.overflow();
+      if (content) {
+        content.style.overflow = overflow;
+      } else {
+        this.el.nativeElement.style.overflow = overflow;
+      }
+    }); 
 
     effect(() => {
-      const ov = this.overflow();
-      this.overflowChanged.emit(ov);
-      this.el.nativeElement.style.overflow = ov;
-    });
+      if (!inited()) return;
 
-    effect(() => {
-      const se = this.shadowEnabled();
-      this.shadowEnabledChanged.emit(se);
-    });
-
-    effect(() => {
-      const sho = this.shadowHorizontalOffset();
-      this.shadowHorizontalOffsetChanged.emit(sho);
-    });
-
-    effect(() => {
-      const svo = this.shadowVerticalOffset();
-      this.shadowVerticalOffsetChanged.emit(svo);
-    });
-
-    effect(() => {
-      const sbr = this.shadowBlurRadius();
-      this.shadowBlurRadiusChanged.emit(sbr);
-    });
-
-    effect(() => {
-      const ss = this.shadowSpread();
-      this.shadowSpreadChanged.emit(ss);
-    });
-
-    effect(() => {
-      const sc = this.shadowColor();
-      this.shadowColorChanged.emit(sc);
-    });
-
-    effect(() => {
-      const sca = this.shadowColorAlpha();
-      this.shadowColorAlphaChanged.emit(sca);
-    });
-
-    effect(() => {
-      this.el.nativeElement.style.boxShadow = this.shadowCss();
+      const boxShadow = this.shadowCss();
+      if (content) {
+        content.style.boxShadow = boxShadow;
+      } else {
+        this.el.nativeElement.style.boxShadow = boxShadow;
+      }
     });
   }
 }

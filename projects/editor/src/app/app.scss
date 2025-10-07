@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+
+  --color-icon: #ffffff;
+}
+
+
+.header {
+    height: 40px;
+    width: 100%;
+    background: #1E1E1E;
+    border-bottom: solid 1px #424242;
+}
+
+.tool-container {
+    display: flex;
+    gap: 4px;
+
+    button {
+        border-radius: 5px;
+        padding: 3px;
+        background: #222222;
+    }
+}

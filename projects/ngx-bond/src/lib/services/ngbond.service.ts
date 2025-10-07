@@ -8,7 +8,6 @@ import { getMultiLinePath } from '../components/util/connections/multi-step';
 import { getDistance } from '../components/util/geo';
 import { NgBondWorld } from '@richapps/ngx-bond';
 
-
 export type Bound = {
   left: number;
   top: number;
@@ -22,7 +21,6 @@ export const inspectableLinkProperties = [
     type: 'color',
     setterName: 'stroke',
     isSignal: true,
-    event: 'strokeChanged',
     serializable: true,
   },
   {
@@ -30,7 +28,6 @@ export const inspectableLinkProperties = [
     type: 'text',
     setterName: 'textOnPath',
     isSignal: true,
-    event: 'textOnPathChanged',
     serializable: true,
   },
   {
@@ -38,7 +35,6 @@ export const inspectableLinkProperties = [
     type: 'number',
     setterName: 'strokeWidth',
     isSignal: true,
-    event: 'strokeWidthChanged',
     serializable: true,
   },
   {
@@ -46,7 +42,6 @@ export const inspectableLinkProperties = [
     type: 'string',
     setterName: 'strokeDasharray',
     isSignal: true,
-    event: 'strokeDasharrayChanged',
     serializable: true,
   },
   {
@@ -54,7 +49,6 @@ export const inspectableLinkProperties = [
     type: 'number',
     setterName: 'curveRadius',
     isSignal: true,
-    event: 'curveRadiusChanged',
     serializable: true,
   },
   {
@@ -62,7 +56,6 @@ export const inspectableLinkProperties = [
     type: 'number',
     setterName: 'animationBubbleCount',
     isSignal: true,
-    event: 'animationBubbleCountChanged',
     serializable: true,
   },
   {
@@ -70,7 +63,6 @@ export const inspectableLinkProperties = [
     type: 'number',
     setterName: 'animationBubbleDuration',
     isSignal: true,
-    event: 'animationBubbleDurationChanged',
     serializable: true,
   },
   {
@@ -78,15 +70,13 @@ export const inspectableLinkProperties = [
     type: 'number',
     setterName: 'animationBubbleRadius',
     isSignal: true,
-    event: 'animationBubbleRadiusChanged',
     serializable: true,
   },
-    {
+  {
     name: 'animationBubbleColor',
     type: 'color',
     setterName: 'animationBubbleColor',
     isSignal: true,
-    event: 'animationBubbleColorChanged',
     serializable: true,
   },
   {
@@ -94,7 +84,6 @@ export const inspectableLinkProperties = [
     type: 'checkbox',
     setterName: 'animate',
     isSignal: true,
-    event: 'animateChanged',
     serializable: true,
   },
   {
@@ -103,7 +92,6 @@ export const inspectableLinkProperties = [
     options: ['bezier', 'straight', 'multi-line', 'orthogonal'],
     setterName: 'curveType',
     isSignal: true,
-    event: 'curveTypeChanged',
     serializable: true,
   },
 ];
@@ -211,7 +199,6 @@ export class NgBondService {
     }
 
     if (p1) {
-
       const defProps = this.defaultProperties();
       const animate = property1.animatedLink;
 
