@@ -1,8 +1,6 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { NgBondProperty } from '../components/ng-bond-property/ng-bond-property';
+import { computed, effect, inject, signal } from '@angular/core';
 import { KeyManager } from './key.manager';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
-import { snap } from 'gsap';
 import { ComponentFactory } from './component.factory';
 import { getAlignmentHelpLines } from './alignment';
 import { GeometryUtils } from '@richapps/ngx-bond';
@@ -16,7 +14,7 @@ export class SelectionManager {
 
   dragTarget = signal<NgBondContainer | null>(null);
 
-  componentFactory?: ComponentFactory;
+  components?: ComponentFactory;
 
   rootChildren = signal<NgBondContainer[]>([]);
 
@@ -134,14 +132,14 @@ export class SelectionManager {
         this.moveBy(0, yBy, this.dragTarget() as NgBondContainer);
       } else if (evt.key === 'Backspace' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
         this.selectionTargets().forEach((t) => {
-          this.componentFactory?.removeComponent(t);
+          this.components?.removeComponent(t);
         });
       } else if (evt.key === 'g' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
-        this.componentFactory?.groupSelected();
-      } else if(evt.key === 'c' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
-        this.componentFactory?.copySelected();
-      } else if(evt.key === 'v' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
-        this.componentFactory?.paste();
+        this.components?.groupSelected();
+      } else if (this.components && evt.key === 'c' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
+        this.components.copySelected(this.selectionTargets());
+      } else if (this.components && evt.key === 'v' && (this.keyManager.isKeyDown('Meta') || this.keyManager.isKeyDown('Control'))) {
+        this.components.paste();
       }
     });
   }
@@ -341,7 +339,7 @@ export class SelectionManager {
     }
 
     if (this.dropTargets().length > 0) {
-      this.componentFactory?.moveToContainer(target, this.dropTargets()[0]);
+      this.components?.moveToContainer(target, this.dropTargets()[0]);
     }
     this.dragTarget.set(null);
   }

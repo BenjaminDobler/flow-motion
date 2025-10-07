@@ -24,8 +24,10 @@ export class ComponentFactory {
   world?: NgBondWorld;
   svgCanvas = inject(SVGCanvas);
 
+  clipboard: any[] = [];
+
   constructor() {
-    this.selectionManager.componentFactory = this;
+    this.selectionManager.components = this;
   }
 
   addComponent(componentClass: { new (...args: any[]): void } = ContainerComponent, inputs: any = {}, defaultID?: string, host?: any): ComponentRef<any> | undefined {
@@ -351,26 +353,8 @@ export class ComponentFactory {
     }, 200);
   }
 
-  clipboard: any[]= [];
 
-  copySelected() {
-    this.clipboard = [];
-    this.selectionManager.selectionTargets().forEach((target) => {
-      const el = this.serializeComponent(target);
-      this.clipboard.push(el);
-    });
-    console.log('Copied to clipboard', this.clipboard);
-  }
 
-  paste() {
-    const host = this.world?.worldHost;
-
-    this.clipboard.forEach((element: any) => {
-      console.log('Pasting element', element.name);
-      element.id = element.id + '-copy-' + Math.floor(Math.random() * 1000);
-      this.deserializeElement(element, host);
-    });
-  }
 
   groupSelected() {
     let minX = Number.MAX_VALUE;
@@ -528,5 +512,24 @@ export class ComponentFactory {
     }
     this.containerElementMap.delete(item);
     this.componentRemoved.next(item.id());
+  }
+
+  copySelected(targets: NgBondContainer[]) {
+    this.clipboard = [];
+    targets.forEach((target) => {
+      const el = this.serializeComponent(target);
+      this.clipboard.push(el);
+    });
+    console.log('Copied to clipboard', this.clipboard);
+  }
+
+  paste() {
+    const host = this.world?.worldHost;
+
+    this.clipboard.forEach((element: any) => {
+      console.log('Pasting element', element.name);
+      element.id = element.id + '-copy-' + Math.floor(Math.random() * 1000);
+      this.deserializeElement(element, host);
+    });
   }
 }

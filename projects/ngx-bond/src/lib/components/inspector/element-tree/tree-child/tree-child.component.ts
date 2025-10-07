@@ -25,7 +25,7 @@ export class TreeChildComponent {
   }
 
   component = computed(() => {
-    const container = this.selection.componentFactory?.containerElementMap.get(this.child() as NgBondContainer);
+    const container = this.selection.components?.containerElementMap.get(this.child() as NgBondContainer);
     return container?.instance;
   });
 

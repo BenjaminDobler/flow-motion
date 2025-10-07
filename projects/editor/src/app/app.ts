@@ -42,6 +42,7 @@ export class App {
   protected motionPath = inject(MotionPathService);
   protected serialization = inject(SerializationService);
 
+
   svg = inject(SVGCanvas);
 
   ngAfterViewInit() {
