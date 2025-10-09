@@ -1,5 +1,17 @@
 import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
-import { inspectableLinkProperties, InspectableProperty, NgBondContainer, NGBondItem, NgBondProperty, NgBondService, NgBondWorld, Path, PathDirectiveDirective, SelectionManager, SVGCanvas } from '@richapps/ngx-bond';
+import {
+  inspectableLinkProperties,
+  InspectableProperty,
+  NgBondContainer,
+  NGBondItem,
+  NgBondProperty,
+  NgBondService,
+  NgBondWorld,
+  Path,
+  PathDirectiveDirective,
+  SelectionManager,
+  SVGCanvas,
+} from '@richapps/ngx-bond';
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
 import { ContainerComponent } from '../components/editables/container-component/container-component.component';
@@ -91,14 +103,16 @@ export class ComponentFactory {
 
     if ((componentRef.instance as any).inspectableProperties) {
       for (const prop of (componentRef.instance as any).inspectableProperties) {
-        const eventProp = prop.event ? prop.event : prop.name;
-        (componentRef.instance as any)[eventProp].subscribe((evt: any) => {
-          this.propertyChanged.next({
-            id,
-            property: prop.name,
-            value: evt,
+        if (!prop.noneAnimatable) {
+          const eventProp = prop.event ? prop.event : prop.name;
+          (componentRef.instance as any)[eventProp].subscribe((evt: any) => {
+            this.propertyChanged.next({
+              id,
+              property: prop.name,
+              value: evt,
+            });
           });
-        });
+        }
       }
     }
 
@@ -115,15 +129,17 @@ export class ComponentFactory {
 
     directiveInstances.forEach((dInstance) => {
       dInstance.inspectableProperties.forEach((prop: any) => {
-        const eventProp = prop.event ? prop.event : prop.name;
-        if ((dInstance as any)[eventProp] && !prop.readonly) {
-          (dInstance as any)[eventProp].subscribe((evt: any) => {
-            this.propertyChanged.next({
-              id,
-              property: prop.name,
-              value: evt,
+        if (!prop.noneAnimatable) {
+          const eventProp = prop.event ? prop.event : prop.name;
+          if ((dInstance as any)[eventProp] && !prop.readonly) {
+            (dInstance as any)[eventProp].subscribe((evt: any) => {
+              this.propertyChanged.next({
+                id,
+                property: prop.name,
+                value: evt,
+              });
             });
-          });
+          }
         }
       });
     });
@@ -269,7 +285,7 @@ export class ComponentFactory {
 
       const props: any = {};
       inspectableLinkProperties.forEach((prop) => {
-        if (prop.serializable) {
+        if (!prop.noneSerializable) {
           console.log('setter name ', prop.name);
           props[prop.name] = (link.properties as any)[prop.name]();
         }
@@ -352,9 +368,6 @@ export class ComponentFactory {
       });
     }, 200);
   }
-
-
-
 
   groupSelected() {
     let minX = Number.MAX_VALUE;

@@ -17,4 +17,5 @@ export interface InspectableProperty {
   noneSerializable?: boolean;
   readonly?: boolean;
   group?: { name: string };
+  noneAnimatable?: boolean;
 }

@@ -50,6 +50,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       alias: 'X',
       category: 'Position',
       type: 'number',
+      noneAnimatable: true,
       group: {
         name: 'Position',
       },
@@ -58,6 +59,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       name: 'y',
       alias: 'Y',
       category: 'Position',
+      noneAnimatable: true,
       type: 'number',
       group: {
         name: 'Position',

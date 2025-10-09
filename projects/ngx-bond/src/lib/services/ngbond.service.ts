@@ -6,7 +6,7 @@ import { getLinePath } from '../components/util/connections/simple.line';
 import { getOrhogonalConnection } from '../components/util/connections/orthogonal';
 import { getMultiLinePath } from '../components/util/connections/multi-step';
 import { getDistance } from '../components/util/geo';
-import { NgBondWorld } from '@richapps/ngx-bond';
+import { InspectableProperty, NgBondWorld } from '@richapps/ngx-bond';
 
 export type Bound = {
   left: number;
@@ -15,84 +15,51 @@ export type Bound = {
   height: number;
 };
 
-export const inspectableLinkProperties = [
+export const inspectableLinkProperties: InspectableProperty[] = [
   {
     name: 'stroke',
     type: 'color',
-    setterName: 'stroke',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'textOnPath',
     type: 'text',
-    setterName: 'textOnPath',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'strokeWidth',
     type: 'number',
-    setterName: 'strokeWidth',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'strokeDasharray',
     type: 'string',
-    setterName: 'strokeDasharray',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'curveRadius',
     type: 'number',
-    setterName: 'curveRadius',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'animationBubbleCount',
     type: 'number',
-    setterName: 'animationBubbleCount',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'animationBubbleDuration',
     type: 'number',
-    setterName: 'animationBubbleDuration',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'animationBubbleRadius',
     type: 'number',
-    setterName: 'animationBubbleRadius',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'animationBubbleColor',
     type: 'color',
-    setterName: 'animationBubbleColor',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'animate',
     type: 'checkbox',
-    setterName: 'animate',
-    isSignal: true,
-    serializable: true,
   },
   {
     name: 'curveType',
     type: 'select',
     options: ['bezier', 'straight', 'multi-line', 'orthogonal'],
-    setterName: 'curveType',
-    isSignal: true,
-    serializable: true,
   },
 ];
 
