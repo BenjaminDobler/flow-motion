@@ -1,11 +1,10 @@
-import { NgTemplateOutlet } from '@angular/common';
-import { afterNextRender, Component, contentChild, effect, ElementRef, forwardRef, inject, input, model, TemplateRef } from '@angular/core';
+import { afterNextRender, Component, ElementRef, forwardRef, inject, input, model } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { makeDraggable } from '@richapps/ngx-bond';
 import { IconComponent } from '../icon/icon.component';
 @Component({
   selector: 'input-component',
-  imports: [FormsModule, NgTemplateOutlet, IconComponent],
+  imports: [FormsModule, IconComponent],
   templateUrl: './input-component.component.html',
   styleUrl: './input-component.component.scss',
   providers: [
