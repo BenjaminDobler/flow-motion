@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+
+.example-menu {
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e;
+  box-shadow: 0px 10px 16px rgba(0, 0, 0, .35), 0px 2px 5px rgba(0, 0, 0, .35), inset 0px .5px 0px rgba(255, 255, 255, .08), inset 0px 0px .5px rgba(255, 255, 255, .35);
+  padding: 0.5rem;
+  border-radius: 0.8125rem;
+  min-width: 150px;
+  z-index: 1000;
+
+
+  button {
+    background-color: #1e1e1e;
+    text-align: left;
+    border-radius: 3px;
+    line-height: 24px;
+    height: auto;
+    &:hover {
+      background: #0F8BE8;
+    }
+  }
+}
+
+

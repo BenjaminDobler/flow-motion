@@ -151,13 +151,11 @@ body {
     button {
       background: var(--highlight-color);
       border: none;
-      height: 32px;
       color: var(--form-item-color);
       font-weight: 450;
       font-size: 0.6875rem;
-      line-height: 1rem;
       padding: 0 12px;
-      height: 1rem;
+      border-radius: 3px;
     }
   }
 }
