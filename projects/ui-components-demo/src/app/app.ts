@@ -1,7 +1,7 @@
 import { Component, Input, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ColorComponent, EdSelectComponent, EdSelectOptionComponent, InputComponent, InputGroupComponent, RadiusIconComponent } from '@richapps/ngx-bond';
+import { ColorComponent, EdSelectComponent, EdSelectOptionComponent, InputComponent, InputGroupComponent, RadiusIconComponent } from '@richapps/ui-components';
 import { ContextMenu } from "./components/context-menu/context-menu";
 
 @Component({

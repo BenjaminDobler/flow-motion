@@ -57,17 +57,8 @@
   </svg>
 </div>
 
-<div [cdkContextMenuTriggerFor]="context_menu" style="position: absolute;background: #00ff00;width: 20px;height: 20px;left: -10px; top: 0;opacity: 0.01;"></div>
+<div [contextMenu]="contextMenuItems" style="position: absolute;background: #00ff00;width: 20px;height: 20px;left: -10px; top: 0;opacity: 0.01;"></div>
 
-<ng-template #context_menu>
-  <div class="example-menu" cdkMenu>
-    <button class="example-menu-item" cdkMenuItem (click)="onTweenClick()">
-      Create Tween
-    </button>
-    <!-- <button class="example-menu-item" cdkMenuItem>Copy</button>
-    <button class="example-menu-item" cdkMenuItem>Link</button> -->
-  </div>
-</ng-template>
 
 <div class="info" [class.infovisible]="dragging()">
   {{ time() }}

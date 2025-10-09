@@ -43,9 +43,3 @@ export * from './lib/components/util/drag.util'
 
 export * from './lib/components/connection-container/connection-container.component';
 
-export * from './lib/components/ui/color/color.component';
-export * from './lib/components/ui/ed-select/ed-select.component';
-export * from './lib/components/ui/ed-select/ed-select-option/ed-select-option.component';
-export * from './lib/components/ui/icons/radius-icon/radius-icon.component';
-export * from './lib/components/ui/input-component/input-component.component';
-export * from './lib/components/ui/input-group/input-group.component';

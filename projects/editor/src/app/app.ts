@@ -19,11 +19,11 @@ import { TimelineComponent, TimelineService } from '@richapps/ngx-bond-timeline'
 import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { InspectorComponent } from './components/inspector/inspector.component';
 import { ChildInspectorComponent } from './components/child-inspector/child-inspector.component';
-import { IconComponent } from '../../../ngx-bond/src/lib/components/ui/icon/icon.component';
+import { IconComponent, RadiusIconComponent } from '@richapps/ui-components';
 
 @Component({
   selector: 'app-root',
-  imports: [SvgCanvasComponent, IconComponent, NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
+  imports: [SvgCanvasComponent, RadiusIconComponent, IconComponent,  NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService],

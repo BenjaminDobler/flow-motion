@@ -1,11 +1,11 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { CdkContextMenuTrigger, CdkMenuItem, CdkMenu } from '@angular/cdk/menu';
 import { Timeline, TimelineKeyframe } from '../../../model/timeline';
 import { TimelineService } from '../../../services/timeline.service';
+import { ContextMenu } from '@richapps/ui-components';
 
 @Component({
   selector: 'timeline-keyframe',
-  imports: [CdkContextMenuTrigger, CdkMenu, CdkMenuItem],
+  imports: [ ContextMenu],
   templateUrl: './timeline-keyframe.component.html',
   styleUrl: './timeline-keyframe.component.scss',
   host: {
@@ -15,6 +15,10 @@ import { TimelineService } from '../../../services/timeline.service';
 })
 export class TimelineKeyframeComponent {
   timelineService = inject(TimelineService);
+
+  contextMenuItems = [
+    { label: 'Tween', action: () => this.createTween() }
+  ];
 
   keyframe = input<TimelineKeyframe>();
   timeline = input<Timeline>();
@@ -29,7 +33,7 @@ export class TimelineKeyframeComponent {
 
   constructor() {}
 
-  onTweenClick() {
+  createTween() { 
     this.tween.emit(this.keyframe()!);
   }
 

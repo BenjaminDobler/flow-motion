@@ -7,10 +7,11 @@ import { KeyManager, NgBondContainer, NgBondService, SelectionManager } from '@r
 import { TimelineService } from '../../services/timeline.service';
 import { CommonModule } from '@angular/common';
 import { TimelineControlsComponent } from './timeline-controls/timeline-controls.component';
+import { ContextMenu } from '@richapps/ui-components';
 
 @Component({
   selector: 'timeline',
-  imports: [TimelineRulerComponent, TimelineKeyframeComponent, TimelineTweenComponent, NgBondContainer, CommonModule, TimelineControlsComponent],
+  imports: [TimelineRulerComponent, TimelineKeyframeComponent, TimelineTweenComponent, NgBondContainer, CommonModule, TimelineControlsComponent, ContextMenu],
   templateUrl: './timeline.component.html',
   styleUrl: './timeline.component.scss',
   providers: [NgBondService, SelectionManager, KeyManager],
@@ -19,6 +20,12 @@ export class TimelineComponent {
   timelineService = inject(TimelineService);
 
   changeRef = inject(ChangeDetectorRef);
+
+  trackContextMenu = [
+    {
+      label: 'Add Keyframe',
+    },
+  ];
 
   selectedTween = model<TimelineTween | null>(null);
 
@@ -174,5 +181,13 @@ export class TimelineComponent {
 
   onKeyframeDragEnd(event: any, keyframe: TimelineKeyframe, track: TimelineTrack, group: TimelineGroup) {
     this.timelineService.createGsapTimeline();
+  }
+
+  onTrackContextMenuSelected(data: any, track: TimelineTrack, group: TimelineGroup) {
+    console.log('Track context menu selected:', event, track, group);
+    const position = data.initEvent.offsetX;
+    const time = position * (this.timelineService.millisecondsPerPixel() || 1);
+    
+    console.log('Add Keyframe at time:', time);
   }
 }

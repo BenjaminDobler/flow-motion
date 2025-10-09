@@ -38,7 +38,7 @@
           <div class="track-container">
             <div class="track-spacer"></div>
 
-            <div class="track" style="flex: 1">
+            <div class="track" style="flex: 1" [contextMenu]="trackContextMenu" (contextMenuSelected)="onTrackContextMenuSelected($event, track, group)">
               @for (tween of track.tweens; track $index) {
                 <timeline-tween
                   (click)="onTweenClick($event, tween, track, group)"

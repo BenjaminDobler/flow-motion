@@ -21,6 +21,9 @@
       ],
       "@richapps/ngx-split": [
         "./projects/ngx-split/src/public-api.ts"
+      ],
+      "@richapps/ui-components": [
+        "./projects/ui-components/src/public-api.ts"
       ]
     },
     "skipLibCheck": true,
@@ -98,6 +101,12 @@
     },
     {
       "path": "./projects/editor/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ui-components/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ui-components/tsconfig.spec.json"
     }
   ]
 }

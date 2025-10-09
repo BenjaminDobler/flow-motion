@@ -2,10 +2,8 @@ import { Component, computed, effect, inject } from '@angular/core';
 import { ComponentFactory } from '../../../services/component.factory';
 import { FormsModule } from '@angular/forms';
 import { InspectableProperty, SelectionManager } from '@richapps/ngx-bond';
-import {InputComponent} from '../../ui/input-component/input-component.component';
-import {EdSelectComponent} from '../../ui/ed-select/ed-select.component';
-import {EdSelectOptionComponent} from '../../ui/ed-select/ed-select-option/ed-select-option.component';
-import {ColorComponent} from '../../ui/color/color.component';
+import { EdSelectComponent, EdSelectOptionComponent, InputComponent, ColorComponent } from '@richapps/ui-components';
+
 function groupBy(list: any[], keyGetter: (item: any) => string) {
   const map = new Map();
   list.forEach((item) => {
