@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:prod": "ng build editor --configuration production --base-href=/ng-bond/",
+    "build:prod": "ng build editor --configuration production --base-href=/flow-motion/",
     "lint": "ng lint",
     "ngx-pentool:build": "ng build ngx-pentool",
     "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool"
