@@ -129,7 +129,6 @@ export class BackgroundColorPropertyDirective {
 
     afterNextRender(()=>{
       content = this.el.nativeElement.querySelector('.content-container');
-      console.log('content', content);
       inited.set(true);
     })
 

@@ -51,7 +51,6 @@ export class ElementPropertyInspectorComponent {
         const groupMap = groupBy(value, (prop) => prop.group?.name || 'ungrouped');
 
         const groups = Array.from(groupMap, ([name, value]) => {
-          console.log('group', name, value);
           return {
             name,
             props: value,
@@ -71,60 +70,12 @@ export class ElementPropertyInspectorComponent {
 
   });
 
-  componentGroups = computed(() => {
-    let groups: any[] = [];
-    const elements = this.selectionManager.selectionTargets();
-    if (elements.length > 0) {
-      const element = elements[0];
-      const instance = this.getComponentInstance(element);
-      if (instance && instance.inspectableProperties) {
-        const instanceGroups = groupBy(instance.inspectableProperties, (prop) => {
-          return prop.group?.name || 'ungrouped';
-        });
-        groups = Array.from(instanceGroups, ([name, value]) => {
-          return {
-            name,
-            props: value,
-            component: instance
-          };
-        });
-      }
-    }
-    return groups;
-  });
 
-
-  directiveGroups = computed(()=>{
-    let groups: any[] = [];
-    const elements = this.selectionManager.selectionTargets();
-    if (elements.length > 0) {
-      const element = elements[0];
-      const directives = this.getDirectives(element);
-      if (directives) {
-
-        directives.forEach((dir)=>{
-          const dirGroups = groupBy(dir.inspectableProperties, (prop) => {
-            return prop.group?.name || 'ungrouped';
-          });
-          groups.push(...Array.from(dirGroups, ([name, value]) => {
-            return {
-              name,
-              directive: dir,
-              props: value,
-            };
-          }));
-        });
-        
-      }
-    }
-    return groups;
-  });
-
-  getDirectives(element: any) {
+  private getDirectives(element: any) {
     return this.componentFactory.containerElementMap.get(element)?.directives;
   }
 
-  getComponentInstance(element: any) {
+  private getComponentInstance(element: any) {
     return this.componentFactory.containerElementMap.get(element)?.instance;
   }
 
@@ -135,9 +86,5 @@ export class ElementPropertyInspectorComponent {
     })
   }
 
-
-  onSelectChanged(e: any) {
-    console.log('select changed', e);
-  }
   
 }

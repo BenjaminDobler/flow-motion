@@ -1,4 +1,4 @@
-import { computed, effect, inject, signal } from '@angular/core';
+import { computed, effect, inject, signal, untracked } from '@angular/core';
 import { KeyManager } from './key.manager';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
 import { ComponentFactory } from './component.factory';
@@ -103,6 +103,10 @@ export class SelectionManager {
 
     effect(() => {
       const disabled = this.disabled();
+      // let children: any[] = [];
+      // untracked(()=>{
+      //   children = this.rootChildren();
+      // })
       const children = this.rootChildren();
       if (disabled) {
         children.forEach((t) => {
@@ -329,9 +333,13 @@ export class SelectionManager {
 
   dragStart(target: NgBondContainer) {
     this.dragTarget.set(target);
+    if (this.keyManager.isKeyDown('Alt')) {
+      this.components?.copyInPlace([target]);
+    }
   }
 
   dragEnd(target: NgBondContainer) {
+    // snap to help line
     if (this.helpLines().length > 0) {
       const snapLine = this.helpLines()[0];
       this.dragTarget()?.x.set(snapLine.snapX);

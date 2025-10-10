@@ -15,7 +15,7 @@
                 {{prop.suffixIcon}}
                 <input-component [prefix]="prop.alias" [prefixIcon]="prop.prefixIcon" [suffixIcon]="prop.suffixIcon" [suffix]="prop.suffix" [type]="prop.type" [(ngModel)]="prop.target[prop.name]"></input-component>
               } @else if (prop.type === 'select') {
-                <ed-select [(ngModel)]="prop.target[prop.name]" (ngModelChange)="onSelectChanged($event)" >
+                <ed-select [(ngModel)]="prop.target[prop.name]" >
                   @for (option of prop.options; track $index) {
                     <ed-select-option [value]="option">{{ option }}</ed-select-option>
                   }
@@ -53,84 +53,7 @@
       }
     </div>
   }
-<!-- 
-  @for (compGroup of componentGroups(); track $index) {
-    @for (prop of compGroup.props; track $index) {
-      <div class="property-group">
-        <label>{{ prop.name }}</label>
-        <input style="width: 80px" [attr.type]="prop.type" [(ngModel)]="compGroup.component[prop.name]" />
-      </div>
-    }
-  }
 
-  @for (directiveGroup of directiveGroups(); track $index) {
-    @if (directiveGroup.name !== 'ungrouped') {
-      <div class="property-group">
-        <label>{{ directiveGroup.name }}</label>
-        @for (prop of directiveGroup.props; track $index) {
-          @if (prop.type === 'number') {
-            <input-component [prefix]="prop.alias" [type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]"></input-component>
-
-          } @else if (prop.type === 'select') {
-            <select [(ngModel)]="directiveGroup.directive[prop.name]">
-              @for (option of prop.options; track $index) {
-                <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
-              }
-            </select>
-          } @else if (prop.type === 'range') {
-            <input style="width: 80px" [attr.type]="prop.type" [attr.min]="prop.min" [attr.max]="prop.max" [attr.step]="prop.step" [(ngModel)]="directiveGroup.directive[prop.name]" />
-          } @else if (prop.type === 'DOMRect') {
-            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }},
-            {{ directiveGroup.directive[prop.name]().height }}
-          } @else {
-            <input style="width: 80px" [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
-          }
-        }
-      </div>
-    } @else {
-      @for (prop of directiveGroup.props; track $index) {
-        <div class="property">
-          <label>{{ prop.name }}</label>
-
-          @if (prop.type === 'number' || prop.type === 'text') {
-            <input-component [prefix]="prop.alias" [suffix]="prop.suffix" [type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]"></input-component>
-          } @else if (prop.type === 'select') {
-            <select [(ngModel)]="directiveGroup.directive[prop.name]">
-              @for (option of prop.options; track $index) {
-                <option [selected]="directiveGroup.directive[prop.name] === option">{{ option }}</option>
-              }
-            </select>
-          } @else if (prop.type === 'DOMRect') {
-            {{ directiveGroup.directive[prop.name]().left }}, {{ directiveGroup.directive[prop.name]().top }}, {{ directiveGroup.directive[prop.name]().width }},
-            {{ directiveGroup.directive[prop.name]().height }}
-          } @else {
-            <input [attr.type]="prop.type" [(ngModel)]="directiveGroup.directive[prop.name]" />
-          }
-        </div>
-      }
-    }
-  } -->
-
-  <!-- @for (dir of directives; track $index) {
-    @for (prop of dir.inspectableProperties; track $index) {
-      {{ prop.name }}
-      @if (prop.type === 'select') {
-        <select [(ngModel)]="dir[prop.name]">
-          @for (option of prop.options; track $index) {
-            <option [selected]="dir[prop.name] === option">{{ option }}</option>
-          }
-        </select>
-      } @else {
-        <input [attr.type]="prop.type" [(ngModel)]="dir[prop.name]" />
-      }
-    }
-  } -->
-
-  <!-- @let componentInstance = getComponentInstance(element);
-  @for (prop of componentInstance.inspectableProperties; track $index) {
-    {{ prop.name }}
-    <input [attr.type]="prop.type" [(ngModel)]="componentInstance[prop.name]" />
-  } -->
 }
 
 

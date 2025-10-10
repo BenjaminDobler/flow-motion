@@ -43,7 +43,6 @@ export class ComponentFactory {
   }
 
   addComponent(componentClass: { new (...args: any[]): void } = ContainerComponent, inputs: any = {}, defaultID?: string, host?: any): ComponentRef<any> | undefined {
-    console.log('add component ', inputs);
     let id = 'some-id-' + this.componentCount;
     this.componentCount++;
 
@@ -189,7 +188,6 @@ export class ComponentFactory {
       el.name = container?.instance.constructor.name;
 
       container?.instance?.inspectableProperties?.forEach((prop: InspectableProperty) => {
-        console.log('inspectable props', prop);
         if (!prop.noneSerializable) {
           try {
             if (!prop.isGetter) {
@@ -210,8 +208,6 @@ export class ComponentFactory {
       });
     } else {
       // No container instance found probably svg path
-      console.log('No container instance found for', child);
-      console.log(container);
       const pathDirective = container?.directives.find((d: any) => {
         return d instanceof PathDirectiveDirective;
       });
@@ -252,7 +248,6 @@ export class ComponentFactory {
         }
       });
     });
-    console.log(el.elementProperties);
     return el;
   }
 
@@ -281,7 +276,6 @@ export class ComponentFactory {
 
     const links: { inputId: string; outputId: string; props: any }[] = [];
     this.bondService.links().forEach((link) => {
-      console.log('Link:', link);
 
       const props: any = {};
       inspectableLinkProperties.forEach((prop) => {
@@ -536,11 +530,16 @@ export class ComponentFactory {
     console.log('Copied to clipboard', this.clipboard);
   }
 
+  copyInPlace(targets: NgBondContainer[]) {
+    this.copySelected(targets);
+    this.paste();
+
+  }
+
   paste() {
     const host = this.world?.worldHost;
 
     this.clipboard.forEach((element: any) => {
-      console.log('Pasting element', element.name);
       element.id = element.id + '-copy-' + Math.floor(Math.random() * 1000);
       this.deserializeElement(element, host);
     });

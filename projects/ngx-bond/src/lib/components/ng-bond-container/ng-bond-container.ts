@@ -41,7 +41,6 @@ import { InspectableProperty } from '@richapps/ngx-bond';
   },
 })
 export class NgBondContainer implements NGBondItem, OnDestroy {
-
   injector = inject(Injector);
 
   static inspectableProperties: InspectableProperty[] = [
@@ -160,7 +159,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   dragEnd = output<void>();
 
   @Output()
-  positionUpdated: EventEmitter<{ x: number; y: number, xBy: number, yBy: number }> = new EventEmitter<{
+  positionUpdated: EventEmitter<{ x: number; y: number; xBy: number; yBy: number }> = new EventEmitter<{
     x: number;
     y: number;
     xBy: number;
@@ -257,7 +256,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   parent = signal<NGBondItem | null>(null);
 
   constructor() {
-    
+    console.log('------ Create Container', this.id());
+
     this.parent.set(this.parentContainer || this.world || null);
 
     this.parent()?.addChild(this);
@@ -317,10 +317,16 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   disable() {
+    if (this.disabled$.getValue() === true) {
+      return;
+    }
     this.disabled$.next(true);
   }
 
   enable() {
+    if (this.disabled$.getValue() === false) {
+      return;
+    }
     this.disabled$.next(false);
   }
 
@@ -446,6 +452,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     });
 
     drag.dragEnd$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      console.log('----- drag end');
       this.selectionManager?.dragEnd(this);
       this.dragEnd.emit();
     });
@@ -557,6 +564,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('====== Destroy Container', this.id());
     this.parent()?.removeChild(this);
     if (this.ngBondService) {
       this.ngBondService.removeDraggableElement(this);
