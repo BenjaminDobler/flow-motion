@@ -11,6 +11,7 @@ import { ConnectionDirective } from '../editables/connection.directive';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, fromEvent } from 'rxjs';
+import { InspectableProperty } from '@richapps/ngx-bond';
 
 export interface NGBondItem {
   x: Signal<number>;
@@ -46,11 +47,33 @@ export interface NGBondItem {
   },
 })
 export class NgBondWorld implements NGBondItem {
+
+
+
+
+  public static inspectableProperties: InspectableProperty[] = [
+    {
+      name: 'backgroundColor',
+      alias: 'Background',
+      type: 'color',
+      category: 'Canvas',
+    }
+  ];
+
+
+  get inspectableProperties() {
+    return NgBondWorld.inspectableProperties;
+  }
+
+
+
   public el: ElementRef<HTMLElement> = inject(ElementRef);
   protected dragService: NgBondService = inject(NgBondService);
   protected selectionManager: SelectionManager = inject(SelectionManager);
 
   type = 'world';
+
+  backgroundColor = signal<string>('#ffffff');
 
   disabled$ = toObservable(this.selectionManager.disabled);
   private keymanager: KeyManager = inject(KeyManager);

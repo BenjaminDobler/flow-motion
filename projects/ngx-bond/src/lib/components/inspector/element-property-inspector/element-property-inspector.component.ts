@@ -28,48 +28,49 @@ export class ElementPropertyInspectorComponent {
   componentFactory: ComponentFactory = inject(ComponentFactory);
   selectionManager = inject(SelectionManager);
 
-
-
-
-
   categories = computed(() => {
     const categories: any[] = [];
 
     const elements = this.selectionManager.selectionTargets();
+
+    const world = this.componentFactory.world;
+    let worldInspectableProps: any[] = [];
+    if (world) {
+      worldInspectableProps = world.inspectableProperties.map((prop: InspectableProperty) => ({ ...prop, target: world }));
+    }
+
+    let allInspectableProperties: any[] = [];
+    allInspectableProperties.push(...worldInspectableProps);
+
     if (elements.length > 0) {
       const componentInstance = this.getComponentInstance(elements[0]);
       const directiveInstances = this.getDirectives(elements[0]);
 
-      const allInspectableProperties = [
-        ...(componentInstance?.inspectableProperties.map((prop: InspectableProperty) => ({ ...prop, target: componentInstance })) || []),
-        ...(directiveInstances?.flatMap((dir) => dir.inspectableProperties.map((prop: InspectableProperty) => ({ ...prop, target: dir }))) || []),
-      ];
+      allInspectableProperties.push(...(componentInstance?.inspectableProperties.map((prop: InspectableProperty) => ({ ...prop, target: componentInstance })) || []));
+      allInspectableProperties.push(...(directiveInstances?.flatMap((dir) => dir.inspectableProperties.map((prop: InspectableProperty) => ({ ...prop, target: dir }))) || []));
+    }
 
-      const categoryMap = groupBy(allInspectableProperties, (prop) => prop.category || 'ungrouped');
-      
-      categories.push(...Array.from(categoryMap, ([name, value]) => {
+    const categoryMap = groupBy(allInspectableProperties, (prop) => prop.category || 'ungrouped');
+
+    categories.push(
+      ...Array.from(categoryMap, ([name, value]) => {
         const groupMap = groupBy(value, (prop) => prop.group?.name || 'ungrouped');
 
         const groups = Array.from(groupMap, ([name, value]) => {
           return {
             name,
             props: value,
-            // component: instance
           };
         });
         return {
           name,
-          groups
+          groups,
         };
-      }));
-
-    }
+      })
+    );
 
     return categories;
-
-
   });
-
 
   private getDirectives(element: any) {
     return this.componentFactory.containerElementMap.get(element)?.directives;
@@ -79,12 +80,9 @@ export class ElementPropertyInspectorComponent {
     return this.componentFactory.containerElementMap.get(element)?.instance;
   }
 
-
   constructor() {
-    effect(()=>{
+    effect(() => {
       console.log('categories', this.categories());
-    })
+    });
   }
-
-  
 }
