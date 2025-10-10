@@ -1,7 +1,14 @@
-<svg #drawSvg preventselection style="position: absolute; left: 0; top: 0; width: 900px; height: 800px; pointer-events: none">
-
+<svg #drawSvg class="pentool-canvas" preventselection style="position: absolute; left: 0; top: 0; width: 900px; height: 800px; pointer-events: none">
   @if (svg.mode() === 'pen' && svg.selectedPathElement) {
-    <path #previewPath style="pointer-events: none" [attr.d]="svg.selectedPathElement.previewPathD()" fill="none" [attr.stroke]="svg.selectedPathElement.stroke()" [attr.stroke-width]="svg.selectedPathElement.strokeWidth()" stroke-dasharray="5 5"></path>
+    <path
+      #previewPath
+      style="pointer-events: none"
+      [attr.d]="svg.selectedPathElement.previewPathD()"
+      fill="none"
+      [attr.stroke]="svg.selectedPathElement.stroke()"
+      [attr.stroke-width]="svg.selectedPathElement.strokeWidth()"
+      stroke-dasharray="5 5"
+    ></path>
   }
   <g>
     @for (point of svg.selectedPathElement?.points(); track $index) {
@@ -38,11 +45,23 @@
     <path-point (click)="svg.onPointClick(point)" [point]="point" class="control-point" [style.left.px]="point.x - 5" [style.top.px]="point.y - 5" />
 
     @if (point.controlPoint1) {
-      <path-point (click)="svg.onPointClick(point.controlPoint1)" [point]="point.controlPoint1" class="control-point control-point-handle" [style.left.px]="point.controlPoint1.x - 5" [style.top.px]="point.controlPoint1.y - 5" />
+      <path-point
+        (click)="svg.onPointClick(point.controlPoint1)"
+        [point]="point.controlPoint1"
+        class="control-point control-point-handle"
+        [style.left.px]="point.controlPoint1.x - 5"
+        [style.top.px]="point.controlPoint1.y - 5"
+      />
     }
 
     @if (point.controlPoint2) {
-      <path-point (click)="svg.onPointClick(point.controlPoint2)" [point]="point.controlPoint2" class="control-point control-point-handle" [style.left.px]="point.controlPoint2.x - 5" [style.top.px]="point.controlPoint2.y - 5" />
+      <path-point
+        (click)="svg.onPointClick(point.controlPoint2)"
+        [point]="point.controlPoint2"
+        class="control-point control-point-handle"
+        [style.left.px]="point.controlPoint2.x - 5"
+        [style.top.px]="point.controlPoint2.y - 5"
+      />
     }
   }
 </div>
