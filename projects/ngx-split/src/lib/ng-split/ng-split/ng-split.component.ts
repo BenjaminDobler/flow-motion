@@ -189,7 +189,6 @@ export class NgSplitComponent {
   }
 
   onDividerUpdated(pos: { x: number; y: number }, dividerIndex: number) {
-    console.log('divider moved', pos, dividerIndex);
     const numDivider = this.panels().length - 1;
 
     const minProp = this.direction() === 'horizontal' ? 'minX' : 'minY';
