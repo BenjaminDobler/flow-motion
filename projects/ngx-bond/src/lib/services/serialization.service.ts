@@ -12,6 +12,9 @@ export class SerializationService {
     console.log('Timeline Data:', timelineData);
 
     components.timeline = timelineData;
+    components.canvas = {
+      backgroundColor: this.components.world?.backgroundColor(),
+    }
 
     localStorage.setItem('serialized', JSON.stringify(components, null, 2));
     console.log('Serialized:', JSON.stringify(components, null, 2));
@@ -24,6 +27,8 @@ export class SerializationService {
       const serializedObj: any = JSON.parse(serialized);
 
       this.components.loadSerialized(serializedObj);
+
+      this.components.world?.backgroundColor.set(serializedObj.canvas.backgroundColor);
 
       const timelineData = serializedObj.timeline;
       timelineData.groups.forEach((g: any) => {
