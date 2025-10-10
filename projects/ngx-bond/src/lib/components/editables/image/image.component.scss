@@ -30,7 +30,7 @@
 .left-connector {
   position: absolute;
   border-radius: 100%;
-  left: -10px;
+  left: calc(var(--connector-offset));
   top: 50%;
   transform: translateY(-50%);
   width: var(--connector-size);
