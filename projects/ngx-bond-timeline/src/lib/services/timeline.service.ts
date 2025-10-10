@@ -1,7 +1,7 @@
 import { inject, outputBinding, signal, ViewContainerRef } from '@angular/core';
 
 import { gsap } from 'gsap';
-import { Timeline, TimelineGroup, TimelineTrack, TimelineTween } from '../model/timeline';
+import { Timeline, TimelineGroup, TimelineKeyframe, TimelineTrack, TimelineTween } from '../model/timeline';
 import { ComponentFactory, InspectableProperty, NgBondContainer, NgBondService } from '@richapps/ngx-bond';
 import { configureGsap } from '../gsap.setup';
 
@@ -9,7 +9,6 @@ export class TimelineService {
   private bondService = inject(NgBondService);
 
   componentFactory = inject(ComponentFactory);
-
 
   selectedTween = signal<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup } | null>(null);
 
@@ -39,7 +38,6 @@ export class TimelineService {
   });
 
   constructor() {
-
     configureGsap();
     this.componentFactory.propertyChanged.subscribe(({ id, property, value }) => {
       this.propertyChanged(id, property, value);
@@ -105,7 +103,6 @@ export class TimelineService {
     }, 100);
   }
 
-
   createGsapTimeline() {
     const t = this.timeline();
 
@@ -144,7 +141,6 @@ export class TimelineService {
                   props[track.name] = nextKeyframe.value;
                 }
 
-
                 if (tween.motionPath) {
                   const proxyElement = {
                     x: targetDirective.x(),
@@ -181,8 +177,6 @@ export class TimelineService {
 
     // timeline.play();
   }
-
-
 
   propertyChanged(id: string, property: string, value: any) {
     if (this.playing() || this.scrubbing()) {
@@ -221,6 +215,55 @@ export class TimelineService {
     });
 
     this.createGsapTimeline();
+  }
+
+  addKeyframe(group: TimelineGroup, track: TimelineTrack, time: number) {
+    const prevKeyframe = track.keyframes.reduce((prev, curr) => (curr.time <= time && curr.time > (prev?.time || -1) ? curr : prev), null as TimelineKeyframe | null);
+    const nextKeyframe = track.keyframes.reduce((next, curr) => (curr.time >= time && (next?.time === undefined || curr.time < next.time) ? curr : next), null as TimelineKeyframe | null);
+
+    const value = prevKeyframe ? prevKeyframe.value : nextKeyframe ? nextKeyframe.value : null;
+
+    const newKeyframe: TimelineKeyframe = {
+      time,
+      value,
+    };
+    track.keyframes.push(newKeyframe);
+    track.keyframes.sort((a, b) => a.time - b.time);
+
+    if (prevKeyframe && newKeyframe) {
+      const existingTween = track.tweens.find((tween) => tween.start === prevKeyframe && tween.end === nextKeyframe);
+
+      // Update tweens
+      if (prevKeyframe && nextKeyframe && existingTween) {
+        // Remove any existing tween between prevKeyframe and nextKeyframe
+        track.tweens = track.tweens.filter((tween) => !(tween.start === prevKeyframe && tween.end === nextKeyframe));
+        // Add new tweens
+        track.tweens.push({ start: prevKeyframe, end: newKeyframe });
+        track.tweens.push({ start: newKeyframe, end: nextKeyframe });
+      } else if (prevKeyframe && !nextKeyframe) {
+        // If there's only a previous keyframe, no need to adjust tweens
+      } else if (!prevKeyframe && nextKeyframe) {
+        // If there's only a next keyframe, no need to adjust tweens
+      }
+    }
+
+    this.timeline.update((currentTimeline) => {
+      return { ...currentTimeline };
+    });
+  }
+
+  deleteKeyframe(keyframe: TimelineKeyframe, group?: TimelineGroup, track?: TimelineTrack) {
+    if (group && track) {
+      track.keyframes = track.keyframes.filter((kf) => kf !== keyframe);
+      // Remove any tweens associated with this keyframe
+      track.tweens = track.tweens.filter((tween) => tween.start !== keyframe && tween.end !== keyframe);
+
+      this.timeline.update((currentTimeline) => {
+        return { ...currentTimeline };
+      });
+
+      this.createGsapTimeline();
+    }
   }
 
   updateTween(tween: TimelineTween) {}

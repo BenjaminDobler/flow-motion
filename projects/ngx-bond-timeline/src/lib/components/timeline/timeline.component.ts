@@ -189,5 +189,10 @@ export class TimelineComponent {
     const time = position * (this.timelineService.millisecondsPerPixel() || 1);
     
     console.log('Add Keyframe at time:', time);
+    this.timelineService.addKeyframe(group, track, Math.round(time));
+  }
+
+  onDeleteKeyframe(keyframe: TimelineKeyframe, group: TimelineGroup, track: TimelineTrack) {
+    this.timelineService.deleteKeyframe(keyframe, group, track);
   }
 }

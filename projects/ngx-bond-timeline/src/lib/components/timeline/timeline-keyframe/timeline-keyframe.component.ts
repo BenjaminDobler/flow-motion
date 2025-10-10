@@ -17,7 +17,8 @@ export class TimelineKeyframeComponent {
   timelineService = inject(TimelineService);
 
   contextMenuItems = [
-    { label: 'Tween', action: () => this.createTween() }
+    { label: 'Tween', action: () => this.createTween() },
+    { label: 'Delete', action: () => this.deleteKeyframe() }
   ];
 
   keyframe = input<TimelineKeyframe>();
@@ -25,6 +26,7 @@ export class TimelineKeyframeComponent {
   dragging = signal<boolean>(false);
 
   tween = output<TimelineKeyframe>();
+  delete = output<TimelineKeyframe>();
 
   time = computed(() => {
     const mpp = this.timelineService.millisecondsPerPixel() || 1;
@@ -35,6 +37,10 @@ export class TimelineKeyframeComponent {
 
   createTween() { 
     this.tween.emit(this.keyframe()!);
+  }
+
+  deleteKeyframe() {
+    this.delete.emit(this.keyframe()!);
   }
 
   onDragStart() {

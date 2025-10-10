@@ -69,6 +69,7 @@
                   [positioning]="'transform'"
                   [resizable]="false"
                   (tween)="onTween($event, group, track)"
+                  (delete)="onDeleteKeyframe($event, group, track)"
                   [keyframe]="keyframe"
                   (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
                   [timeline]="timelineService.timeline()"
