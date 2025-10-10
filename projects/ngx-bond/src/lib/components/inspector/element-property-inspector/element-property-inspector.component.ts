@@ -81,8 +81,5 @@ export class ElementPropertyInspectorComponent {
   }
 
   constructor() {
-    effect(() => {
-      console.log('categories', this.categories());
-    });
   }
 }

@@ -24,15 +24,11 @@ export class EdSelectComponent implements ControlValueAccessor {
   contentTemplate = viewChild<CdkPortal>(CdkPortal);
 
   writeValue(value: any): void {
-    console.log('writeValue', value);
     this.selected.set(value);
   }
 
   registerOnChange(fn: any): void {
     this.selected.subscribe(fn);
-    this.selected.subscribe(()=>{
-      console.log('selected changed', this.selected());
-    })
   }
 
   registerOnTouched(fn: any): void {
@@ -73,9 +69,7 @@ export class EdSelectComponent implements ControlValueAccessor {
   public showDropdown(): void {
     this.overlayRef = this.overlay.create(this.getOverlayConfig());
     this.overlayRef.attach(this.contentTemplate());
-    //this.syncWidth();
     this.overlayRef.backdropClick().subscribe(() => this.hide());
-    //this.showing = true;
   }
 
   hide() {
@@ -83,7 +77,6 @@ export class EdSelectComponent implements ControlValueAccessor {
       this.overlayRef.dispose();
       this.overlayRef = null;
     }
-    //this.showing = false;
   }
 
   private getOverlayConfig(): OverlayConfig {

@@ -1,16 +1,11 @@
 import {
-  afterEveryRender,
   ChangeDetectionStrategy,
   Component,
   ComponentRef,
-  effect,
   ElementRef,
-  forwardRef,
   inject,
   input,
   model,
-  output,
-  signal,
   viewChild,
   ViewChild,
   ViewContainerRef,
@@ -18,6 +13,8 @@ import {
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { InspectableProperty, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { FormsModule } from '@angular/forms';
+import { ContextMenu } from '@richapps/ui-components';
+import { DuplicateService } from '../../dialogs/duplicate-dialog/duplicate.service';
 @Component({
   selector: 'container-component',
   imports: [NgBondProperty, FormsModule],
@@ -27,6 +24,10 @@ import { FormsModule } from '@angular/forms';
   host: {
     '(dblclick)': 'onDblClick($event)',
   },
+  hostDirectives: [{
+    directive: ContextMenu,
+    outputs: ['contextMenuClosed', 'contextMenuSelected']
+  }]
 })
 export class ContainerComponent {
   static inspectableProperties: InspectableProperty[] = [
@@ -60,11 +61,19 @@ export class ContainerComponent {
     },
   ];
 
+
+  contextMenuData = input<any[]>([
+    { label: 'Delete', action: () => console.log('delete') },
+    { label: 'Advanced Duplicate', action: () => this.duplicateService.openDuplicateDialog(this.container) }
+  ]);
+
   get inspectableProperties() {
     return ContainerComponent.inspectableProperties;
   }
 
   type = 'container';
+
+  duplicateService = inject(DuplicateService);
 
   el = inject(ElementRef);
   @ViewChild('insert_slot', { read: ViewContainerRef })
@@ -82,7 +91,11 @@ export class ContainerComponent {
   fontWeight = model<'normal' | 'bold' | 'bolder' | 'lighter' | number>('normal');
   container = inject(NgBondContainer);
 
-  constructor() {}
+  contextMenu = inject(ContextMenu);
+
+  constructor() {
+    this.contextMenu.contextMenu = this.contextMenuData;
+  }
 
   onDblClick(evt: MouseEvent) {
     this.selection.disabled.set(true);

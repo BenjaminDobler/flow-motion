@@ -20,13 +20,14 @@ import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { InspectorComponent } from './components/inspector/inspector.component';
 import { ChildInspectorComponent } from './components/child-inspector/child-inspector.component';
 import { IconComponent } from '@richapps/ui-components';
+import { DuplicateService } from '../../../ngx-bond/src/lib/components/dialogs/duplicate-dialog/duplicate.service';
 
 @Component({
   selector: 'app-root',
   imports: [SvgCanvasComponent, IconComponent,  NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService],
+  providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService, DuplicateService],
   host: {
     '(dblclick)': 'this.onDoubleClick($event)',
   },

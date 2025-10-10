@@ -1,5 +1,4 @@
 import {
-  contentChildren,
   Directive,
   ElementRef,
   EventEmitter,
@@ -9,22 +8,15 @@ import {
   model,
   Output,
   signal,
-  viewChildren,
-  AfterViewInit,
-  OnInit,
   OnDestroy,
   effect,
   output,
-  isSignal,
   computed,
-  Host,
   Injector,
-  afterNextRender,
 } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
-import { NgBondProperty } from '../ng-bond-property/ng-bond-property';
 import { NGBondItem, NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
-import { BehaviorSubject, distinctUntilChanged, filter, fromEvent, race, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, fromEvent, race, Subject, switchMap, takeUntil } from 'rxjs';
 import { NgBondService } from '../../services/ngbond.service';
 import { SelectionManager } from '../../services/selection.manager';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -92,18 +84,18 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       name: 'rotate',
       type: 'number',
     },
-    {
-      name: 'bounds',
-      type: 'DOMRect',
-      noneSerializable: true,
-      readonly: true,
-    },
-    {
-      name: 'globalBounds',
-      type: 'DOMRect',
-      noneSerializable: true,
-      readonly: true,
-    },
+    // {
+    //   name: 'bounds',
+    //   type: 'DOMRect',
+    //   noneSerializable: true,
+    //   readonly: true,
+    // },
+    // {
+    //   name: 'globalBounds',
+    //   type: 'DOMRect',
+    //   noneSerializable: true,
+    //   readonly: true,
+    // },
   ];
 
   get inspectableProperties() {
@@ -256,8 +248,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   parent = signal<NGBondItem | null>(null);
 
   constructor() {
-    console.log('------ Create Container', this.id());
-
     this.parent.set(this.parentContainer || this.world || null);
 
     this.parent()?.addChild(this);
@@ -452,7 +442,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     });
 
     drag.dragEnd$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-      console.log('----- drag end');
       this.selectionManager?.dragEnd(this);
       this.dragEnd.emit();
     });
@@ -564,7 +553,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('====== Destroy Container', this.id());
     this.parent()?.removeChild(this);
     if (this.ngBondService) {
       this.ngBondService.removeDraggableElement(this);

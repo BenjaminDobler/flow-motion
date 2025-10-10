@@ -317,6 +317,7 @@ export class ComponentFactory {
           addChildren(child, cHost?.instance.insertSlot);
         });
       }, 1);
+      return cHost?.instance
     };
 
     console.log('Adding element', element.name);
@@ -332,8 +333,9 @@ export class ComponentFactory {
       });
       console.log(pathDirectiveProps);
       p.draw();
+      return null;
     } else {
-      addChildren(element, host);
+      return addChildren(element, host);
     }
   }
 
@@ -538,10 +540,14 @@ export class ComponentFactory {
 
   paste() {
     const host = this.world?.worldHost;
-
+    const els: NgBondContainer[] = [];
     this.clipboard.forEach((element: any) => {
       element.id = element.id + '-copy-' + Math.floor(Math.random() * 1000);
-      this.deserializeElement(element, host);
+      const c = this.deserializeElement(element, host);
+      if (c) {
+        els.push(c.container);
+      }
     });
+    return els;
   }
 }
