@@ -1,5 +1,5 @@
-# ng-bond
+# Flow Motion
 
-WIP: Connecting containers to visualize relationships between objects (e.g. class diagrams...)
+WIP: Angular based Motion/Flow editor.
 
-[Demo](https://benjamindobler.github.io/ng-bond)
+[Demo](https://benjamindobler.github.io/flow-motion)
