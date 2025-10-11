@@ -45,7 +45,7 @@ export class InspectorTweenProperties {
 
   easingChanged(easing: string) {
     if (this.timelineService.selectedTween()) {
-      this.timelineService.selectedTween()!.tween.easing.set(easing);
+      this.timelineService.selectedTween()!.easing.set(easing);
       this.timelineService.createGsapTimeline();
     }
   }

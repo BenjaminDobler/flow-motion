@@ -30,7 +30,7 @@ export class TimelineKeyframeComponent {
 
   time = computed(() => {
     const mpp = this.timelineService.millisecondsPerPixel() || 1;
-    return this.keyframe() ? this.keyframe()!.time : 0;
+    return this.keyframe() ? this.keyframe()!.time() : 0;
   });
 
   constructor() {}

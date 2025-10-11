@@ -8,15 +8,16 @@
       </div>
 
       @for (group of timelineService.timeline.groups(); track $index) {
-        <div class="label group">
+        <div class="label group" (click)="group.expanded.set(!group.expanded())">
           {{ group.name() }}
         </div>
 
-        @for (track of group.tracks(); track $index) {
+        @if (group.expanded()) {
+          @for (track of group.tracks(); track $index) {
             <div class="label">
               {{ track.name() }}
             </div>
-          
+          }
         }
       }
     </div>
@@ -34,52 +35,53 @@
           <div class="track-spacer group"></div>
           <div class="track group" style="flex: 1"></div>
         </div>
-        @for (track of group.tracks(); track $index) {
-          <div class="track-container">
-            <div class="track-spacer"></div>
+        @if (group.expanded()) {
+          @for (track of group.tracks(); track $index) {
+            <div class="track-container">
+              <div class="track-spacer"></div>
 
-            <div class="track" style="flex: 1" [contextMenu]="trackContextMenu" (contextMenuSelected)="onTrackContextMenuSelected($event, track)">
-              @for (tween of track.tweens(); track $index) {
-                <timeline-tween
-                  (click)="onTweenClick($event, tween)"
-                  [minY]="0"
-                  [maxY]="0"
-                  [minX]="0"
-                  [class.selected]="selectedTween() === tween"
-                  [showCursor]="false"
-                  [x]="tween.start().time() / mpp"
-                  positioning="transform"
-                  [resizable]="false"
-                  [tween]="tween"
-                  [timeline]="timelineService.timeline"
-                  (dragEnd)="onTweenDragEnd()"
-                  (dragStart)="onTweenDragStart()"
-                  (positionUpdated)="onTweenPositionUpdated($event, tween)"
-                ></timeline-tween>
-              }
-              @for (keyframe of track.keyframes(); track $index) {
-                <timeline-keyframe
-                  [minY]="5"
-                  [maxY]="5"
-                  [minX]="0"
-                  [showCursor]="false"
-                  [x]="keyframe.time() / mpp"
-                  [y]="5"
-                  [bondcontainer]="`keyframe`"
-                  [positioning]="'transform'"
-                  [resizable]="false"
-                  (tween)="onTween($event)"
-                  (delete)="onDeleteKeyframe($event, track)"
-                  [keyframe]="keyframe"
-                  (positionUpdated)="onKeyframePositionUpdated($event, keyframe)"
-                  [timeline]="timelineService.timeline"
-                  (click)="onKeyframeClick(keyframe)"
-                  (dragEnd)="onKeyframeDragEnd()"
-                ></timeline-keyframe>
-              }
+              <div class="track" style="flex: 1" [contextMenu]="trackContextMenu" (contextMenuSelected)="onTrackContextMenuSelected($event, track)">
+                @for (tween of track.tweens(); track $index) {
+                  <timeline-tween
+                    (click)="onTweenClick($event, tween)"
+                    [minY]="0"
+                    [maxY]="0"
+                    [minX]="0"
+                    [class.selected]="selectedTween() === tween"
+                    [showCursor]="false"
+                    [x]="tween.start().time() / mpp"
+                    positioning="transform"
+                    [resizable]="false"
+                    [tween]="tween"
+                    [timeline]="timelineService.timeline"
+                    (dragEnd)="onTweenDragEnd()"
+                    (dragStart)="onTweenDragStart()"
+                    (positionUpdated)="onTweenPositionUpdated($event, tween)"
+                  ></timeline-tween>
+                }
+                @for (keyframe of track.keyframes(); track $index) {
+                  <timeline-keyframe
+                    [minY]="5"
+                    [maxY]="5"
+                    [minX]="0"
+                    [showCursor]="false"
+                    [x]="keyframe.time() / mpp"
+                    [y]="5"
+                    [bondcontainer]="`keyframe`"
+                    [positioning]="'transform'"
+                    [resizable]="false"
+                    (tween)="onTween($event)"
+                    (delete)="onDeleteKeyframe($event, track)"
+                    [keyframe]="keyframe"
+                    (positionUpdated)="onKeyframePositionUpdated($event, keyframe)"
+                    [timeline]="timelineService.timeline"
+                    (click)="onKeyframeClick(keyframe)"
+                    (dragEnd)="onKeyframeDragEnd()"
+                  ></timeline-keyframe>
+                }
+              </div>
             </div>
-          </div>
-        
+          }
         }
       }
       <div [style.transform]="`translateX(${timelineService.position() / mpp + 10}px)`" class="pos-line"></div>

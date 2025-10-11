@@ -28,11 +28,11 @@ export class MotionPathComponent {
           if (this.timelineService.selectedTween() !== null) {
             const selectedTween = this.timelineService.selectedTween();
             if (selectedTween) {
-              const straightMotionPath = `M${selectedTween.tween.start().value().x} ${selectedTween.tween.start().value().y} L${selectedTween.tween.end().value().x} ${selectedTween.tween.end().value().y}`;
+              const straightMotionPath = `M${selectedTween.start().value().x} ${selectedTween.start().value().y} L${selectedTween.end().value().x} ${selectedTween.end().value().y}`;
               if (d !== straightMotionPath) {
                 console.log('it is not the same ');
                 console.log(d, straightMotionPath);
-                this.timelineService.selectedTween()!.tween.motionPath.set(d);
+                this.timelineService.selectedTween()!.motionPath.set(d);
               }
 
               this.timelineService.createGsapTimeline();
@@ -51,11 +51,11 @@ export class MotionPathComponent {
       } else {
         this.svgEdit?.clearAll();
         if (this.svgEdit) {
-          const motionPath = selectedTween.tween.motionPath();
+          const motionPath = selectedTween.motionPath();
           if (motionPath) {
             this.svgEdit.setPath(motionPath);
           } else {
-            const d = `M${selectedTween.tween.start().value().x} ${selectedTween.tween.start().value().y} L${selectedTween.tween.end().value().x} ${selectedTween.tween.end().value().y}`;
+            const d = `M${selectedTween.start().value().x} ${selectedTween.start().value().y} L${selectedTween.end().value().x} ${selectedTween.end().value().y}`;
             console.log('Setting path:', d);
             initPath = d;
             this.svgEdit.setPath(d);

@@ -50,6 +50,7 @@ export class FLTrack {
 export class FLGroup {
   name: WritableSignal<string> = signal('New Group');
   tracks: WritableSignal<FLTrack[]> = signal([]);
+  expanded: WritableSignal<boolean> = signal(true);
 
   constructor(name: string) {
     this.name.set(name);

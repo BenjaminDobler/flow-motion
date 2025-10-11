@@ -12,11 +12,7 @@ export class MotionPathService {
   constructor() {
     effect(() => {
       const selectedTween = this.timeline.selectedTween();
-      console.log('selected tween changed:', selectedTween);
 
-      if (selectedTween) {
-        console.log('value ', selectedTween.tween.start());
-      } 
 
       untracked(() => {
         const mp = this.currentMotionPath();
@@ -24,10 +20,10 @@ export class MotionPathService {
           this.svg.deletePath(mp);
         } else {
           let d: string = '';
-          if (selectedTween?.tween.motionPath()) {
-            d = selectedTween.tween.motionPath() as string;
+          if (selectedTween?.motionPath()) {
+            d = selectedTween.motionPath() as string;
           } else if (selectedTween) {
-            d = `M${selectedTween.tween.start().value().x} ${selectedTween.tween.start().value().y} L${selectedTween.tween.end().value().x} ${selectedTween.tween.end().value().y}`;
+            d = `M${selectedTween.start().value().x} ${selectedTween.start().value().y} L${selectedTween.end().value().x} ${selectedTween.end().value().y}`;
           }
           if (d) {
             const path = Path.deserialize({ d, fill: 'none', stroke: '#00ff00' }, this.svg);
@@ -47,7 +43,7 @@ export class MotionPathService {
 
       const s = this.timeline.selectedTween();
       if (s && d) {
-        s.tween.motionPath.set(d);
+        s.motionPath.set(d);
       }
     });
   }

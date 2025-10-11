@@ -29,26 +29,28 @@ export class TimelineComponent {
 
   selectedTween = model<FLTween | null>(null);
 
-  tweenSelected = output<{ tween: FLTween; track: FLTrack; group: FLGroup }>();
+  tweenSelected = output<FLTween | null>();
 
   onTweenClick(event: MouseEvent, tween: FLTween) {
-    // event.stopPropagation();
-    // console.log('Tween clicked:', tween, track, group);
+    
+    if (this.selectedTween() === tween) {
+      this.selectedTween.set(null);
+      this.timelineService.selectedTween.set(null);
+      return;
+    }
 
-    const track = tween.track;
-    const group = track.group;
     this.selectedTween.set(tween);
-    if (track.name() === 'position') {
+    if (tween.track.name() === 'position') {
       // show motion path
-      this.tweenSelected.emit({ tween, track: track, group: group });
+      this.tweenSelected.emit(tween);
 
-      if (this.timelineService.selectedTween()?.tween === tween) {
+      if (this.timelineService.selectedTween() === tween) {
         this.timelineService.selectedTween.set(null);
         return;
       }
 
-      this.timelineService.selectedTween.set({ tween, track, group });
-    }
+      this.timelineService.selectedTween.set(tween);
+    } 
   }
 
 

@@ -10,7 +10,7 @@ export class TimelineService {
 
   componentFactory = inject(ComponentFactory);
 
-  selectedTween = signal<{ tween: FLTween; track: FLTrack; group: FLGroup } | null>(null);
+  selectedTween = signal<FLTween | null>(null);
 
   animationTimeline: gsap.core.Timeline = gsap.timeline({
     onUpdate: () => {
@@ -104,7 +104,6 @@ export class TimelineService {
       const e = this.componentFactory.containerElementMap.get(element as NgBondContainer);
 
       if (element) {
-        console.log('group tracks', group.tracks());  
         group.tracks().forEach((track) => {
           const targetDirective = e?.propertyDirectiveMap.get(track.name());
           const prop: InspectableProperty = targetDirective.inspectableProperties.find((p: any) => p.name === track.name());
