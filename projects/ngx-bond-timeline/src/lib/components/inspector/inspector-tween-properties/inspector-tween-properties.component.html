@@ -1,17 +1,18 @@
 @if (timelineService.selectedTween()) {
   @let tween = timelineService.selectedTween();
   @if (tween) {
-    <div>
-      <h3>Selected Tween</h3>
-      {{ tween.easing() }}
-      {{ tween.motionPath() }}
+    <div class="properties-panel">
+      <div class="properties-panel_header">
+        <h2>Tween</h2>
+      </div>
 
-      <select (change)="easingChanged($any($event).target.value)">
-        @for (easing of easings; track $index) {
-          <option [selected]="tween.easing() === easing">{{ easing }}</option>
-        }
-        <option></option>
-      </select>
+      <div class="properties-panel_content">
+        <ed-select (ngModelChange)="easingChanged($event)" [(ngModel)]="tween.easing">
+          @for (easing of easings; track $index) {
+            <ed-select-option [value]="easing">{{ easing }}</ed-select-option>
+          }
+        </ed-select>
+      </div>
     </div>
   }
 }

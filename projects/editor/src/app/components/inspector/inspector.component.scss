@@ -1,11 +1,10 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
 
   background: var(--surface-color1);
   height: 100%;
   overflow: hidden;
-
-
 }
 
 .navigation {
@@ -23,9 +22,8 @@
 }
 
 .content {
-  //padding: 10px;
-  height: 100%;
   overflow: scroll;
+  flex: 1;
 }
 
 .bond-item {
