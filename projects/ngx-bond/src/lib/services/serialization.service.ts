@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { ComponentFactory } from './component.factory';
 import { FLGroup, FLKeyframe, FLTrack, FLTween, TimelineService } from '@richapps/ngx-bond-timeline';
+import { groupBy } from 'rxjs';
 
 export class SerializationService {
   private timeline = inject(TimelineService);
@@ -24,8 +25,14 @@ export class SerializationService {
             }),
             tweens: t.tweens().map((tween) => {
               return {
-                start: tween.start(),
-                end: tween.end(),
+                start: {
+                  time: tween.start().time(),
+                  value: tween.start().value(),
+                },
+                end: {
+                  time: tween.end().time(),
+                  value: tween.end().value(),
+                },
                 easing: tween.easing(),
                 motionPath: tween.motionPath(),
               };
@@ -35,15 +42,15 @@ export class SerializationService {
       };
     });
 
-    console.log('Timeline Data:', serializedData);
 
-    components.timeline = serializedData;
+    components.timeline = {
+      groups: serializedData,
+    };
     components.canvas = {
       backgroundColor: this.components.world?.backgroundColor(),
     }
 
     localStorage.setItem('serialized', JSON.stringify(components, null, 2));
-    console.log('Serialized:', JSON.stringify(components, null, 2));
   }
 
   loadSerialized() {
@@ -67,7 +74,9 @@ export class SerializationService {
           flTrack.keyframes.set(track.keyframes.map((kf: any) => new FLKeyframe(kf.time, kf.value, flTrack)));
 
           flTrack.tweens.set(track.tweens.map((tween: any) => {
-            const start = flTrack.keyframes().find((kf) => kf.time() === tween.start.time);
+            const start = flTrack.keyframes().find((kf) => {
+              return kf.time() === tween.start.time;
+            });
             const end = flTrack.keyframes().find((kf) => kf.time() === tween.end.time);
             const t = new FLTween(start!, end!, flTrack);
             t.easing.set(tween.easing);
@@ -77,7 +86,10 @@ export class SerializationService {
 
           flGroup.tracks.update((tracks) => [...tracks, flTrack]);
         });
+        return flGroup;
       });
+
+    
 
       setTimeout(() => {
         this.timeline.timeline.groups.set(flGroups);

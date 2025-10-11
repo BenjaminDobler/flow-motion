@@ -104,16 +104,14 @@ export class TimelineService {
       const e = this.componentFactory.containerElementMap.get(element as NgBondContainer);
 
       if (element) {
+        console.log('group tracks', group.tracks());  
         group.tracks().forEach((track) => {
           const targetDirective = e?.propertyDirectiveMap.get(track.name());
           const prop: InspectableProperty = targetDirective.inspectableProperties.find((p: any) => p.name === track.name());
           const isSignal = !prop?.isGetter;
           const animationProp = isSignal ? `signal_${track.name()}` : track.name();
 
-
-
           track.keyframes().forEach((keyframe, index) => {
-
             timeline.set(targetDirective, { [animationProp]: keyframe.value() }, keyframe.time() / 1000);
 
             if (index < track.keyframes().length - 1) {
@@ -133,15 +131,12 @@ export class TimelineService {
                   props[track.name()] = nextKeyframe.value();
                 }
 
-
                 if (tween.motionPath()) {
                   const proxyElement = {
                     x: targetDirective.x(),
                     y: targetDirective.y(),
                     rotation: 0,
                   };
-
-                  
 
                   timeline.to(
                     proxyElement,
@@ -195,12 +190,9 @@ export class TimelineService {
       newTrack.name.set(property);
       newTrack.keyframes.set([new FLKeyframe(this.position(), value, newTrack)]);
       group?.tracks.update((tracks) => [...tracks, newTrack]);
-      
-
     }
 
-          group?.tracks().forEach((t) => {
-      });
+    group?.tracks().forEach((t) => {});
 
     this.createGsapTimeline();
   }
