@@ -1,18 +1,22 @@
 import { effect, inject, signal, untracked } from '@angular/core';
 import { Path, SVGCanvas } from '@richapps/ngx-bond';
-import { TimelineService, TimelineTween } from '@richapps/ngx-bond-timeline';
+import { FLTween, TimelineService } from '@richapps/ngx-bond-timeline';
 
 export class MotionPathService {
   timeline = inject(TimelineService);
   svg = inject(SVGCanvas);
 
   currentMotionPath = signal<Path | undefined>(undefined);
-  selectedTween?: TimelineTween;
+  selectedTween?: FLTween;
 
   constructor() {
     effect(() => {
       const selectedTween = this.timeline.selectedTween();
       console.log('selected tween changed:', selectedTween);
+
+      if (selectedTween) {
+        console.log('value ', selectedTween.tween.start());
+      } 
 
       untracked(() => {
         const mp = this.currentMotionPath();
@@ -20,10 +24,10 @@ export class MotionPathService {
           this.svg.deletePath(mp);
         } else {
           let d: string = '';
-          if (selectedTween?.tween.motionPath) {
-            d = selectedTween.tween.motionPath;
+          if (selectedTween?.tween.motionPath()) {
+            d = selectedTween.tween.motionPath() as string;
           } else if (selectedTween) {
-            d = `M${selectedTween.tween.start.value.x} ${selectedTween.tween.start.value.y} L${selectedTween.tween.end.value.x} ${selectedTween.tween.end.value.y}`;
+            d = `M${selectedTween.tween.start().value().x} ${selectedTween.tween.start().value().y} L${selectedTween.tween.end().value().x} ${selectedTween.tween.end().value().y}`;
           }
           if (d) {
             const path = Path.deserialize({ d, fill: 'none', stroke: '#00ff00' }, this.svg);
@@ -40,7 +44,11 @@ export class MotionPathService {
     effect(() => {
       const d = this.currentMotionPath()?.d();
       console.log('motion path d changed:', d);
-      if (this.timeline.selectedTween() && d) this.timeline.selectedTween()!.tween.motionPath = d;
+
+      const s = this.timeline.selectedTween();
+      if (s && d) {
+        s.tween.motionPath.set(d);
+      }
     });
   }
 }

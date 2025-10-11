@@ -25,7 +25,6 @@ export class TimelineRulerComponent {
       const width1S = 1000 / mpp;
       const stepW = width1S / 10;
 
-      console.log('stepW', width1S, stepW);
 
       path += `M ${0.5} ${this.height} L ${0.5} 0`;
 
@@ -61,11 +60,9 @@ export class TimelineRulerComponent {
     }
   }
   onScrubberDragStart(event: any) {
-    console.log('Scrubber drag started', event);
     this.timelineService.setScrubbing(true);
   }
   onScrubberDragEnd(event: any) {
-    console.log('Scrubber drag ended', event);
     this.timelineService.setScrubbing(false);
   }
 
@@ -75,7 +72,6 @@ export class TimelineRulerComponent {
     if (mpp !== undefined) {
       const pos = event.offsetX * mpp;
       this.timelineService.setPosition(Math.round(pos));
-      console.log('Clicked position:', pos);
     }
     setTimeout(() => {
       this.timelineService.setScrubbing(false);

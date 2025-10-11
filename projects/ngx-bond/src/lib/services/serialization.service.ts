@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ComponentFactory } from './component.factory';
-import { TimelineService } from '@richapps/ngx-bond-timeline';
+import { FLGroup, FLKeyframe, FLTrack, FLTween, TimelineService } from '@richapps/ngx-bond-timeline';
 
 export class SerializationService {
   private timeline = inject(TimelineService);
@@ -8,10 +8,36 @@ export class SerializationService {
 
   serialize() {
     const components = this.components.serializeComponents();
-    const timelineData = this.timeline.timeline();
-    console.log('Timeline Data:', timelineData);
+    const timelineData = this.timeline.timeline;
 
-    components.timeline = timelineData;
+    const serializedData = timelineData.groups().map((g) => {
+      return {
+        name: g.name(),
+        tracks: g.tracks().map((t) => {
+          return {
+            name: t.name(),
+            keyframes: t.keyframes().map((kf) => {
+              return {
+                time: kf.time(),
+                value: kf.value(),
+              };
+            }),
+            tweens: t.tweens().map((tween) => {
+              return {
+                start: tween.start(),
+                end: tween.end(),
+                easing: tween.easing(),
+                motionPath: tween.motionPath(),
+              };
+            }),
+          };
+        }),
+      };
+    });
+
+    console.log('Timeline Data:', serializedData);
+
+    components.timeline = serializedData;
     components.canvas = {
       backgroundColor: this.components.world?.backgroundColor(),
     }
@@ -30,25 +56,31 @@ export class SerializationService {
 
       this.components.world?.backgroundColor.set(serializedObj.canvas.backgroundColor);
 
-      const timelineData = serializedObj.timeline;
-      timelineData.groups.forEach((g: any) => {
-        g.tracks.forEach((track: any) => {
-          track.tweens = track.tweens.map((tween: any) => {
-            console.log(tween);
-            const start = track.keyframes.find((kf: any) => kf.time === tween.start.time);
-            const end = track.keyframes.find((kf: any) => kf.time === tween.end.time);
 
-            if (start && end) {
-              tween.start = start;
-              tween.end = end;
-            }
-            return tween;
-          });
+      const timelineData = serializedObj.timeline;
+      const flGroups = timelineData.groups.map((g: any) => {
+        const flGroup = new FLGroup(g.name);
+        g.tracks.forEach((track: any) => {
+
+          const flTrack = new FLTrack(track.name,flGroup);
+          flTrack.name.set(track.name);
+          flTrack.keyframes.set(track.keyframes.map((kf: any) => new FLKeyframe(kf.time, kf.value, flTrack)));
+
+          flTrack.tweens.set(track.tweens.map((tween: any) => {
+            const start = flTrack.keyframes().find((kf) => kf.time() === tween.start.time);
+            const end = flTrack.keyframes().find((kf) => kf.time() === tween.end.time);
+            const t = new FLTween(start!, end!, flTrack);
+            t.easing.set(tween.easing);
+            t.motionPath.set(tween.motionPath);
+            return t;
+          }));
+
+          flGroup.tracks.update((tracks) => [...tracks, flTrack]);
         });
       });
 
       setTimeout(() => {
-        this.timeline.timeline.set(serializedObj.timeline);
+        this.timeline.timeline.groups.set(flGroups);
         this.timeline.createGsapTimeline();
       }, 500);
     }

@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { Timeline, TimelineKeyframe } from '../../../model/timeline';
+import { FLKeyframe, FLTimeline } from '../../../model/timeline';
 import { TimelineService } from '../../../services/timeline.service';
 import { ContextMenu } from '@richapps/ui-components';
 
@@ -21,12 +21,12 @@ export class TimelineKeyframeComponent {
     { label: 'Delete', action: () => this.deleteKeyframe() }
   ];
 
-  keyframe = input<TimelineKeyframe>();
-  timeline = input<Timeline>();
+  keyframe = input<FLKeyframe>();
+  timeline = input<FLTimeline>();
   dragging = signal<boolean>(false);
 
-  tween = output<TimelineKeyframe>();
-  delete = output<TimelineKeyframe>();
+  tween = output<FLKeyframe>();
+  delete = output<FLKeyframe>();
 
   time = computed(() => {
     const mpp = this.timelineService.millisecondsPerPixel() || 1;

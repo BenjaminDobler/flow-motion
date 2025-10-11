@@ -1,7 +1,7 @@
 import { inject, outputBinding, signal, ViewContainerRef } from '@angular/core';
 
 import { gsap } from 'gsap';
-import { Timeline, TimelineGroup, TimelineKeyframe, TimelineTrack, TimelineTween } from '../model/timeline';
+import { FLGroup, FLKeyframe, FLTimeline, FLTrack, FLTween } from '../model/timeline';
 import { ComponentFactory, InspectableProperty, NgBondContainer, NgBondService } from '@richapps/ngx-bond';
 import { configureGsap } from '../gsap.setup';
 
@@ -10,7 +10,7 @@ export class TimelineService {
 
   componentFactory = inject(ComponentFactory);
 
-  selectedTween = signal<{ tween: TimelineTween; track: TimelineTrack; group: TimelineGroup } | null>(null);
+  selectedTween = signal<{ tween: FLTween; track: FLTrack; group: FLGroup } | null>(null);
 
   animationTimeline: gsap.core.Timeline = gsap.timeline({
     onUpdate: () => {
@@ -33,9 +33,7 @@ export class TimelineService {
   position = signal(0);
   scrubbing = signal(false);
 
-  timeline = signal<Timeline>({
-    groups: [],
-  });
+  timeline = new FLTimeline();
 
   constructor() {
     configureGsap();
@@ -44,20 +42,11 @@ export class TimelineService {
     });
 
     this.componentFactory.componentAdded.subscribe((id) => {
-      this.timeline.update((currentTimeline) => {
-        currentTimeline.groups.push({
-          name: id,
-          tracks: [],
-        });
-        return { ...currentTimeline };
-      });
+      this.timeline.groups.update((groups) => [...groups, new FLGroup(id)]);
     });
 
     this.componentFactory.componentRemoved.subscribe((id) => {
-      this.timeline.update((currentTimeline) => {
-        currentTimeline.groups = currentTimeline.groups.filter((g) => g.name !== id);
-        return { ...currentTimeline };
-      });
+      this.timeline.groups.update((groups) => groups.filter((g) => g.name() !== id));
     });
   }
 
@@ -104,67 +93,73 @@ export class TimelineService {
   }
 
   createGsapTimeline() {
-    const t = this.timeline();
+    const t = this.timeline;
 
     let timeline = this.animationTimeline;
     timeline.clear();
     timeline.pause();
 
-    t.groups.forEach((group) => {
-      const element = this.bondService.getComponentById(group.name);
+    t.groups().forEach((group) => {
+      const element = this.bondService.getComponentById(group.name());
       const e = this.componentFactory.containerElementMap.get(element as NgBondContainer);
 
       if (element) {
-        group.tracks.forEach((track) => {
-          const targetDirective = e?.propertyDirectiveMap.get(track.name);
-          const prop: InspectableProperty = targetDirective.inspectableProperties.find((p: any) => p.setterName === track.name);
+        group.tracks().forEach((track) => {
+          const targetDirective = e?.propertyDirectiveMap.get(track.name());
+          const prop: InspectableProperty = targetDirective.inspectableProperties.find((p: any) => p.name === track.name());
           const isSignal = !prop?.isGetter;
-          const animationProp = isSignal ? `signal_${track.name}` : track.name;
+          const animationProp = isSignal ? `signal_${track.name()}` : track.name();
 
-          track.keyframes.forEach((keyframe, index) => {
-            timeline.set(targetDirective, { [animationProp]: keyframe.value }, keyframe.time / 1000);
 
-            if (index < track.keyframes.length - 1) {
-              const nextKeyframe = track.keyframes[index + 1];
-              const tween = track.tweens.find((tween) => tween.start === keyframe);
+
+          track.keyframes().forEach((keyframe, index) => {
+
+            timeline.set(targetDirective, { [animationProp]: keyframe.value() }, keyframe.time() / 1000);
+
+            if (index < track.keyframes().length - 1) {
+              const nextKeyframe = track.keyframes()[index + 1];
+              const tween = track.tweens().find((tween) => tween.start() === keyframe);
               let props: any;
               if (tween) {
-                const duration = (nextKeyframe.time - keyframe.time) / 1000;
+                const duration = (nextKeyframe.time() - keyframe.time()) / 1000;
                 props = {
-                  duration: (nextKeyframe.time - keyframe.time) / 1000,
-                  ease: tween.easing || 'none',
+                  duration,
+                  ease: tween.easing() || 'none',
                 };
 
                 if (isSignal) {
-                  props[`signal_${track.name}`] = nextKeyframe.value;
+                  props[`signal_${track.name()}`] = nextKeyframe.value();
                 } else {
-                  props[track.name] = nextKeyframe.value;
+                  props[track.name()] = nextKeyframe.value();
                 }
 
-                if (tween.motionPath) {
+
+                if (tween.motionPath()) {
                   const proxyElement = {
                     x: targetDirective.x(),
                     y: targetDirective.y(),
                     rotation: 0,
                   };
 
+                  
+
                   timeline.to(
                     proxyElement,
                     {
                       duration,
-                      motionPath: tween.motionPath,
+                      motionPath: tween.motionPath() as string,
                       autoRotate: true,
-                      ease: tween.easing || 'none',
+                      ease: tween.easing() || 'none',
 
                       onUpdate: () => {
                         targetDirective.x.set(proxyElement.x);
                         targetDirective.y.set(proxyElement.y);
                       },
                     },
-                    keyframe.time / 1000
+                    keyframe.time() / 1000
                   );
                 } else {
-                  timeline.to(targetDirective, props, keyframe.time / 1000);
+                  timeline.to(targetDirective, props, keyframe.time() / 1000);
                 }
               }
             }
@@ -184,87 +179,63 @@ export class TimelineService {
     }
     // Handle the property change logic here
     // For example, update the timeline or perform some action based on the change
-    this.timeline.update((currentTimeline) => {
-      const group = currentTimeline.groups.find((g) => g.name === id);
-      const track = group?.tracks.find((t) => t.name === property);
-      if (track) {
-        const keyframeIndex = track.keyframes.findIndex((kf) => kf.time === this.position());
-        if (keyframeIndex !== -1) {
-          track.keyframes[keyframeIndex].value = value;
-        } else {
-          // If no keyframe exists at the current position, create a new one
-          // console.log('Creating new keyframe for property:', property, 'at position:', this.timelineService.position());
-          track.keyframes.push({
-            value: value,
-            time: this.position(),
-          });
-        }
+
+    const group = this.timeline.groups().find((g) => g.name() === id);
+    const track = group?.tracks().find((t) => t.name() === property);
+    if (track) {
+      const keyframeIndex = track.keyframes().findIndex((kf) => kf.time() === this.position());
+      if (keyframeIndex !== -1) {
+        track.keyframes()[keyframeIndex].value.set(value);
       } else {
-        group?.tracks.push({
-          name: property,
-          keyframes: [
-            {
-              value: value,
-              time: this.position(),
-            },
-          ],
-          tweens: [],
-        });
+        // If no keyframe exists at the current position, create a new one
+        track.keyframes.update((kfs) => [...kfs, new FLKeyframe(this.position(), value, track)]);
       }
-      return { ...currentTimeline };
-    });
+    } else {
+      const newTrack = new FLTrack(property, group!);
+      newTrack.name.set(property);
+      newTrack.keyframes.set([new FLKeyframe(this.position(), value, newTrack)]);
+      group?.tracks.update((tracks) => [...tracks, newTrack]);
+      
+
+    }
+
+          group?.tracks().forEach((t) => {
+      });
 
     this.createGsapTimeline();
   }
 
-  addKeyframe(group: TimelineGroup, track: TimelineTrack, time: number) {
-    const prevKeyframe = track.keyframes.reduce((prev, curr) => (curr.time <= time && curr.time > (prev?.time || -1) ? curr : prev), null as TimelineKeyframe | null);
-    const nextKeyframe = track.keyframes.reduce((next, curr) => (curr.time >= time && (next?.time === undefined || curr.time < next.time) ? curr : next), null as TimelineKeyframe | null);
+  addKeyframe(track: FLTrack, time: number) {
+    const prevKeyframe = track.keyframes().reduce((prev, curr) => (curr.time() <= time && curr.time() > (prev?.time() || -1) ? curr : prev), null as FLKeyframe | null);
+    const nextKeyframe = track.keyframes().reduce((next, curr) => (curr.time() >= time && (next?.time === undefined || curr.time() < next.time()) ? curr : next), null as FLKeyframe | null);
 
-    const value = prevKeyframe ? prevKeyframe.value : nextKeyframe ? nextKeyframe.value : null;
+    const value = prevKeyframe ? prevKeyframe.value() : nextKeyframe ? nextKeyframe.value() : null;
+    const newKeyframe = new FLKeyframe(time, value, track);
 
-    const newKeyframe: TimelineKeyframe = {
-      time,
-      value,
-    };
-    track.keyframes.push(newKeyframe);
-    track.keyframes.sort((a, b) => a.time - b.time);
+    track.keyframes.update((kfs) => [...kfs, newKeyframe].sort((a, b) => a.time() - b.time()));
 
     if (prevKeyframe && newKeyframe) {
-      const existingTween = track.tweens.find((tween) => tween.start === prevKeyframe && tween.end === nextKeyframe);
+      const existingTween = track.tweens().find((tween) => tween.start() === prevKeyframe && tween.end() === nextKeyframe);
 
       // Update tweens
       if (prevKeyframe && nextKeyframe && existingTween) {
         // Remove any existing tween between prevKeyframe and nextKeyframe
-        track.tweens = track.tweens.filter((tween) => !(tween.start === prevKeyframe && tween.end === nextKeyframe));
+        track.tweens.update((tweens) => tweens.filter((tween) => !(tween.start() === prevKeyframe && tween.end() === nextKeyframe)));
         // Add new tweens
-        track.tweens.push({ start: prevKeyframe, end: newKeyframe });
-        track.tweens.push({ start: newKeyframe, end: nextKeyframe });
-      } else if (prevKeyframe && !nextKeyframe) {
-        // If there's only a previous keyframe, no need to adjust tweens
-      } else if (!prevKeyframe && nextKeyframe) {
-        // If there's only a next keyframe, no need to adjust tweens
+
+        track.tweens.update((tweens) => [...tweens, new FLTween(prevKeyframe, newKeyframe, track), new FLTween(newKeyframe, nextKeyframe, track)]);
       }
     }
-
-    this.timeline.update((currentTimeline) => {
-      return { ...currentTimeline };
-    });
   }
 
-  deleteKeyframe(keyframe: TimelineKeyframe, group?: TimelineGroup, track?: TimelineTrack) {
-    if (group && track) {
-      track.keyframes = track.keyframes.filter((kf) => kf !== keyframe);
+  deleteKeyframe(keyframe: FLKeyframe, track?: FLTrack) {
+    if (track) {
+      track.keyframes.update((kfs) => kfs.filter((kf) => kf !== keyframe));
       // Remove any tweens associated with this keyframe
-      track.tweens = track.tweens.filter((tween) => tween.start !== keyframe && tween.end !== keyframe);
-
-      this.timeline.update((currentTimeline) => {
-        return { ...currentTimeline };
-      });
-
+      track.tweens.update((tweens) => tweens.filter((tween) => tween.start() !== keyframe && tween.end() !== keyframe));
       this.createGsapTimeline();
     }
   }
 
-  updateTween(tween: TimelineTween) {}
+  updateTween(tween: FLTween) {}
 }

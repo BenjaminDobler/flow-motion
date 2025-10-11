@@ -7,14 +7,14 @@
         <timeline-controls></timeline-controls>
       </div>
 
-      @for (group of timelineService.timeline().groups; track $index) {
+      @for (group of timelineService.timeline.groups(); track $index) {
         <div class="label group">
-          {{ group.name }}
+          {{ group.name() }}
         </div>
 
-        @for (track of group.tracks; track $index) {
+        @for (track of group.tracks(); track $index) {
             <div class="label">
-              {{ track.name }}
+              {{ track.name() }}
             </div>
           
         }
@@ -29,52 +29,52 @@
     </div>
 
     <div style="position: relative">
-      @for (group of timelineService.timeline().groups; track $index) {
+      @for (group of timelineService.timeline.groups(); track $index) {
         <div class="track-container">
           <div class="track-spacer group"></div>
           <div class="track group" style="flex: 1"></div>
         </div>
-        @for (track of group.tracks; track $index) {
+        @for (track of group.tracks(); track $index) {
           <div class="track-container">
             <div class="track-spacer"></div>
 
-            <div class="track" style="flex: 1" [contextMenu]="trackContextMenu" (contextMenuSelected)="onTrackContextMenuSelected($event, track, group)">
-              @for (tween of track.tweens; track $index) {
+            <div class="track" style="flex: 1" [contextMenu]="trackContextMenu" (contextMenuSelected)="onTrackContextMenuSelected($event, track)">
+              @for (tween of track.tweens(); track $index) {
                 <timeline-tween
-                  (click)="onTweenClick($event, tween, track, group)"
+                  (click)="onTweenClick($event, tween)"
                   [minY]="0"
                   [maxY]="0"
                   [minX]="0"
                   [class.selected]="selectedTween() === tween"
                   [showCursor]="false"
-                  [x]="tween.start.time / mpp"
+                  [x]="tween.start().time() / mpp"
                   positioning="transform"
                   [resizable]="false"
                   [tween]="tween"
-                  [timeline]="timelineService.timeline()"
+                  [timeline]="timelineService.timeline"
                   (dragEnd)="onTweenDragEnd()"
                   (dragStart)="onTweenDragStart()"
-                  (positionUpdated)="onTweenPositionUpdated($event, tween, track, group)"
+                  (positionUpdated)="onTweenPositionUpdated($event, tween)"
                 ></timeline-tween>
               }
-              @for (keyframe of track.keyframes; track $index) {
+              @for (keyframe of track.keyframes(); track $index) {
                 <timeline-keyframe
                   [minY]="5"
                   [maxY]="5"
                   [minX]="0"
                   [showCursor]="false"
-                  [x]="keyframe.time / mpp"
+                  [x]="keyframe.time() / mpp"
                   [y]="5"
                   [bondcontainer]="`keyframe`"
                   [positioning]="'transform'"
                   [resizable]="false"
-                  (tween)="onTween($event, group, track)"
-                  (delete)="onDeleteKeyframe($event, group, track)"
+                  (tween)="onTween($event)"
+                  (delete)="onDeleteKeyframe($event, track)"
                   [keyframe]="keyframe"
-                  (positionUpdated)="onKeyframePositionUpdated($event, keyframe, track, group)"
-                  [timeline]="timelineService.timeline()"
-                  (click)="onKeyframeClick($event, keyframe, track, group)"
-                  (dragEnd)="onKeyframeDragEnd($event, keyframe, track, group)"
+                  (positionUpdated)="onKeyframePositionUpdated($event, keyframe)"
+                  [timeline]="timelineService.timeline"
+                  (click)="onKeyframeClick(keyframe)"
+                  (dragEnd)="onKeyframeDragEnd()"
                 ></timeline-keyframe>
               }
             </div>
