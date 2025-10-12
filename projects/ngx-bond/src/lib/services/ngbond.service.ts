@@ -61,6 +61,26 @@ export const inspectableLinkProperties: InspectableProperty[] = [
     type: 'select',
     options: ['bezier', 'straight', 'multi-line', 'orthogonal'],
   },
+  {
+    name: 'startMarker',
+    type: 'select',
+    options: ['none', 'arrow1','arrow2', 'circle', 'square', 'diamond'],
+  },
+  {
+    name: 'startMarkerOrient',
+    type: 'select',
+    options: ['auto', 'auto-start-reverse'],
+  },
+  {
+    name: 'endMarker',
+    type: 'select',
+    options: ['none', 'arrow1','arrow2', 'circle', 'square', 'diamond'],
+  },
+  {
+    name: 'endMarkerOrient',
+    type: 'select',
+    options: ['auto', 'auto-start-reverse'],
+  },
 ];
 
 export interface Link {
@@ -93,6 +113,10 @@ export interface LinkProperties {
   animationBubbleDuration: WritableSignal<number>;
   animationBubbleRadius: WritableSignal<number>;
   animationBubbleColor: WritableSignal<string>;
+  startMarker: WritableSignal<string>;
+  startMarkerOrient: WritableSignal<string>;
+  endMarker: WritableSignal<string>;
+  endMarkerOrient: WritableSignal<string>;
   textOnPath: WritableSignal<string>;
   midPoint: WritableSignal<{ x: number; y: number }>;
   totalLength: WritableSignal<number>;
@@ -173,6 +197,10 @@ export class NgBondService {
       const strokeWidth = property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2;
       const curveType = linkProperties?.curveType || defProps.curveType || 'bezier';
       const curveRadius = linkProperties?.curveRadius || defProps.curveRadius || 10;
+      const startMarker = linkProperties?.startMarker || 'none';
+      const startMarkerOrient = linkProperties?.startMarkerOrient || 'auto';
+      const endMarker = linkProperties?.endMarker || 'arrow2';
+      const endMarkerOrient = linkProperties?.endMarkerOrient || 'auto';
 
       const link: Link = {
         x1: computed(() => (p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : undefined)),
@@ -196,6 +224,10 @@ export class NgBondService {
           textOnPath: signal<string>(''),
           midPoint: signal<{ x: number; y: number }>({ x: 0, y: 0 }),
           totalLength: signal<number>(0),
+          startMarker: signal(startMarker as string),
+          endMarker: signal(endMarker as string),
+          startMarkerOrient: signal(startMarkerOrient as string),
+          endMarkerOrient: signal(endMarkerOrient as string),
         },
         path: computed(() => {
           const cType = link.properties.curveType();
@@ -295,6 +327,10 @@ export class NgBondService {
             textOnPath: signal(''),
             midPoint: signal({ x: 0, y: 0 }),
             totalLength: signal(0),
+            startMarker: signal('none'),
+            endMarker: signal('none'),
+            startMarkerOrient: signal('auto'),
+            endMarkerOrient: signal('auto'),
           },
           false
         );
