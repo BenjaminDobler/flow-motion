@@ -2,7 +2,7 @@
   @let type = component()?.type;
   <ed-icon [icon]="type"></ed-icon>
 
-  {{ child().id() }}
+  {{ child().displayName() }}
 </div>
 
 @for (c of child().children(); track $index) {

@@ -28,7 +28,7 @@ const componentNameToClass = {
 export class ComponentFactory {
   selectionManager = inject(SelectionManager);
   bondService = inject(NgBondService);
-  componentAdded = new Subject<string>();
+  componentAdded = new Subject<{ id: string; displayName: string }>();
   componentRemoved = new Subject<string>();
   propertyChanged = new Subject<{ id: string; property: string; value: any }>();
   componentCount = 0;
@@ -168,7 +168,9 @@ export class ComponentFactory {
       componentRef.setInput(key, inputs[key]);
     }
 
-    this.componentAdded.next(id);
+    const name = bondContainerInstance.displayName();
+
+    this.componentAdded.next({id, displayName: name});
     return componentRef;
   }
 
@@ -499,7 +501,7 @@ export class ComponentFactory {
         });
       });
 
-    this.componentAdded.next(container.id());
+    this.componentAdded.next({id: container.id(), displayName: container.displayName()});
   }
 
   removeComponent(item: NgBondContainer) {

@@ -14,6 +14,7 @@ export class SerializationService {
     const serializedData = timelineData.groups().map((g) => {
       return {
         name: g.name(),
+        id: g.id(),
         tracks: g.tracks().map((t) => {
           return {
             name: t.name(),
@@ -66,7 +67,7 @@ export class SerializationService {
 
       const timelineData = serializedObj.timeline;
       const flGroups = timelineData.groups.map((g: any) => {
-        const flGroup = new FLGroup(g.name);
+        const flGroup = new FLGroup(g.id, g.name);
         g.tracks.forEach((track: any) => {
 
           const flTrack = new FLTrack(track.name,flGroup);

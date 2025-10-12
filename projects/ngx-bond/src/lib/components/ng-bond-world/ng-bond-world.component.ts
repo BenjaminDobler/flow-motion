@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ComponentRef, computed, effect, ElementRef, inject, input, Signal, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ComponentRef, computed, effect, ElementRef, inject, input, model, Signal, signal, TemplateRef, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { SelectionManager } from '../../services/selection.manager';
@@ -23,6 +23,7 @@ export interface NGBondItem {
   id: Signal<string>;
   children: Signal<NGBondItem[]>;
   type: string;
+  displayName: WritableSignal<string>;
   addChild: (child: NGBondItem) => void;
   removeChild: (child: NGBondItem) => void;
   detachChild?: (viewRef: ComponentRef<any>) => void;
@@ -66,6 +67,7 @@ export class NgBondWorld implements NGBondItem {
   }
 
 
+  displayName = model<string>('World');
 
   public el: ElementRef<HTMLElement> = inject(ElementRef);
   protected dragService: NgBondService = inject(NgBondService);

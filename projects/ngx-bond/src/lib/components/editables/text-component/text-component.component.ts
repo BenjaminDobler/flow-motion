@@ -61,6 +61,11 @@ export class TextComponentComponent {
   editable = signal(false);
 
   constructor() {
+
+    if (this.container.displayName() === '') {
+      this.container.displayName.set('Text');
+    }
+
     effect(() => {
       const t = this.text();
       const s = this.fontSize();

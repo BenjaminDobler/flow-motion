@@ -41,12 +41,12 @@ export class TimelineService {
       this.propertyChanged(id, property, value);
     });
 
-    this.componentFactory.componentAdded.subscribe((id) => {
-      this.timeline.groups.update((groups) => [...groups, new FLGroup(id)]);
+    this.componentFactory.componentAdded.subscribe(({ id, displayName }) => {
+      this.timeline.groups.update((groups) => [...groups, new FLGroup(id, displayName)]);
     });
 
     this.componentFactory.componentRemoved.subscribe((id) => {
-      this.timeline.groups.update((groups) => groups.filter((g) => g.name() !== id));
+      this.timeline.groups.update((groups) => groups.filter((g) => g.id() !== id));
     });
   }
 
@@ -100,7 +100,7 @@ export class TimelineService {
     timeline.pause();
 
     t.groups().forEach((group) => {
-      const element = this.bondService.getComponentById(group.name());
+      const element = this.bondService.getComponentById(group.id());
       const e = this.componentFactory.containerElementMap.get(element as NgBondContainer);
 
       if (element) {
@@ -174,7 +174,7 @@ export class TimelineService {
     // Handle the property change logic here
     // For example, update the timeline or perform some action based on the change
 
-    const group = this.timeline.groups().find((g) => g.name() === id);
+    const group = this.timeline.groups().find((g) => g.id() === id);
     const track = group?.tracks().find((t) => t.name() === property);
     if (track) {
       const keyframeIndex = track.keyframes().findIndex((kf) => kf.time() === this.position());

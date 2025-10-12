@@ -66,6 +66,11 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       noneSerializable: true,
     },
     {
+      name: 'displayName',
+      type: 'string',
+      noneAnimatable: true,
+    },
+    {
       name: 'rotate',
       type: 'number',
     },
@@ -97,6 +102,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   draggable = input<boolean>(true);
 
   id = model<string>('', { alias: 'bondcontainer' });
+  displayName = model<string>('');
 
   minWidth = input<number>(0);
   minHeight = input<number>(0);

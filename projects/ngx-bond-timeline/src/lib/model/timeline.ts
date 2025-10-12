@@ -1,8 +1,4 @@
-import { signal, Signal, WritableSignal } from "@angular/core";
-
-
-
-
+import { signal, Signal, WritableSignal } from '@angular/core';
 
 export class FLTimeline {
   groups: WritableSignal<FLGroup[]> = signal([]);
@@ -34,7 +30,6 @@ export class FLTween {
   }
 }
 
-
 export class FLTrack {
   name: WritableSignal<string> = signal('New Track');
   keyframes: WritableSignal<FLKeyframe[]> = signal([]);
@@ -49,10 +44,12 @@ export class FLTrack {
 
 export class FLGroup {
   name: WritableSignal<string> = signal('New Group');
+  id: WritableSignal<string> = signal('');
   tracks: WritableSignal<FLTrack[]> = signal([]);
   expanded: WritableSignal<boolean> = signal(true);
 
-  constructor(name: string) {
+  constructor(id: string, name: string) {
+    this.id.set(id);
     this.name.set(name);
   }
 }

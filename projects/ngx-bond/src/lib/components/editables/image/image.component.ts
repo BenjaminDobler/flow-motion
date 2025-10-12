@@ -26,5 +26,9 @@ export class ImageComponent {
     return ImageComponent.inspectableProperties;
   }
 
-  constructor() {}
+  constructor() {
+    if (this.container.displayName() === '') {
+      this.container.displayName.set('Image ');
+    }
+  }
 }

@@ -95,6 +95,10 @@ export class ContainerComponent {
 
   constructor() {
     this.contextMenu.contextMenu = this.contextMenuData;
+
+    if (this.container.displayName() === '') {
+      this.container.displayName.set('Container ');
+    }
   }
 
   onDblClick(evt: MouseEvent) {
