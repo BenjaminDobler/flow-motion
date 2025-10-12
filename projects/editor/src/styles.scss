@@ -10,8 +10,6 @@ body {
 }
 
 .editor-theme {
-
-
   background-color: #1e1e1e;
   font-family: var(--font-family);
 
@@ -23,6 +21,22 @@ body {
   --color: #00000080;
   --highlight-color: #0f8be8;
   --divider-color: #e5e5e5;
+
+
+  button {
+      background: var(--highlight-color);
+      border: none;
+      color: var(--form-item-color);
+      font-weight: 450;
+      font-size: 0.6875rem;
+      padding: 0 12px;
+      border-radius: 3px;
+      &:hover {
+        background: #383838;
+      }
+
+      
+    }
 
   input[type='range'] {
     -webkit-appearance: none;
@@ -129,8 +143,6 @@ body {
   }
 
   @media (prefers-color-scheme: dark) {
-
-
     color: #ffffff;
     font-size: 11px;
     --surface-color1: #2c2c2c;
@@ -143,18 +155,6 @@ body {
     --color-secondary: #c3c3c3;
     --divider-color: #444444;
 
-
-
     --group-info-pill-bg: #0f8be8;
-
-    button {
-      background: var(--highlight-color);
-      border: none;
-      color: var(--form-item-color);
-      font-weight: 450;
-      font-size: 0.6875rem;
-      padding: 0 12px;
-      border-radius: 3px;
-    }
   }
 }

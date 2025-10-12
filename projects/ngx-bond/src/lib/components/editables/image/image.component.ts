@@ -1,4 +1,4 @@
-import { Component, effect, forwardRef, inject, input, model, output, signal } from '@angular/core';
+import { Component, inject, model } from '@angular/core';
 import { NgBondContainer, NgBondProperty } from '@richapps/ngx-bond';
 
 @Component({

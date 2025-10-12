@@ -1,8 +1,9 @@
-import { afterNextRender, computed, Directive, effect, ElementRef, EventEmitter, inject, Injector, input, model, output, signal, untracked } from '@angular/core';
+import { afterNextRender, computed, Directive, effect, ElementRef, EventEmitter, inject, Injector, input, model, output, signal } from '@angular/core';
 import { ComponentFactory, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { Path } from './path';
 import { Subject, takeUntil } from 'rxjs';
 import { Point } from './point';
+import { outputToObservable, toObservable } from '@angular/core/rxjs-interop';
 
 @Directive({
   selector: '[appPathDirective]',
@@ -318,7 +319,14 @@ export class PathDirectiveDirective {
 
     let isFirst = true;
 
-    this.container.positionUpdated.pipe(takeUntil(this.destroyed$)).subscribe((position) => {
+
+    this.container.positionUpdated.subscribe(()=>{
+
+    });
+
+    const p$ = outputToObservable(this.container.positionUpdated);
+
+    p$.pipe(takeUntil(this.destroyed$)).subscribe((position) => {
       if (position.xBy === 0 && position.yBy === 0) {
         return;
       }
@@ -326,11 +334,6 @@ export class PathDirectiveDirective {
         isFirst = false;
         return;
       }
-
-      // this.container.x.set(position.x);
-      // this.container.y.set(position.y);
-      // this.path()?.moveBy(position.xBy, position.yBy);
-
       this.path()?.moveBy(position.xBy, position.yBy);
     });
 

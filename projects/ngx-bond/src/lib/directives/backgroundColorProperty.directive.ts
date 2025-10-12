@@ -38,6 +38,7 @@ export class BackgroundColorPropertyDirective {
     {
       name: 'shadowHorizontalOffset',
       type: 'number',
+      prefix: 'X',
       group: {
         name: 'shadowPosition',
       },
@@ -46,6 +47,7 @@ export class BackgroundColorPropertyDirective {
     {
       name: 'shadowVerticalOffset',
       type: 'number',
+      prefix: 'Y',
       group: {
         name: 'shadowPosition',
       },
@@ -77,8 +79,24 @@ export class BackgroundColorPropertyDirective {
       type: 'range',
       min: 0,
       max: 255,
+      step: 0.1,
       category: 'Shadow',
     },
+    {
+      name: 'borderEnabled',
+      type: 'checkbox',
+      category: 'Border',
+    },
+    {
+      name: 'borderWidth',
+      type: 'number',
+      category: 'Border',
+    },
+    {
+      name: 'borderColor',
+      type: 'color',
+      category: 'Border',
+    }
   ];
 
   get inspectableProperties() {
@@ -92,6 +110,23 @@ export class BackgroundColorPropertyDirective {
   backgroundColor = model('#333333');
 
   borderRadius = model(0);
+  borderColor = model('#000000');
+  borderEnabled = model(false);
+
+
+  border = computed(() => {
+    if (!this.borderEnabled()) {
+      return 'none';
+    }
+    const bw = this.borderWidth();
+    if (bw > 0) {
+      return `${bw}px solid ${this.borderColor()}`;
+    }
+    return 'none';
+  });
+
+
+  borderWidth = model(0);
 
   overflow = model('visible');
 
@@ -175,6 +210,19 @@ export class BackgroundColorPropertyDirective {
         this.el.nativeElement.style.overflow = overflow;
       }
     }); 
+
+    effect(() => {
+      if (!inited()) return;
+
+      const border = this.border();
+      if (content) {
+        content.style.border = border;
+      } else {
+        this.el.nativeElement.style.border = border;
+      }
+    }); 
+
+    
 
     effect(() => {
       if (!inited()) return;

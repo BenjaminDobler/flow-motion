@@ -167,7 +167,7 @@ export class NgBondService {
 
     if (p1) {
       const defProps = this.defaultProperties();
-      const animate = property1.animatedLink;
+      const animate = property1?.animatedLink() || linkProperties?.animate || defProps.animate || false;
 
       const stroke = property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '';
       const strokeWidth = property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2;
@@ -183,7 +183,7 @@ export class NgBondService {
         outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
         inspectableProperties: inspectableLinkProperties,
         properties: {
-          animate: animate,
+          animate: signal(animate),
           strokeWidth: signal(strokeWidth),
           stroke: signal(stroke),
           curveType: signal(curveType),

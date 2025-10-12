@@ -106,6 +106,10 @@ export class ContainerComponent {
     this.focusTextarea();
   }
 
+  onBlur() {
+    this.selection.disabled.set(false);
+  }
+
   detachChild(viewRef: ComponentRef<any>) {
     const index = this.insertSlot.indexOf(viewRef.hostView);
     this.insertSlot.detach(index);

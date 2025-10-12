@@ -1,60 +1,75 @@
 <!-- @for (element of selectionManager.selectionTargets(); track $index) {
   <div style="margin-bottom: 10px">ID {{ element.id() }}</div> -->
 
-  @for (category of categories(); track $index) {
-    <div class="properties-panel">
-      <div class="properties-panel_header">
-        <h2>{{ category.name }}</h2>
-      </div>
+@for (category of categories(); track $index) {
+  <div class="properties-panel">
+    <div class="properties-panel_header">
+      <h2>{{ category.name }}</h2>
+    </div>
 
-      @for (group of category.groups; track $index) {
-        @if (group.name === 'ungrouped') {
-          @for (prop of group.props; track $index) {
-            <div class="properties-panel_row">
-              @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
-                {{prop.suffixIcon}}
-                <input-component [prefix]="prop.alias" [prefixIcon]="prop.prefixIcon" [suffixIcon]="prop.suffixIcon" [suffix]="prop.suffix" [type]="prop.type" [(ngModel)]="prop.target[prop.name]"></input-component>
-              } @else if (prop.type === 'select') {
-                <ed-select [(ngModel)]="prop.target[prop.name]" >
-                  @for (option of prop.options; track $index) {
-                    <ed-select-option [value]="option">{{ option }}</ed-select-option>
-                  }
-                </ed-select>
-              } @else if (prop.type === 'color') {
-                <color [(ngModel)]="prop.target[prop.name]"></color>
-              } @else {
-                <div>
-                  {{ prop.name }} {{prop.type}}
-                </div>
-              }
-            </div>
-          }
-        } @else {
+    @for (group of category.groups; track $index) {
+      @if (group.name === 'ungrouped') {
+        @for (prop of group.props; track $index) {
           <div class="properties-panel_row">
-            @for (prop of group.props; track $index) {
-              @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
-                <input-component [prefix]="prop.alias" [prefixIcon]="prop.prefixIcon" [suffixIcon]="prop.suffixIcon" [suffix]="prop.suffix" [type]="prop.type" [(ngModel)]="prop.target[prop.name]"></input-component>
-              } @else if (prop.type === 'select') {
-                <ed-select [(ngModel)]="prop.target[prop.name]">
-                  @for (option of prop.options; track $index) {
-                    <ed-select-option [value]="option">{{ option }}</ed-select-option>
-                  }
-                </ed-select>
-              } @else if (prop.type === 'color') {
-                <color [(ngModel)]="prop.target[prop.name]"></color>
-              } @else {
-                <div>
-                  {{ prop.name }}
-                </div>
-              }
+            @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
+              {{ prop.suffixIcon }}
+              <input-component
+                [prefix]="prop.alias"
+                [prefixIcon]="prop.prefixIcon"
+                [suffixIcon]="prop.suffixIcon"
+                [suffix]="prop.suffix"
+                [type]="prop.type"
+                [(ngModel)]="prop.target[prop.name]"
+              ></input-component>
+            } @else if (prop.type === 'select') {
+              <ed-select [(ngModel)]="prop.target[prop.name]">
+                @for (option of prop.options; track $index) {
+                  <ed-select-option [value]="option">{{ option }}</ed-select-option>
+                }
+              </ed-select>
+            } @else if (prop.type === 'color') {
+              <color [(ngModel)]="prop.target[prop.name]"></color>
+            } @else if (prop.type === 'checkbox') {
+              <label style="display: flex; align-items: center; gap: 5px">
+                <input type="checkbox" [(ngModel)]="prop.target[prop.name]" />
+              </label>
+            } @else if (prop.type === 'range') {
+              <label style="display: flex; align-items: center; gap: 5px">
+                <input type="range" [min]="prop.min" [max]="prop.max" [step]="prop.step" [(ngModel)]="prop.target[prop.name]" />
+              </label>
+            } @else {
+              <div>{{ prop.name }} {{ prop.type }}</div>
             }
           </div>
         }
+      } @else {
+        <div class="properties-panel_row">
+          @for (prop of group.props; track $index) {
+            @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
+              <input-component
+                [prefix]="prop.alias"
+                [prefixIcon]="prop.prefixIcon"
+                [suffixIcon]="prop.suffixIcon"
+                [suffix]="prop.suffix"
+                [type]="prop.type"
+                [(ngModel)]="prop.target[prop.name]"
+              ></input-component>
+            } @else if (prop.type === 'select') {
+              <ed-select [(ngModel)]="prop.target[prop.name]">
+                @for (option of prop.options; track $index) {
+                  <ed-select-option [value]="option">{{ option }}</ed-select-option>
+                }
+              </ed-select>
+            } @else if (prop.type === 'color') {
+              <color [(ngModel)]="prop.target[prop.name]"></color>
+            } @else {
+              <div>
+                {{ prop.name }}
+              </div>
+            }
+          }
+        </div>
       }
-    </div>
-  }
-
-
-
-
-
+    }
+  </div>
+}

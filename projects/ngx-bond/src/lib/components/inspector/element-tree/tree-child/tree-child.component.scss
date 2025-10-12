@@ -2,7 +2,23 @@
   display: block;
 
   &.selected {
-    background-color: blue;
-    color: white;
+    .item {
+      background: var(--highlight-color);
+      color: white;
+      &:hover {
+        background: var(--highlight-color);
+      }
+    }
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+    border-radius: 5px;
+    &:hover {
+      background-color: #383838;
+    }
   }
 }

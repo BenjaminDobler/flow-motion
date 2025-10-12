@@ -1,9 +1,10 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { NgBondContainer, NGBondItem, SelectionManager } from '@richapps/ngx-bond';
+import { IconComponent } from '@richapps/ui-components';
 
 @Component({
   selector: 'tree-child',
-  imports: [],
+  imports: [IconComponent],
   templateUrl: './tree-child.component.html',
   styleUrl: './tree-child.component.scss',
   host: {

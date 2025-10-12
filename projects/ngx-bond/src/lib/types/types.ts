@@ -13,6 +13,7 @@ export interface InspectableProperty {
   options?: any[];
   min?: number;
   max?: number;
+  step?: number;
   isGetter?: boolean;
   noneSerializable?: boolean;
   readonly?: boolean;

@@ -32,5 +32,8 @@
         padding: 3px;
         background: #222222;
         height: auto;
+        &:hover {
+            background: #333333;
+        }
     }
 }

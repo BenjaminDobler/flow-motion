@@ -1,19 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  EventEmitter,
-  inject,
-  input,
-  Input,
-  model,
-  Output,
-  signal,
-  OnDestroy,
-  effect,
-  output,
-  computed,
-  Injector,
-} from '@angular/core';
+import { Directive, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, OnDestroy, effect, output, computed, Injector } from '@angular/core';
 import { makeDraggable } from '../util/drag.util';
 import { NGBondItem, NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 import { BehaviorSubject, distinctUntilChanged, fromEvent, race, Subject, switchMap, takeUntil } from 'rxjs';
@@ -113,11 +98,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
 
   id = model<string>('', { alias: 'bondcontainer' });
 
-  @Input()
-  minWidth = 0;
-
-  @Input()
-  minHeight = 0;
+  minWidth = input<number>(0);
+  minHeight = input<number>(0);
 
   showCursor = input<boolean>(true);
 
@@ -150,19 +132,9 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   dragStart = output<void>();
   dragEnd = output<void>();
 
-  @Output()
-  positionUpdated: EventEmitter<{ x: number; y: number; xBy: number; yBy: number }> = new EventEmitter<{
-    x: number;
-    y: number;
-    xBy: number;
-    yBy: number;
-  }>();
-
-  @Output()
-  widthUpdated: EventEmitter<number> = new EventEmitter<number>();
-
-  @Output()
-  heightUpdated: EventEmitter<number> = new EventEmitter<number>();
+  positionUpdated = output<{ x: number; y: number; xBy: number; yBy: number }>();
+  widthUpdated = output<number>();
+  heightUpdated = output<number>();
 
   onDestroy$ = new Subject<void>();
 
@@ -467,25 +439,25 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
         this.pos(x, y);
       } else if (isBottomHeightDrag) {
         let height = move.originalEvent.y - this.itemRect.top + this.itemRect.height - move.startOffsetY;
-        height = Math.max(height, this.minHeight);
+        height = Math.max(height, this.minHeight());
         this.setHeight(height);
       } else if (isRightWidthDrag) {
         let width = move.originalEvent.x - this.itemRect.left + this.itemRect.width - move.startOffsetX;
-        width = Math.max(width, this.minWidth);
+        width = Math.max(width, this.minWidth());
 
         this.setWidth(width);
       } else if (isLeftWidthDrag) {
         const x = move.originalEvent.x - move.startOffsetX - this.parentRect.left;
         const width = this.itemRect.left - this.parentRect.left + this.itemRect.width - x;
 
-        if (width > this.minWidth) {
+        if (width > this.minWidth()) {
           this.pos(x, this.y());
           this.setWidth(width);
         }
       } else if (isTopHeightDrag) {
         const y = move.originalEvent.y - move.startOffsetY - this.parentRect.top;
         const height = this.itemRect.top - this.parentRect.top + this.itemRect.height - y;
-        if (height > this.minHeight) {
+        if (height > this.minHeight()) {
           this.pos(this.x(), y);
           this.setHeight(height);
         }

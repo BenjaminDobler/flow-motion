@@ -1,17 +1,8 @@
-<div>
-  <div (click)="toggleSelection()">
-    {{ child().id() }} {{ component()?.type }}
-    @let type = component()?.type;
-    @if (type === 'image') {
-      <i class="pi pi-image"></i>
-    } @else if (type === 'video') {
-      <i class="pi pi-video"></i>
-    } @else if (type === 'container') {
-      <i class="pi pi-box"></i>
-    } @else if (type === 'text') {
-      <i class="pi pi-language"></i>
-    }
-  </div>
+<div class="item" (click)="toggleSelection()">
+  @let type = component()?.type;
+  <ed-icon [icon]="type"></ed-icon>
+
+  {{ child().id() }}
 </div>
 
 @for (c of child().children(); track $index) {
