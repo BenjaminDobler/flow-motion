@@ -14,6 +14,7 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     rules: {
+      "change-detection-strategy/on-push": "error",
       "@angular-eslint/directive-selector": [
         "error",
         {

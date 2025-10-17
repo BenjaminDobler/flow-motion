@@ -1,11 +1,11 @@
 import { Directive, ElementRef, EventEmitter, inject, input, Input, model, Output, signal, OnDestroy, effect, output, computed, Injector } from '@angular/core';
-import { makeDraggable } from '../util/drag.util';
 import { NGBondItem, NgBondWorld } from '../ng-bond-world/ng-bond-world.component';
 import { BehaviorSubject, distinctUntilChanged, fromEvent, race, Subject, switchMap, takeUntil } from 'rxjs';
 import { NgBondService } from '../../services/ngbond.service';
 import { SelectionManager } from '../../services/selection.manager';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { InspectableProperty } from '@richapps/ngx-bond';
+import { makeDraggable } from '@richapps/ngx-drag';
+import { InspectableProperty } from '../../types/types';
 
 @Directive({
   selector: '[bondcontainer]',
@@ -73,6 +73,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     {
       name: 'rotate',
       type: 'number',
+      prefixIcon: 'rotate',
     },
     // {
     //   name: 'bounds',

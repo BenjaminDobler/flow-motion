@@ -1,6 +1,7 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Link, NgBondProperty, NgBondService } from '@richapps/ngx-bond';
+import { Link, NgBondService } from '../../../services/ngbond.service';
+import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 
 @Component({
   selector: 'connection-inspector',

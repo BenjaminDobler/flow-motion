@@ -3,7 +3,7 @@ import { KeyManager } from './key.manager';
 import { NgBondContainer } from '../components/ng-bond-container/ng-bond-container';
 import { ComponentFactory } from './component.factory';
 import { getAlignmentHelpLines } from './alignment';
-import { GeometryUtils } from '@richapps/ngx-bond';
+import { GeometryUtils } from '../utils/geo.utils';
 
 export class SelectionManager {
   readonly disabled = signal(false);

@@ -7,7 +7,7 @@ import {
   model,
   signal,
 } from '@angular/core';
-import { NgSplitComponent } from '@richapps/ngx-split';
+import { NgSplitComponent } from '../ng-split/ng-split.component';
 
 @Component({
   selector: 'ng-split-panel',

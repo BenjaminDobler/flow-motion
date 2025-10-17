@@ -1,5 +1,5 @@
 import { afterNextRender, computed, ContentChild, ContentChildren, Directive, effect, ElementRef, inject, Input, isSignal, model, output, signal, ViewChild, viewChild, ViewChildren } from '@angular/core';
-import { InspectableProperty } from '@richapps/ngx-bond';
+import { InspectableProperty } from '../types/types';
 
 @Directive({
   selector: '[backgroundColorProperty]',

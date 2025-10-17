@@ -6,7 +6,8 @@ import { getLinePath } from '../components/util/connections/simple.line';
 import { getOrhogonalConnection } from '../components/util/connections/orthogonal';
 import { getMultiLinePath } from '../components/util/connections/multi-step';
 import { getDistance } from '../components/util/geo';
-import { InspectableProperty, NgBondWorld } from '@richapps/ngx-bond';
+import { InspectableProperty } from '../types/types';
+import { NgBondWorld } from '../../public-api';
 
 export type Bound = {
   left: number;

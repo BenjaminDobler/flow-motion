@@ -1,22 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ComponentRef,
-  ElementRef,
-  inject,
-  input,
-  model,
-  viewChild,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ComponentRef, ElementRef, inject, input, model, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
-import { InspectableProperty, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { FormsModule } from '@angular/forms';
 import { ContextMenu } from '@richapps/ui-components';
 import { DuplicateService } from '../../dialogs/duplicate-dialog/duplicate.service';
+import { InspectableProperty } from '../../../types/types';
+import { NgBondContainer, SelectionManager } from '../../../../public-api';
+
+
 @Component({
-  selector: 'container-component',
+  selector: 'editable-container',
   imports: [NgBondProperty, FormsModule],
   templateUrl: './container-component.component.html',
   styleUrl: './container-component.component.scss',
@@ -24,10 +16,12 @@ import { DuplicateService } from '../../dialogs/duplicate-dialog/duplicate.servi
   host: {
     '(dblclick)': 'onDblClick($event)',
   },
-  hostDirectives: [{
-    directive: ContextMenu,
-    outputs: ['contextMenuClosed', 'contextMenuSelected']
-  }]
+  hostDirectives: [
+    {
+      directive: ContextMenu,
+      outputs: ['contextMenuClosed', 'contextMenuSelected'],
+    },
+  ],
 })
 export class ContainerComponent {
   static inspectableProperties: InspectableProperty[] = [
@@ -61,10 +55,9 @@ export class ContainerComponent {
     },
   ];
 
-
   contextMenuData = input<any[]>([
     { label: 'Delete', action: () => console.log('delete') },
-    { label: 'Advanced Duplicate', action: () => this.duplicateService.openDuplicateDialog(this.container) }
+    { label: 'Advanced Duplicate', action: () => this.duplicateService.openDuplicateDialog(this.container) },
   ]);
 
   get inspectableProperties() {

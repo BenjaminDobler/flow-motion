@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { NgBondContainer, NGBondItem, SelectionManager } from '@richapps/ngx-bond';
 import { IconComponent } from '@richapps/ui-components';
+import { NgBondContainer, NGBondItem, SelectionManager } from '../../../../../public-api';
 
 @Component({
   selector: 'tree-child',

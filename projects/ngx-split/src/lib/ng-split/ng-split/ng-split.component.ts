@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { NgSplitPanelComponent } from '../ng-split-panel/ng-split-panel.component';
-import { DraggerDirective } from '../../rx-drag/dragger.directive';
+import { DraggerDirective } from '@richapps/ngx-drag';
 import { ResizeObserverDirective } from '../../resize-observer/resize-observer.directive';
 
 class Divider {

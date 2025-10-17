@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, inject, input, TemplateRef } from '@angular/core';
-import { ConnectionDirective, Link, NgBondService } from '@richapps/ngx-bond';
+import { ConnectionDirective } from '../editables/connection.directive';
+import { NgBondService } from '../../services/ngbond.service';
 
 @Component({
   selector: 'connection-container',

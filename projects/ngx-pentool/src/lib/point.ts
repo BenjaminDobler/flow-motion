@@ -1,5 +1,5 @@
 import { fromEvent, Subject, takeUntil } from 'rxjs';
-import { makeDraggable } from './drag.util';
+import { makeDraggable } from '@richapps/ngx-drag';
 
 export class Point {
   private _x: number = 0;

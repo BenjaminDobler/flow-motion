@@ -1104,6 +1104,46 @@
           }
         }
       }
+    },
+    "ngx-drag": {
+      "projectType": "library",
+      "root": "projects/ngx-drag",
+      "sourceRoot": "projects/ngx-drag/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-drag/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-drag/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/ngx-drag/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-drag/**/*.ts",
+              "projects/ngx-drag/**/*.html"
+            ],
+            "eslintConfig": "projects/ngx-drag/eslint.config.js"
+          }
+        }
+      }
     }
   },
   "schematics": {

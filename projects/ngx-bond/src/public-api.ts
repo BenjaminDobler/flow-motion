@@ -11,10 +11,9 @@ export * from './lib/services/selection.manager';
 export * from './lib/services/key.manager';
 export * from './lib/services/component.factory';
 export * from './lib/services/serialization.service';
-
+export * from './lib/components/dialogs/duplicate-dialog/duplicate.service';
 export * from './lib/utils/geo.utils';
 export * from './lib/components/util/geo';
-export * from './lib/components/util/drag.util';
 
 export * from './lib/types/types';
 
@@ -39,7 +38,19 @@ export * from './lib/services/motion.path.service'
 
 export * from './lib/components/editables/connection.directive';
 
-export * from './lib/components/util/drag.util'
-
 export * from './lib/components/connection-container/connection-container.component';
 
+
+
+
+export * from './lib/timeline/components/timeline/timeline.component';
+export * from './lib/timeline/components/timeline/timeline-controls/timeline-controls.component';
+export * from './lib/timeline/components/timeline/timeline-keyframe/timeline-keyframe.component';
+export * from './lib/timeline/components/timeline/timeline-ruler/timeline-ruler.component';
+export * from './lib/timeline/components/timeline/timeline-tween/timeline-tween.component';
+export * from './lib/timeline/components/inspector/inspector-tween-properties/inspector-tween-properties.component';
+
+export * from './lib/timeline/model/timeline';
+export * from './lib/timeline/services/timeline.service';
+
+export * from './lib/timeline/components/motion-path/motion-path.component';

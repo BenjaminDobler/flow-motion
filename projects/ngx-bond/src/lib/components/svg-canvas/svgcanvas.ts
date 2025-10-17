@@ -5,7 +5,7 @@ import { bringToTopofSVG, distance, findNearestPointOnLine, getAngle, getSnapped
 import { PathDirectiveDirective } from './path-directive.directive';
 import { Path } from './path';
 import { PathPointComponent } from './path-point/path-point.component';
-import { KeyManager } from '@richapps/ngx-bond';
+import { KeyManager } from '../../services/key.manager';
 
 export class SVGCanvas {
   private _svg?: SVGElement | undefined;

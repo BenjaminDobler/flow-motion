@@ -1,10 +1,12 @@
-import { afterNextRender, Component, effect, ElementRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgBondContainer, NgBondProperty, SelectionManager } from '@richapps/ngx-bond';
 import { fromEvent } from 'rxjs';
+import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
+import { SelectionManager } from '../../../services/selection.manager';
+import { NgBondContainer } from '../../ng-bond-container/ng-bond-container';
 
 @Component({
-  selector: 'lib-text-component',
+  selector: 'editable-text-component',
   imports: [FormsModule, NgBondProperty],
   templateUrl: './text-component.component.html',
   styleUrl: './text-component.component.scss',
@@ -12,6 +14,7 @@ import { fromEvent } from 'rxjs';
     '(dblclick)': 'onDblClick($event)',
     '[class.editable]': 'editable()',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextComponentComponent {
   selection = inject(SelectionManager);

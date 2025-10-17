@@ -1,9 +1,11 @@
 import { afterNextRender, computed, Directive, effect, ElementRef, EventEmitter, inject, Injector, input, model, output, signal } from '@angular/core';
-import { ComponentFactory, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { Path } from './path';
 import { Subject, takeUntil } from 'rxjs';
 import { Point } from './point';
 import { outputToObservable, toObservable } from '@angular/core/rxjs-interop';
+import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
+import { ComponentFactory } from '../../services/component.factory';
+import { SelectionManager } from '../../services/selection.manager';
 
 @Directive({
   selector: '[appPathDirective]',

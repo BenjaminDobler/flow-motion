@@ -1,22 +1,14 @@
 import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
-import {
-  inspectableLinkProperties,
-  InspectableProperty,
-  NgBondContainer,
-  NGBondItem,
-  NgBondProperty,
-  NgBondService,
-  NgBondWorld,
-  Path,
-  PathDirectiveDirective,
-  SelectionManager,
-  SVGCanvas,
-} from '@richapps/ngx-bond';
+
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
 import { ContainerComponent } from '../components/editables/container-component/container-component.component';
 import { ImageComponent } from '../components/editables/image/image.component';
 import { TextComponentComponent } from '../components/editables/text-component/text-component.component';
+import { SelectionManager } from './selection.manager';
+import { NgBondService, inspectableLinkProperties } from './ngbond.service';
+import { InspectableProperty, NgBondContainer, NGBondItem, NgBondWorld, Path, SVGCanvas } from '../../public-api';
+import { PathDirectiveDirective } from '../components/editables/path-directive.directive';
 
 const componentNameToClass = {
   _ContainerComponent: ContainerComponent,

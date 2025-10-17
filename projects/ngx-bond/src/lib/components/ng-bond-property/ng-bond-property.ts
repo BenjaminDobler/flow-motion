@@ -1,9 +1,9 @@
 import { Directive, ElementRef, inject, input, model, output, Signal, signal, OnInit, OnDestroy, computed, forwardRef, effect } from '@angular/core';
-import { makeDraggable } from '../util/drag.util';
+import { makeDraggable } from '@richapps/ngx-drag';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
-import { SelectionManager } from '@richapps/ngx-bond';
+import { SelectionManager } from '../../services/selection.manager';
 export type LinkPosition = 'left' | 'right' | 'top' | 'bottom';
 
 @Directive({

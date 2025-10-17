@@ -1,11 +1,13 @@
-import { Component, inject, model } from '@angular/core';
-import { NgBondContainer, NgBondProperty } from '@richapps/ngx-bond';
+import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
+import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
+import { NgBondContainer } from '../../ng-bond-container/ng-bond-container';
 
 @Component({
-  selector: 'app-image',
+  selector: 'editable-image',
   imports: [NgBondProperty],
   templateUrl: './image.component.html',
   styleUrl: './image.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageComponent {
   static inspectableProperties = [

@@ -11,19 +11,19 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@richapps/ngx-bond": [
-        "./projects/ngx-bond/src/public-api.ts"
+        "./dist/ngx-bond"
       ],
-      "@richapps/ngx-bond-timeline": [
-        "./projects/ngx-bond-timeline/src/public-api.ts"
-      ],
-      "ngx-bond-timeline": [
-        "./dist/ngx-bond-timeline"
+      "@richapps/ngx-drag": [
+        "./dist/ngx-drag"
       ],
       "@richapps/ngx-split": [
-        "./projects/ngx-split/src/public-api.ts"
+        "./dist/ngx-split"
       ],
       "@richapps/ui-components": [
-        "./projects/ui-components/src/public-api.ts"
+        "./dist/ui-components"
+      ],
+      "ngx-drag": [
+        "./dist/ngx-drag"
       ]
     },
     "skipLibCheck": true,
@@ -40,73 +40,5 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  },
-  "references": [
-    {
-      "path": "./projects/timeline/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/timeline/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/gsap-demo/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/gsap-demo/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/pentool/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/pentool/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/ngx-pentool/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/ngx-pentool/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/timeline-layout/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/timeline-layout/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/content-test/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/content-test/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/ngx-bond-timeline/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/ngx-bond-timeline/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/pentool-ng/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/pentool-ng/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/ui-components-demo/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/ui-components-demo/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/editor/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/editor/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/ui-components/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/ui-components/tsconfig.spec.json"
-    }
-  ]
+  }
 }

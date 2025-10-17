@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { SelectionManager } from '@richapps/ngx-bond';
+import { SelectionManager } from '../../../services/selection.manager';
 
 @Component({
   selector: 'alignment-inspector',

@@ -1,7 +1,7 @@
 import { effect, inject, signal, untracked } from '@angular/core';
-import { Path, SVGCanvas } from '@richapps/ngx-bond';
-import { FLTween, TimelineService } from '@richapps/ngx-bond-timeline';
-
+import { Path } from '../components/svg-canvas/path';
+import { SVGCanvas } from '../components/svg-canvas/svgcanvas';
+import { FLTween, TimelineService } from '../../public-api';
 export class MotionPathService {
   timeline = inject(TimelineService);
   svg = inject(SVGCanvas);
@@ -12,7 +12,6 @@ export class MotionPathService {
   constructor() {
     effect(() => {
       const selectedTween = this.timeline.selectedTween();
-
 
       untracked(() => {
         const mp = this.currentMotionPath();

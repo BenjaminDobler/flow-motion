@@ -1,4 +1,4 @@
-import { Component, computed, contentChildren, effect, ElementRef, forwardRef, inject, model, output, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, contentChildren, effect, ElementRef, forwardRef, inject, model, output, viewChild } from '@angular/core';
 import { EdSelectOptionComponent } from './ed-select-option/ed-select-option.component';
 import { CdkPortal } from '@angular/cdk/portal';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
@@ -9,6 +9,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   imports: [CdkPortal],
   templateUrl: './ed-select.component.html',
   styleUrl: './ed-select.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

@@ -1,6 +1,7 @@
 import { afterNextRender, computed, Directive, effect, ElementRef, inject, input, model, output, signal, untracked } from '@angular/core';
-import { ComponentFactory, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
 import { Path } from '../svg-canvas/path';
+import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
+import { ComponentFactory, SelectionManager } from '../../../public-api';
 
 @Directive({
   selector: '[appPathDirective]',
@@ -30,6 +31,7 @@ export class PathDirectiveDirective {
     {
       name: 'strokeWidth',
       type: 'number',
+      prefixIcon: 'strokeWeight',
       setterName: 'strokeWidth',
       isSignal: true,
       event: 'strokeWidthChanged',

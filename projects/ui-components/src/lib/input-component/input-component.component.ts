@@ -1,12 +1,13 @@
-import { afterNextRender, Component, ElementRef, forwardRef, inject, input, model } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, forwardRef, inject, input, model } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { makeDraggable } from '@richapps/ngx-bond';
+import { makeDraggable } from '@richapps/ngx-drag';
 import { IconComponent } from '../icon/icon.component';
 @Component({
   selector: 'input-component',
   imports: [FormsModule, IconComponent],
   templateUrl: './input-component.component.html',
   styleUrl: './input-component.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

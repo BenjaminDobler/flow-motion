@@ -1,8 +1,8 @@
 import { Component, computed, effect, inject } from '@angular/core';
 import { ComponentFactory } from '../../../services/component.factory';
 import { FormsModule } from '@angular/forms';
-import { InspectableProperty, SelectionManager } from '@richapps/ngx-bond';
 import { EdSelectComponent, EdSelectOptionComponent, InputComponent, ColorComponent } from '@richapps/ui-components';
+import { InspectableProperty, SelectionManager } from '../../../../public-api';
 
 function groupBy(list: any[], keyGetter: (item: any) => string) {
   const map = new Map();

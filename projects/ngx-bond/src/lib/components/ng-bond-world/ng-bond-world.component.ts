@@ -3,7 +3,7 @@ import { Link, NgBondService } from '../../services/ngbond.service';
 import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { SelectionManager } from '../../services/selection.manager';
 import { KeyManager } from '../../services/key.manager';
-import { makeDraggable } from '../util/drag.util';
+import { makeDraggable } from '@richapps/ngx-drag';
 import { touches } from '../../utils/geo.utils';
 import { ComponentFactory } from '../../services/component.factory';
 import { ImageComponent } from '../editables/image/image.component';
@@ -11,7 +11,7 @@ import { ConnectionDirective } from '../editables/connection.directive';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, fromEvent } from 'rxjs';
-import { InspectableProperty } from '@richapps/ngx-bond';
+import { InspectableProperty } from '../../types/types';
 
 export interface NGBondItem {
   x: Signal<number>;

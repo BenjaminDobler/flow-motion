@@ -1,11 +1,6 @@
-import { afterNextRender, Component, effect, ElementRef, inject, output, signal, viewChild } from '@angular/core';
-import { Point } from './point';
-import { filter, finalize, fromEvent, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { bringToTopofSVG, distance, findNearestPointOnLine, getAngle, getSnappedAnglePoint, insertAt, isInWhichSegment } from './util';
+import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from '@angular/core';
 import { PathDirectiveDirective } from './path-directive.directive';
-import { Path } from './path';
 import { PathPointComponent } from './path-point/path-point.component';
-import { KeyManager } from '@richapps/ngx-bond';
 import { SVGCanvas } from './svgcanvas';
 
 @Component({
@@ -13,6 +8,7 @@ import { SVGCanvas } from './svgcanvas';
   imports: [PathDirectiveDirective, PathPointComponent],
   templateUrl: './svg-canvas.component.html',
   styleUrl: './svg-canvas.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SvgCanvasComponent {
   svg = inject(SVGCanvas);

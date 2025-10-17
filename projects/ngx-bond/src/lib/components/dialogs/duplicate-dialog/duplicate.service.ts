@@ -1,7 +1,8 @@
 import { inject } from '@angular/core';
 import { Dialog, DialogRef, DIALOG_DATA, DialogModule } from '@angular/cdk/dialog';
 import { DuplicateDialogComponent } from './duplicate-dialog.component';
-import { ComponentFactory, NgBondContainer } from '@richapps/ngx-bond';
+import { NgBondContainer } from '../../ng-bond-container/ng-bond-container';
+import { ComponentFactory } from '../../../../public-api';
 
 export class DuplicateService {
   dialog = inject(Dialog);

@@ -1,14 +1,16 @@
-import { Component, ElementRef, inject, input, model, output } from '@angular/core';
-import { KeyManager, makeDraggable } from '@richapps/ngx-bond';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, model, output } from '@angular/core';
+import { makeDraggable } from '@richapps/ngx-drag';
 import { Subject, takeUntil } from 'rxjs';
 import { Point } from '../point';
 import { getSnappedAnglePoint } from '../util';
+import { KeyManager } from '../../../services/key.manager';
 
 @Component({
   selector: 'path-point',
   imports: [],
   templateUrl: './path-point.component.html',
   styleUrl: './path-point.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PathPointComponent {
   onDestroy$ = new Subject<void>();
@@ -62,9 +64,6 @@ export class PathPointComponent {
     if (point.centerPoint && this.keys.isKeyDown('Shift')) {
       newPoint = getSnappedAnglePoint(newPoint, point.centerPoint);
     }
-
-    
-
 
     const diffX = newPoint.x - this.point().x;
     const diffY = newPoint.y - this.point().y;

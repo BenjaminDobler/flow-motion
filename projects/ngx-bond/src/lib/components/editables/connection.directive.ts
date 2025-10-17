@@ -1,6 +1,7 @@
 import { Directive, effect, inject, input, model, output, signal, untracked } from '@angular/core';
-import { Link, NgBondContainer } from '@richapps/ngx-bond';
 import { svgPathBbox } from 'svg-path-bbox';
+import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
+import { Link } from '../../services/ngbond.service';
 
 @Directive({
   selector: '[connection]',

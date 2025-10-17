@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { InputComponent } from '@richapps/ui-components';
 
 @Component({
-  selector: 'lib-duplicate-dialog',
+  selector: 'duplicate-dialog',
   imports: [InputComponent, FormsModule],
   templateUrl: './duplicate-dialog.component.html',
   styleUrl: './duplicate-dialog.component.scss',

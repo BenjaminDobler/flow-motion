@@ -1,4 +1,4 @@
-import { Component, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
 import {
   NgBondWorld,
   SvgCanvasComponent,
@@ -14,13 +14,14 @@ import {
   TextComponentComponent,
   ImageComponent,
   SerializationService,
+  TimelineService,
+  TimelineComponent,
+  DuplicateService,
 } from '@richapps/ngx-bond';
-import { TimelineComponent, TimelineService } from '@richapps/ngx-bond-timeline';
 import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { InspectorComponent } from './components/inspector/inspector.component';
 import { ChildInspectorComponent } from './components/child-inspector/child-inspector.component';
 import { IconComponent } from '@richapps/ui-components';
-import { DuplicateService } from '../../../ngx-bond/src/lib/components/dialogs/duplicate-dialog/duplicate.service';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +29,7 @@ import { DuplicateService } from '../../../ngx-bond/src/lib/components/dialogs/d
   templateUrl: './app.html',
   styleUrl: './app.scss',
   providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService, DuplicateService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(dblclick)': 'this.onDoubleClick($event)',
   },

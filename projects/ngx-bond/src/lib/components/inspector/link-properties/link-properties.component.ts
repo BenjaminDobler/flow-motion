@@ -1,6 +1,8 @@
 import { Component, computed, effect, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ConnectionDirective, NgBondContainer, SelectionManager } from '@richapps/ngx-bond';
+import { SelectionManager } from '../../../services/selection.manager';
+import { NgBondContainer } from '../../ng-bond-container/ng-bond-container';
+import { ConnectionDirective } from '../../editables/connection.directive';
 
 @Component({
   selector: 'link-properties',

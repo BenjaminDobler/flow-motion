@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { ComponentFactory, NgBondService, SelectionManager } from '@richapps/ngx-bond';
 import { TreeChildComponent } from './tree-child/tree-child.component';
+import { ComponentFactory, NgBondService, SelectionManager } from '../../../../public-api';
 
 @Component({
   selector: 'element-tree',

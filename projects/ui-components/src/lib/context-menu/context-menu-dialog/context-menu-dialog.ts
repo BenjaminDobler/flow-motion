@@ -1,11 +1,12 @@
 import { CdkMenu, CdkMenuTrigger } from '@angular/cdk/menu';
-import { Component, inject, input, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, TemplateRef, ViewChild } from '@angular/core';
 import { CONTEXT_CLOSE, CONTEXT_INIT_DATA, CONTEXT_MENU_DATA, CONTEXT_SELECTED } from '../context-menu';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'context-menu-dialog',
   imports: [CdkMenu, CdkMenuTrigger, NgTemplateOutlet],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './context-menu-dialog.html',
   styleUrl: './context-menu-dialog.scss',
 })

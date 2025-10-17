@@ -1,4 +1,4 @@
-import { Component, forwardRef, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, model } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -6,6 +6,7 @@ import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/f
   imports: [FormsModule],
   templateUrl: './color.component.html',
   styleUrl: './color.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

@@ -1,7 +1,6 @@
 import { inject } from '@angular/core';
 import { ComponentFactory } from './component.factory';
-import { FLGroup, FLKeyframe, FLTrack, FLTween, TimelineService } from '@richapps/ngx-bond-timeline';
-import { groupBy } from 'rxjs';
+import { FLGroup, FLKeyframe, FLTrack, FLTween, TimelineService } from '../../public-api';
 
 export class SerializationService {
   private timeline = inject(TimelineService);

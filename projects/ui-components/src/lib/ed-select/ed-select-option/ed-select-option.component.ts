@@ -1,4 +1,4 @@
-import { Component, contentChildren, ElementRef, inject, input } from '@angular/core';
+import { Component, ElementRef, inject, input } from '@angular/core';
 import { EdSelectComponent } from '../ed-select.component';
 
 @Component({

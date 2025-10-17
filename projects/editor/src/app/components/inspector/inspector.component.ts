@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   Link,
@@ -13,8 +13,9 @@ import {
   ConnectionInspectorComponent,
   TextComponentComponent,
   LinkPropertiesComponent,
+  InspectorTweenProperties,
+  TimelineService,
 } from '@richapps/ngx-bond';
-import { InspectorTweenProperties, TimelineService } from '@richapps/ngx-bond-timeline';
 
 type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'tween';
 type Tab = {
@@ -35,6 +36,7 @@ type Tab = {
   ],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectorComponent {
   protected bondService: NgBondService = inject(NgBondService);
