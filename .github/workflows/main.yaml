@@ -17,8 +17,10 @@ jobs:
         with:
           node-version: 23
 
-      - name: Build Angular app to prod
-        run: npm install --force && npm run ngx-pentool:build && npm run ngx-pentool:link && npm run build:prod
+      - name: Build libs
+        run: npm install --force && npm run build:libs
+      - name: Build Flow Motion Editor
+        run: npm install --force && npm run build:prod
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

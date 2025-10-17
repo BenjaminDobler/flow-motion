@@ -9,6 +9,7 @@
     "test": "ng test",
     "build:prod": "ng build editor --configuration production --base-href=/flow-motion/",
     "lint": "ng lint",
+    "build:libs": "ng build ngx-drag && ng build ngx-split && ng build ui-components && ng build ngx-pentool && ng build ngx-bond",
     "ngx-pentool:build": "ng build ngx-pentool",
     "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool"
   },

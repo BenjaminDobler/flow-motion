@@ -77,7 +77,7 @@ export class Point {
   }
 
   makeDraggable() {
-    const { dragStart$, dragMove$, dragEnd$ } = makeDraggable(this.ref);
+    const { dragStart$, dragMove$, dragEnd$ } = makeDraggable(this.ref as any);
 
     let parentRect = this.parent.getBoundingClientRect();
 
