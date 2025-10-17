@@ -22,8 +22,8 @@
       "@richapps/ui-components": [
         "./dist/ui-components"
       ],
-      "ngx-drag": [
-        "./dist/ngx-drag"
+      "@richapps/ngx-pentool": [
+        "./dist/ngx-pentool"
       ]
     },
     "skipLibCheck": true,
