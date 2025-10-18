@@ -20,7 +20,7 @@ jobs:
       - name: Build libs
         run: npm install --force && npm run build:libs && npm run ngx-pentool:link
       - name: Build Flow Motion Editor
-        run: npm install --force && npm run build:prod
+        run: npm run build:prod
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
