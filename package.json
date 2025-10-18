@@ -13,7 +13,8 @@
     "ngx-pentool:build": "ng build ngx-pentool",
     "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool",
     "ngconf:generate": "tsc --project ./tsconfig.ngconf.json && resolve-tspaths && node ./ngconf/dist/out-tsc/ngconf/to-ng.js",
-    "ngconf:create": "node ./ngconf/generate.ngconf.ts"
+    "ngconf:create": "node ./ngconf/generate.ngconf.ts",
+    "ngconf:scan": "node ./ngconf/generate.interfaces.ts"
   },
   "private": true,
   "dependencies": {

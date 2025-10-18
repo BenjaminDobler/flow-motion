@@ -96,7 +96,7 @@ export interface AngularBuildApplication {
   /**
    * The stylesheet language to use for the application's inline component styles.
    */
-  inlineStyleLanguage?: 'css' | 'less' | 'sass' | 'scss';
+  inlineStyleLanguage?: "css" | "less" | "sass" | "scss";
   /**
    * Options to pass to style preprocessors.
    */
@@ -180,7 +180,7 @@ export interface AngularBuildApplication {
      * This interface was referenced by `undefined`'s JSON-Schema definition
      * via the `patternProperty` "^\.\S+$".
      */
-    [k: string]: 'text' | 'binary' | 'file' | 'dataurl' | 'base64' | 'empty';
+    [k: string]: "text" | "binary" | "file" | "dataurl" | "base64" | "empty";
   };
   /**
    * Defines global identifiers that will be replaced with a specified constant value when found in any JavaScript or TypeScript code including libraries. The value will be used directly. String values must be put in quotes. Identifiers within Angular metadata such as Component Decorators will not be replaced.
@@ -265,11 +265,11 @@ export interface AngularBuildApplication {
   /**
    * How to handle missing translations for i18n.
    */
-  i18nMissingTranslation?: 'warning' | 'error' | 'ignore';
+  i18nMissingTranslation?: "warning" | "error" | "ignore";
   /**
    * How to handle duplicate translations for i18n.
    */
-  i18nDuplicateTranslation?: 'warning' | 'error' | 'ignore';
+  i18nDuplicateTranslation?: "warning" | "error" | "ignore";
   /**
    * Translate the bundles in one or more locales.
    */
@@ -281,7 +281,7 @@ export interface AngularBuildApplication {
   /**
    * Define the output filename cache-busting hashing mode.
    */
-  outputHashing?: 'none' | 'all' | 'media' | 'bundles';
+  outputHashing?: "none" | "all" | "media" | "bundles";
   /**
    * Enable and define the file watching poll time period in milliseconds.
    */
@@ -346,7 +346,7 @@ export interface AngularBuildApplication {
   /**
    * Define the crossorigin attribute setting of elements that provide CORS support.
    */
-  crossOrigin?: 'none' | 'anonymous' | 'use-credentials';
+  crossOrigin?: "none" | "anonymous" | "use-credentials";
   /**
    * A list of CommonJS or AMD packages that are allowed to be used without a build time warning. Use `'*'` to allow all.
    */
@@ -384,7 +384,7 @@ export interface AngularBuildApplication {
          *
          * Please note that this feature does not provide polyfills for Node.js modules. Additionally, it is experimental, and the schematics may undergo changes in future versions.
          */
-        experimentalPlatform?: 'node' | 'neutral';
+        experimentalPlatform?: "node" | "neutral";
       };
   /**
    * Generates an application shell during build time.
@@ -393,7 +393,7 @@ export interface AngularBuildApplication {
   /**
    * Defines the build output target. 'static': Generates a static site for deployment on any static hosting service. 'server': Produces an application designed for deployment on a server that supports server-side rendering (SSR).
    */
-  outputMode?: 'static' | 'server';
+  outputMode?: "static" | "server";
 }
 export interface FileReplacement {
   replace: string;
@@ -403,7 +403,7 @@ export interface Budget {
   /**
    * The type of budget.
    */
-  type: 'all' | 'allScript' | 'any' | 'anyScript' | 'anyComponentStyle' | 'bundle' | 'initial';
+  type: "all" | "allScript" | "any" | "anyScript" | "anyComponentStyle" | "bundle" | "initial";
   /**
    * The name of the bundle.
    */
@@ -437,6 +437,7 @@ export interface Budget {
    */
   error?: string;
 }
+
 
 // Types for builder: @angular/build:dev-server
 
@@ -534,6 +535,7 @@ export interface AngularBuildDevServer {
       };
 }
 
+
 // Types for builder: @angular/build:extract-i18n
 
 /* eslint-disable */
@@ -554,7 +556,7 @@ export interface AngularBuildExtractI18N {
   /**
    * Output format for the generated file.
    */
-  format?: 'xmb' | 'xlf' | 'xlif' | 'xliff' | 'xlf2' | 'xliff2' | 'json' | 'arb' | 'legacy-migrate';
+  format?: "xmb" | "xlf" | "xlif" | "xliff" | "xlf2" | "xliff2" | "json" | "arb" | "legacy-migrate";
   /**
    * Log progress to the console.
    */
@@ -570,8 +572,9 @@ export interface AngularBuildExtractI18N {
   /**
    * How to handle duplicate translations.
    */
-  i18nDuplicateTranslation?: 'error' | 'warning' | 'ignore';
+  i18nDuplicateTranslation?: "error" | "warning" | "ignore";
 }
+
 
 // Types for builder: @angular/build:karma
 
@@ -670,7 +673,7 @@ export interface AngularBuildKarma {
   /**
    * The stylesheet language to use for the application's inline component styles.
    */
-  inlineStyleLanguage?: 'css' | 'less' | 'sass' | 'scss';
+  inlineStyleLanguage?: "css" | "less" | "sass" | "scss";
   /**
    * Options to pass to style preprocessors.
    */
@@ -709,7 +712,7 @@ export interface AngularBuildKarma {
      * This interface was referenced by `undefined`'s JSON-Schema definition
      * via the `patternProperty` "^\.\S+$".
      */
-    [k: string]: 'text' | 'binary' | 'file' | 'dataurl' | 'base64' | 'empty';
+    [k: string]: "text" | "binary" | "file" | "dataurl" | "base64" | "empty";
   };
   /**
    * Defines global identifiers that will be replaced with a specified constant value when found in any JavaScript or TypeScript code including libraries. The value will be used directly. String values must be put in quotes. Identifiers within Angular metadata such as Component Decorators will not be replaced.
@@ -797,6 +800,7 @@ export interface FileReplacement {
   with: string;
 }
 
+
 // Types for builder: @angular/build:ng-packagr
 
 /* eslint-disable */
@@ -828,6 +832,7 @@ export interface AngularBuildNgPackagr {
   poll?: number;
 }
 
+
 // Types for builder: @angular/build:unit-test
 
 /* eslint-disable */
@@ -837,7 +842,15 @@ export interface AngularBuildNgPackagr {
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type CoverageReporters = 'html' | 'lcov' | 'lcovonly' | 'text' | 'text-summary' | 'cobertura' | 'json' | 'json-summary';
+export type CoverageReporters =
+  | "html"
+  | "lcov"
+  | "lcovonly"
+  | "text"
+  | "text-summary"
+  | "cobertura"
+  | "json"
+  | "json-summary";
 
 /**
  * Unit testing options for Angular applications.
@@ -854,7 +867,7 @@ export interface AngularBuildUnitTest {
   /**
    * The name of the test runner to use for test execution.
    */
-  runner: 'karma' | 'vitest';
+  runner: "karma" | "vitest";
   /**
    * A list of browsers to use for test execution. If undefined, jsdom on Node.js will be used instead of a browser.
    *
@@ -898,7 +911,7 @@ export interface AngularBuildUnitTest {
         CoverageReporters,
         {
           [k: string]: unknown;
-        },
+        }
       ]
   )[];
   /**
@@ -914,6 +927,7 @@ export interface AngularBuildUnitTest {
    */
   setupFiles?: string[];
 }
+
 
 // Types for builder: @angular-eslint/builder:lint
 
@@ -955,7 +969,7 @@ export interface AngularEslintBuilderLint {
   /**
    * Strategy to use for detecting changed files in the cache.
    */
-  cacheStrategy?: 'metadata' | 'content';
+  cacheStrategy?: "metadata" | "content";
   /**
    * Succeeds even if there was linting errors.
    */
@@ -980,7 +994,21 @@ export interface AngularEslintBuilderLint {
    * ESLint Output formatter (https://eslint.org/docs/user-guide/formatters).
    */
   format?: (
-    | ('stylish' | 'compact' | 'codeframe' | 'unix' | 'visualstudio' | 'table' | 'checkstyle' | 'html' | 'jslint-xml' | 'json' | 'json-with-metadata' | 'junit' | 'tap')
+    | (
+        | "stylish"
+        | "compact"
+        | "codeframe"
+        | "unix"
+        | "visualstudio"
+        | "table"
+        | "checkstyle"
+        | "html"
+        | "jslint-xml"
+        | "json"
+        | "json-with-metadata"
+        | "junit"
+        | "tap"
+      )
     | {
         [k: string]: unknown;
       }
@@ -1009,58 +1037,67 @@ export interface AngularEslintBuilderLint {
   /**
    * The equivalent of the `--report-unused-disable-directives` flag on the ESLint CLI.
    */
-  reportUnusedDisableDirectives?: 'off' | 'warn' | 'error';
+  reportUnusedDisableDirectives?: "off" | "warn" | "error";
 }
 
 
 
-type Task =
-  | {
-      builder: '@angular/build:application';
-      options?: Partial<AngularBuildApplication>;
-      configurations?: { [k: string]: Partial<AngularBuildApplication> };
-      defaultConfiguration?: string;
-    }
-  | {
-      builder: '@angular/build:dev-server';
-      options?: Partial<AngularBuildDevServer>;
-      configurations?: { [k: string]: Partial<AngularBuildDevServer> };
-      defaultConfiguration?: string;
-    }
-  | {
-      builder: '@angular/build:extract-i18n';
-      options?: Partial<AngularBuildExtractI18N>;
-      configurations?: { [k: string]: Partial<AngularBuildExtractI18N> };
-      defaultConfiguration?: string;
-    }
-  | {
-      builder: '@angular/build:karma';
-      options?: Partial<AngularBuildKarma>;
-      configurations?: { [k: string]: Partial<AngularBuildKarma> };
-      defaultConfiguration?: string;
-    }
-  | {
-      builder: '@angular/build:ng-packagr';
-      options?: Partial<AngularBuildNgPackagr>;
-      configurations?: { [k: string]: Partial<AngularBuildNgPackagr> };
-      defaultConfiguration?: string;
-    }
-  | {
-      builder: '@angular/build:unit-test';
-      options?: Partial<AngularBuildUnitTest>;
-      configurations?: { [k: string]: Partial<AngularBuildUnitTest> };
-      defaultConfiguration?: string;
-    }
-  | {
-      builder: '@angular-eslint/builder:lint';
-      options?: Partial<AngularEslintBuilderLint>;
-      configurations?: { [k: string]: Partial<AngularEslintBuilderLint> };
-      defaultConfiguration?: string;
-    };
+    type Task = 
+            {
+                builder: '@angular/build:application',
+                options?: Partial<AngularBuildApplication>,
+                configurations?: { [k: string]: Partial<AngularBuildApplication> },
+                defaultConfiguration?: string
+            }
+         | 
+            {
+                builder: '@angular/build:dev-server',
+                options?: Partial<AngularBuildDevServer>,
+                configurations?: { [k: string]: Partial<AngularBuildDevServer> },
+                defaultConfiguration?: string
+            }
+         | 
+            {
+                builder: '@angular/build:extract-i18n',
+                options?: Partial<AngularBuildExtractI18N>,
+                configurations?: { [k: string]: Partial<AngularBuildExtractI18N> },
+                defaultConfiguration?: string
+            }
+         | 
+            {
+                builder: '@angular/build:karma',
+                options?: Partial<AngularBuildKarma>,
+                configurations?: { [k: string]: Partial<AngularBuildKarma> },
+                defaultConfiguration?: string
+            }
+         | 
+            {
+                builder: '@angular/build:ng-packagr',
+                options?: Partial<AngularBuildNgPackagr>,
+                configurations?: { [k: string]: Partial<AngularBuildNgPackagr> },
+                defaultConfiguration?: string
+            }
+         | 
+            {
+                builder: '@angular/build:unit-test',
+                options?: Partial<AngularBuildUnitTest>,
+                configurations?: { [k: string]: Partial<AngularBuildUnitTest> },
+                defaultConfiguration?: string
+            }
+         | 
+            {
+                builder: '@angular-eslint/builder:lint',
+                options?: Partial<AngularEslintBuilderLint>,
+                configurations?: { [k: string]: Partial<AngularEslintBuilderLint> },
+                defaultConfiguration?: string
+            }
+        ;
+
 
 
 export type Project = {
   root: string;
+  name: string;
   sourceRoot: string;
   projectType: 'application' | 'library';
   prefix?: string;
@@ -1073,11 +1110,4 @@ export type Project = {
     [k: string]: Task;
   }
 };
-
-
-export class Test {
-  
-}
-
-
 
