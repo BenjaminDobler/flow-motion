@@ -11,7 +11,9 @@
     "lint": "ng lint",
     "build:libs": "ng build ngx-drag && ng build ngx-split && ng build ui-components && ng build ngx-pentool && ng build ngx-bond",
     "ngx-pentool:build": "ng build ngx-pentool",
-    "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool"
+    "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool",
+    "ngconf:generate": "tsc --project ./tsconfig.ngconf.json && resolve-tspaths && node ./ngconf/dist/out-tsc/ngconf/to-ng.js",
+    "ngconf:create": "node ./ngconf/generate.ngconf.ts"
   },
   "private": true,
   "dependencies": {
@@ -25,7 +27,12 @@
     "@angular/platform-browser-dynamic": "^20.1.4",
     "@angular/router": "^20.1.4",
     "@loancrate/prisma-schema-parser": "^3.0.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.8.1",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.2",
     "gsap": "^3.13.0",
+    "json-schema-to-typescript": "^15.0.4",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^20.0.0",
     "path-data-polyfill": "^1.0.10",
@@ -33,6 +40,7 @@
     "primeicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "svg-path-bbox": "^2.1.0",
+    "ts-node": "^10.9.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -46,12 +54,15 @@
     "eslint": "^9.29.0",
     "eslint-plugin-change-detection-strategy": "^0.1.5",
     "jasmine-core": "~5.6.0",
+    "json-schema-to-ts": "^3.1.1",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.0.0",
+    "resolve-tspaths": "^0.8.23",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "8.34.1"
   },

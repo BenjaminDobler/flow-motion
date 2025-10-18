@@ -2,8 +2,9 @@
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
+  "include": ["./ngconf/**/*.ts", "./**/ngconf.ts"],
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
+    "outDir": "./ngconf/dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

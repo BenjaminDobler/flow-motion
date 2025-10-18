@@ -1,0 +1,145 @@
+.editor-theme {
+  background-color: #1e1e1e;
+  font-family: var(--font-family);
+
+  --font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', sans-serif, 'SFProLocalRange';
+  --surface-color1: #fff;
+  --form-bg: #f5f5f5;
+  --form-border: #ccc;
+  --form-border-highlight: #0f8be8;
+  --color: #00000080;
+  --highlight-color: #0f8be8;
+  --divider-color: #e5e5e5;
+
+  button {
+    background: var(--highlight-color);
+    border: none;
+    color: var(--form-item-color);
+    font-weight: 450;
+    font-size: 0.6875rem;
+    padding: 0 12px;
+    border-radius: 3px;
+    &:hover {
+      background: #383838;
+    }
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 15rem;
+  }
+
+  /***** Chrome, Safari, Opera, and Edge Chromium *****/
+  input[type='range']::-webkit-slider-runnable-track {
+    background: var(--form-bg);
+    height: 0.5rem;
+  }
+
+  /******** Firefox ********/
+  input[type='range']::-moz-range-track {
+    background: var(--form-bg);
+    height: 0.5rem;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    border-radius: 100%;
+    margin-top: -4px; /* Centers thumb on the track */
+    background-color: var(--surface-color1);
+    height: 1rem;
+    width: 1rem;
+    border: solid 1px var(--form-border);
+  }
+
+  input[type='range']::-moz-range-thumb {
+    border: none; /*Removes extra border that FF applies*/
+    border-radius: 100%; /*Removes default border-radius that FF applies*/
+    background-color: var(--form-bg);
+    height: 1rem;
+    width: 1rem;
+    border: solid 1px var(--form-border);
+  }
+
+  /***** Focus Styles *****/
+  /* Removes default focus */
+  input[type='range']:focus {
+    outline: none;
+  }
+
+  /***** Chrome, Safari, Opera, and Edge Chromium *****/
+  input[type='range']:focus::-webkit-slider-thumb {
+    border: 1px solid #053a5f;
+    outline: 3px solid #053a5f;
+    outline-offset: 0.125rem;
+  }
+
+  /******** Firefox ********/
+  input[type='range']:focus::-moz-range-thumb {
+    border: 1px solid #053a5f;
+    outline: 3px solid #053a5f;
+    outline-offset: 0.125rem;
+  }
+
+  .sidebar {
+    background: var(--surface-color1);
+
+    &.left {
+      border-right: solid 1px var(--divider-color);
+    }
+
+    &.right {
+      border-left: solid 1px var(--divider-color);
+    }
+  }
+
+  .properties-panel {
+    border-bottom: solid 1px var(--divider-color);
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 12px;
+    .properties-panel_header {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      h2 {
+        margin: 0;
+        font-size: 11px;
+        color: #fff;
+        font-family: var(--font-family);
+      }
+    }
+
+    .properties-panel_row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      input-component {
+        flex: 1;
+      }
+      ed-select {
+        flex: 1;
+      }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: #ffffff;
+    font-size: 11px;
+    --surface-color1: #2c2c2c;
+    --form-bg: #383838;
+    --form-border: #444444;
+    --form-border-highlight: #0f8be8;
+    --form-item-color: #ffffff;
+    --form-item-color-secondary: #c3c3c3;
+    --color: #00000080;
+    --color-secondary: #c3c3c3;
+    --divider-color: #444444;
+
+    --group-info-pill-bg: #0f8be8;
+  }
+}
