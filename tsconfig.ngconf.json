@@ -11,24 +11,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@richapps/ngx-bond": [
-        "./dist/ngx-bond"
-      ],
-      "@richapps/ngx-drag": [
-        "./dist/ngx-drag"
-      ],
-      "@richapps/ngx-split": [
-        "./dist/ngx-split"
-      ],
-      "@richapps/ui-components": [
-        "./dist/ui-components"
-      ],
-      "@richapps/ngx-pentool": [
-        "./dist/ngx-pentool"
-      ],
-      "@richapps/ngx-pentool/theming": [
-        "./dist/ngx-pentool/src/styles/pentool.scss"
-      ],
       "@richapps/ngconf": [
         "./ngconf/index.ts"
       ]
