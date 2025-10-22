@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ComponentRef, ElementRef, inject, input, model, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ComponentRef, computed, ElementRef, inject, input, model, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { FormsModule } from '@angular/forms';
 import { ContextMenu } from '@richapps/ui-components';
@@ -67,6 +67,11 @@ export class ContainerComponent {
   type = 'container';
 
   duplicateService = inject(DuplicateService);
+
+  linkScale = computed(()=>{
+    const scale = this.container.ngBondService?.scale() || 1;
+    return 1 / scale;
+  });
 
   el = inject(ElementRef);
   @ViewChild('insert_slot', { read: ViewContainerRef })

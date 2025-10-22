@@ -1,4 +1,20 @@
-import { ChangeDetectionStrategy, Component, ComponentRef, computed, effect, ElementRef, inject, input, model, Signal, signal, TemplateRef, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ComponentRef,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  model,
+  Signal,
+  signal,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+  WritableSignal,
+} from '@angular/core';
 import { Link, NgBondService } from '../../services/ngbond.service';
 import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { SelectionManager } from '../../services/selection.manager';
@@ -45,13 +61,10 @@ export interface NGBondItem {
     '(dragend)': '$event.preventDefault()',
     '(dragstart)': '$event.preventDefault()',
     '(drag)': '$event.preventDefault()',
+    '(wheel)': 'onWheel($event)',
   },
 })
 export class NgBondWorld implements NGBondItem {
-
-
-
-
   public static inspectableProperties: InspectableProperty[] = [
     {
       name: 'backgroundColor',
@@ -60,6 +73,9 @@ export class NgBondWorld implements NGBondItem {
       category: 'Canvas',
     },
     {
+      group: {
+        name: 'Transform',
+      },
       name: 'scale',
       alias: 'Scale',
       type: 'range',
@@ -67,14 +83,28 @@ export class NgBondWorld implements NGBondItem {
       max: 5,
       step: 0.01,
       category: 'Canvas',
-    }
+    },
+    {
+      group: {
+        name: 'Transform',
+      },
+      name: 'scale',
+      alias: 'Scale',
+      type: 'number',
+      format: (value: number)=>{
+        return Math.round(value * 100);
+      },
+      min: 0.1,
+      max: 5,
+      step: 0.01,
+      suffix: '%',
+      category: 'Canvas',
+    },
   ];
-
 
   get inspectableProperties() {
     return NgBondWorld.inspectableProperties;
   }
-
 
   displayName = model<string>('World');
 
@@ -142,6 +172,22 @@ export class NgBondWorld implements NGBondItem {
   detachChild(viewRef: ComponentRef<any>) {
     const i = this.worldHost.indexOf(viewRef.hostView);
     this.worldHost.detach(i);
+  }
+
+  onWheel(event: WheelEvent) {
+    if (event.metaKey || event.ctrlKey) {
+          event.preventDefault();
+
+      // Zooming
+      this.handleZoom(event);
+    }
+  }
+
+  handleZoom(event: WheelEvent) {
+    const delta = -event.deltaY * 0.001;
+    let newScale = this.scale() + delta;
+    newScale = Math.min(Math.max(newScale, 0.1), 5);
+    this.scale.set(newScale);
   }
 
   selectionRect = computed(() => {
