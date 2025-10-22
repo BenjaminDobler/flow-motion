@@ -1,6 +1,5 @@
 import { Component, effect, inject, model, signal } from '@angular/core';
-import { NgBondContainer, NgBondProperty } from '@richapps/ngx-bond';
-import { InspectableProperty } from '../../../../public-api';
+import { InspectableProperty, NgBondContainer, NgBondProperty } from '../../../../public-api';
 
 @Component({
   selector: 'lib-node-table',
