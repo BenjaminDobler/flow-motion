@@ -1,4 +1,4 @@
-import { Component, effect, inject, model, signal } from '@angular/core';
+import { afterNextRender, Component, effect, inject, model, signal } from '@angular/core';
 import { InspectableProperty, NgBondContainer, NgBondProperty } from '../../../../public-api';
 
 @Component({
@@ -10,6 +10,7 @@ import { InspectableProperty, NgBondContainer, NgBondProperty } from '../../../.
 export class NodeTableComponent {
   container = inject(NgBondContainer);
   title = model('Node Table');
+  type = 'node-table';
 
   fields = model<{ name: string; type: string }[]>([
     { name: 'Name', type: 'string' },
@@ -28,7 +29,7 @@ export class NodeTableComponent {
         name: 'string',
         type: 'string',
       },
-    }
+    },
   ];
 
   get inspectableProperties() {
@@ -36,8 +37,10 @@ export class NodeTableComponent {
   }
 
   constructor() {
-    effect(()=> {
-      console.log('container id changed', this.container.id());
-    });
+    afterNextRender(() => {
+      if (this.container.displayName() === '') {
+        this.container.displayName.set('Node Table ');
+      }
+    }); 
   }
 }

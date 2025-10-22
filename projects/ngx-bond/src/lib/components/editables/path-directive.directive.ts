@@ -1,10 +1,14 @@
-import { afterNextRender, computed, Directive, effect, ElementRef, inject, input, model, output, signal, untracked } from '@angular/core';
-import { Path } from '../svg-canvas/path';
+import { afterNextRender, computed, Directive, effect, ElementRef, EventEmitter, inject, Injector, input, model, output, signal } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
+import { outputToObservable, toObservable } from '@angular/core/rxjs-interop';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
-import { ComponentFactory, SelectionManager } from '../../../public-api';
+import { ComponentFactory } from '../../services/component.factory';
+import { SelectionManager } from '../../services/selection.manager';
+import { Path } from '../svg-canvas/path';
+import { Point } from '../svg-canvas/point';
 
 @Directive({
-  selector: '[appPathDirective]',
+  selector: '[pathdirective]',
   host: {
     '(dblclick)': 'onDblClick($event)',
   },
@@ -16,9 +20,10 @@ import { ComponentFactory, SelectionManager } from '../../../public-api';
   ],
 })
 export class PathDirectiveDirective {
+  [key: string]: any; // Add index signature to allow dynamic property assignment
   componentFactory = inject(ComponentFactory);
 
-  public type = 'path-directive';
+  public type = 'path';
 
   static inspectableProperties = [
     {
@@ -27,11 +32,11 @@ export class PathDirectiveDirective {
       setterName: 'stroke',
       isSignal: true,
       event: 'strokeChanged',
+      serializable: true,
     },
     {
       name: 'strokeWidth',
       type: 'number',
-      prefixIcon: 'strokeWeight',
       setterName: 'strokeWidth',
       isSignal: true,
       event: 'strokeWidthChanged',
@@ -110,6 +115,8 @@ export class PathDirectiveDirective {
 
   selection = inject(SelectionManager);
 
+  injector = inject(Injector);
+
   enabled = true;
 
   dragging = signal(false);
@@ -153,12 +160,19 @@ export class PathDirectiveDirective {
   strokeLineCap = model<'butt' | 'round' | 'square'>('butt');
   strokeLineCapChanged = output<string>();
 
+  destroyed$ = new Subject<void>();
+
   d = computed(() => {
     return this.path()?.d() || '';
   });
 
   constructor() {
-    console.log('Path directive constructor', this.path());
+
+
+    if (this.container.displayName() === '') {
+      this.container.displayName.set('Path ');
+    } 
+    this.container.type = this.type;
     // const resizeObserver = new ResizeObserver((entries) => {
     //   for (const entry of entries) {
     //     if (entry.contentBoxSize) {
@@ -177,10 +191,57 @@ export class PathDirectiveDirective {
     // resizeObserver.observe(this.container.el?.nativeElement);
 
     // const debouncedPathChange = toSignal(toObservable(this.d).pipe(distinctUntilChanged(), debounceTime(500)));
+    let previousPoints: Point[] = [];
 
-    if (this.container) {
-      this.container.type = 'link';
-    }
+    effect(() => {
+      const path = this.path();
+      const points = this.path()?.points();
+      console.log('Points changed', points?.length);
+
+      // find all new points recognized by their id
+      const newPoints = points.filter((p) => !previousPoints.includes(p));
+      // find all removed points recognized by their id
+      const removedPoints = previousPoints.filter((p) => !points.includes(p));
+
+      newPoints.forEach((p) => {
+        this['point-position-changed-' + p.id] = new EventEmitter();// new Subject<{ x: number; y: number }>();
+
+        console.log('ppp ', this['point-position-' + p.id]);
+
+
+        
+        console.log('point added', p.id);
+
+
+
+        this.componentFactory.containerElementMap.get(this.container)?.propertyDirectiveMap.set('point-position-' + p.id, this);
+
+
+        this.inspectableProperties.push({
+          name: 'point-position-' + p.id,
+          type: 'position',
+          setterName: 'point-position-' + p.id,
+          isSignal: false,
+          event: 'point-position-changed-' + p.id,
+          serializable: false,
+        });
+
+        const sub = p.positionChanged.subscribe(() => {
+          if (this.dragging()) {
+            return;
+          }
+          console.log('Point moved, updating path bounding box ', p.id, p.x, p.y);
+
+          this.componentFactory.propertyChanged.next({ id: this.container.id(), property: 'point-position-' + p.id, value: { x: p.x, y: p.y, id: p.id } });
+        });
+      });
+
+      removedPoints.forEach((p) => {
+        console.log('Point removed, unsubscribing ', p.id);
+      });
+
+      previousPoints = [...points];
+    });
 
     effect(() => {
       const d = this.path()?.d() || '';
@@ -207,42 +268,50 @@ export class PathDirectiveDirective {
     effect(() => {
       const stroke = this.stroke();
       this.path()?.stroke.set(stroke);
+      this.strokeChanged.emit(stroke);
     });
 
     effect(() => {
       const strokeWidth = this.strokeWidth();
       this.path()?.strokeWidth.set(strokeWidth);
+      this.strokeWidthChanged.emit(strokeWidth);
     });
 
     effect(() => {
       const fill = this.fill();
       this.path()?.fill.set(fill);
+      this.fillChanged.emit(fill);
     });
 
     effect(() => {
       const strokeDasharray = this.strokeDasharray();
       this.path()?.strokeDasharray.set(strokeDasharray);
+      this.strokeDasharrayChanged.emit(strokeDasharray);
     });
 
     effect(() => {
       const pathprogress = this.pathprogress();
       this.strokeDasharray.set(this.totalLength() + '');
       this.strokeDashoffset.set(this.totalLength() - this.totalLength() * (pathprogress / 100));
+      this.pathprogressChanged.emit(pathprogress);
     });
 
     effect(() => {
       const strokeDashoffset = this.strokeDashoffset();
       this.path()?.strokeDashoffset.set(strokeDashoffset);
+      this.strokeDashoffsetChanged.emit(strokeDashoffset);
     });
 
     effect(() => {
       const strokeLineJoint = this.strokeLineJoint();
       this.path()?.strokeLineJoint.set(strokeLineJoint);
+      this.strokeLineJointChanged.emit(strokeLineJoint);
     });
 
     effect(() => {
       const strokeLineCap = this.strokeLineCap();
       this.path()?.strokeLineCap.set(strokeLineCap);
+      this.strokeLineCapChanged.emit(strokeLineCap);
     });
 
     this.container.positioning = 'none';
@@ -258,7 +327,14 @@ export class PathDirectiveDirective {
 
     let isFirst = true;
 
-    this.container.positionUpdated.subscribe((position) => {
+
+    this.container.positionUpdated.subscribe(()=>{
+
+    });
+
+    const p$ = outputToObservable(this.container.positionUpdated);
+
+    p$.pipe(takeUntil(this.destroyed$)).subscribe((position) => {
       if (position.xBy === 0 && position.yBy === 0) {
         return;
       }
@@ -266,31 +342,12 @@ export class PathDirectiveDirective {
         isFirst = false;
         return;
       }
-
-      // this.container.x.set(position.x);
-      // this.container.y.set(position.y);
-      // this.path()?.moveBy(position.xBy, position.yBy);
-
       this.path()?.moveBy(position.xBy, position.yBy);
     });
 
     afterNextRender(() => {
       this.container.id.set(this.path().id());
       this.componentFactory.addSvgContainer(this.container, [this]);
-    });
-
-    console.log('Path directive created for path', this.path());
-
-    effect(() => {
-      const path = this.path();
-      console.log('Path effect', path);
-      if (!path) {
-        return;
-      }
-      
-      const points = this.path()?.points();
-      
-      console.log('Points changed', points);
     });
   }
 
@@ -303,5 +360,10 @@ export class PathDirectiveDirective {
       evt.stopPropagation();
       evt.preventDefault();
     }
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }

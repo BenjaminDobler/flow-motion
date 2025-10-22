@@ -57,6 +57,8 @@ export class TextComponentComponent {
 
   fontWeight = model('normal');
 
+  bgColor = model('transparent');
+
   textInput = viewChild<ElementRef<HTMLInputElement>>('textInput');
 
   container = inject(NgBondContainer);

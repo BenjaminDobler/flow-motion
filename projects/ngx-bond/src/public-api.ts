@@ -21,17 +21,17 @@ export * from './lib/components/inspector/element-property-inspector/element-pro
 export * from './lib/components/editables/image/image.component';
 
 export * from './lib/components/editables/node-table/node-table.component';
+export * from './lib/components/editables/text-component/text-component.component';
+export * from './lib/components/editables/path-directive.directive';
 
 export * from './lib/components/inspector/element-tree/tree-child/tree-child.component';
 export * from './lib/components/inspector/element-tree/element-tree.component';
 export * from './lib/components/inspector/alignment-inspector/alignment-inspector.component';
 export * from './lib/components/inspector/connection-inspector/connection-inspector.component';
-export * from './lib/components/editables/text-component/text-component.component';
 export * from './lib/components/inspector/link-properties/link-properties.component';
 
 
 export * from './lib/components/svg-canvas/svg-canvas.component';
-export * from './lib/components/svg-canvas/path-directive.directive';
 export * from './lib/components/svg-canvas/path';
 export * from './lib/components/svg-canvas/svgcanvas';
 export * from './lib/components/svg-canvas/svgcanvas';

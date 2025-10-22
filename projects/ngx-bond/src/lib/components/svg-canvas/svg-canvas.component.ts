@@ -1,7 +1,7 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
-import { PathDirectiveDirective } from './path-directive.directive';
 import { PathPointComponent } from './path-point/path-point.component';
 import { SVGCanvas } from './svgcanvas';
+import { PathDirectiveDirective } from '../editables/path-directive.directive';
 
 @Component({
   selector: 'svg-canvas',

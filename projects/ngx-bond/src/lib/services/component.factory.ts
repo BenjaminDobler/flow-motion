@@ -7,8 +7,7 @@ import { ImageComponent } from '../components/editables/image/image.component';
 import { TextComponentComponent } from '../components/editables/text-component/text-component.component';
 import { SelectionManager } from './selection.manager';
 import { NgBondService, inspectableLinkProperties } from './ngbond.service';
-import { InspectableProperty, NgBondContainer, NGBondItem, NgBondWorld, NodeTableComponent, Path, SVGCanvas } from '../../public-api';
-import { PathDirectiveDirective } from '../components/editables/path-directive.directive';
+import { InspectableProperty, NgBondContainer, NGBondItem, NgBondWorld, NodeTableComponent, Path, PathDirectiveDirective, SVGCanvas } from '../../public-api';
 
 const componentNameToClass = {
   _ContainerComponent: ContainerComponent,
@@ -451,6 +450,8 @@ export class ComponentFactory {
   }
 
   addSvgContainer(container: NgBondContainer, directiveInstances: any[] = []) {
+    console.log('get path directive ', container);
+    
     const pathDirective = container.injector.get(PathDirectiveDirective);
 
     this.containerElementMap.set(container, {
@@ -473,6 +474,7 @@ export class ComponentFactory {
     container.inspectableProperties
       .filter((p) => p.event)
       .forEach((p) => {
+        console.log('prop ', p);
         (container as any)[p.event as any].subscribe((evt: any) => {
           this.propertyChanged.next({
             id,

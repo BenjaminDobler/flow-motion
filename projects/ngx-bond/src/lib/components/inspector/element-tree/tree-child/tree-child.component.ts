@@ -27,12 +27,13 @@ export class TreeChildComponent {
 
   component = computed(() => {
     const container = this.selection.components?.containerElementMap.get(this.child() as NgBondContainer);
+    if (!container) {
+      return this.child();
+    }
     return container?.instance;
   });
 
   remove(child?: NGBondItem) {
     this.onremove.emit(child || this.child());
   }
-
-
 }

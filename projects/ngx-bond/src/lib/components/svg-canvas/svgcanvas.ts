@@ -1,8 +1,7 @@
 import { Component, effect, ElementRef, inject, Injectable, output, signal, viewChild } from '@angular/core';
 import { Point } from './point';
 import { filter, finalize, fromEvent, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { bringToTopofSVG, distance, findNearestPointOnLine, getAngle, getSnappedAnglePoint, insertAt, isInWhichSegment } from './util';
-import { PathDirectiveDirective } from './path-directive.directive';
+import { distance, findNearestPointOnLine, getAngle, getSnappedAnglePoint, insertAt, isInWhichSegment } from './util';
 import { Path } from './path';
 import { PathPointComponent } from './path-point/path-point.component';
 import { KeyManager } from '../../services/key.manager';

@@ -9,7 +9,6 @@ import {
   KeyManager,
   SVGCanvas,
   MotionPathService,
-  PathDirectiveDirective,
   NgBondContainer,
   TextComponentComponent,
   ImageComponent,
@@ -17,6 +16,7 @@ import {
   TimelineService,
   TimelineComponent,
   DuplicateService,
+  PathDirectiveDirective,
 } from '@richapps/ngx-bond';
 import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { InspectorComponent } from './components/inspector/inspector.component';

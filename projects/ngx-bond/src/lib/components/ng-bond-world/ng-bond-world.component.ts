@@ -127,6 +127,7 @@ export class NgBondWorld implements NGBondItem {
   scale = model<number>(1);
 
   children = signal<NGBondItem[]>([]);
+
   x = signal(0);
   y = signal(0);
   gX = signal(0);
@@ -160,6 +161,7 @@ export class NgBondWorld implements NGBondItem {
   }
 
   addChild(child: NGBondItem) {
+    console.log('add child', child);
     this.children.update((c) => [...c, child]);
     this.selectionManager.rootChildren.update((c) => [...c, child as NgBondContainer]);
   }
