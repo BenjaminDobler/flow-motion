@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, model, output, signal, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { fromEvent } from 'rxjs';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
@@ -62,6 +62,11 @@ export class TextComponentComponent {
   container = inject(NgBondContainer);
 
   editable = signal(false);
+
+  linkScale = computed(() => {
+    const scale = this.container.ngBondService?.scale() || 1;
+    return 1 / scale;
+  });
 
   constructor() {
 

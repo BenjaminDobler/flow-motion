@@ -2,10 +2,10 @@
 <ng-template #insert_slot></ng-template>
 
 
-<div [bondproperty]="'prop' + container.id() + '-left'" positioning="none" [draggable]="false" class="connector left-connector"></div>
+<div [style.transform]="`scale(${linkScale()})`" [bondproperty]="'prop' + container.id() + '-left'" positioning="none" [draggable]="false" class="connector left-connector"></div>
 
-<div [bondproperty]="'prop' + container.id() + '-right'" positioning="none" [draggable]="false" class="connector right-connector"></div>
+<div [style.transform]="`scale(${linkScale()})`" [bondproperty]="'prop' + container.id() + '-right'" positioning="none" [draggable]="false" class="connector right-connector"></div>
 
-<div [bondproperty]="'prop' + container.id() + '-top'" positioning="none" [draggable]="false" class="connector top-connector"></div>
+<div [style.transform]="`scale(${linkScale()})`" [bondproperty]="'prop' + container.id() + '-top'" positioning="none" [draggable]="false" class="connector top-connector"></div>
 
-<div [bondproperty]="'prop' + container.id() + '-bottom'" positioning="none" [draggable]="false" class="connector bottom-connector"></div>
+<div [style.transform]="`scale(${linkScale()})`" [bondproperty]="'prop' + container.id() + '-bottom'" positioning="none" [draggable]="false" class="connector bottom-connector"></div>

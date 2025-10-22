@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, model } from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { NgBondContainer } from '../../ng-bond-container/ng-bond-container';
 
@@ -23,6 +23,11 @@ export class ImageComponent {
   rand = Math.floor(Math.random() * 1000);
 
   container = inject(NgBondContainer);
+
+  linkScale = computed(() => {
+    const scale = this.container.ngBondService?.scale() || 1;
+    return 1 / scale;
+  });
 
   get inspectableProperties() {
     return ImageComponent.inspectableProperties;
