@@ -1,0 +1,82 @@
+:host {
+  position: absolute;
+  width: 300px;
+
+}
+
+.card {
+  background-color: oklch(0.274 0.006 286.033);
+  border-radius: 12px;
+  font-family: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 13px;
+  overflow: hidden;
+
+  .card-header {
+    background-image: linear-gradient(to top, oklab(0.141 0.00136333 -0.00481054 / 0.3) 0px, rgba(0, 0, 0, 0) 100%);
+    height: 45px;
+    width: 100%;
+    color: oklch(0.985 0 0);
+    display: flex;
+    align-items: center;
+
+    .tx {
+      padding-left: 16px;
+      display: flex;
+      gap: 5px;
+    }
+  }
+
+  .card-content {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .list-item {
+    position: relative;
+    width: 100%;
+    display: flex;
+    font-size: 12px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    justify-content: space-between;
+    color: oklch(0.985 0 0);
+    border-bottom: dashed 1px oklch(1 0 0 / 0.1);
+
+    .connection-indicator {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      background: #757575;
+      border-radius: 100%;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+
+      &.has-link {
+        opacity: 1;
+        background: #fff;
+      }
+
+      &.right {
+        right: 5px;
+      }
+
+      &.left {
+        left: 5px;
+      }
+    }
+
+    &:hover {
+      .connection-indicator {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.tx-muted {
+  color: oklab(0.705 0.00415142 -0.0144141 / 0.6);
+}

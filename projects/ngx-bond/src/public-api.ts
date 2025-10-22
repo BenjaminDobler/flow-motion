@@ -20,6 +20,8 @@ export * from './lib/types/types';
 export * from './lib/components/inspector/element-property-inspector/element-property-inspector.component';
 export * from './lib/components/editables/image/image.component';
 
+export * from './lib/components/editables/node-table/node-table.component';
+
 export * from './lib/components/inspector/element-tree/tree-child/tree-child.component';
 export * from './lib/components/inspector/element-tree/element-tree.component';
 export * from './lib/components/inspector/alignment-inspector/alignment-inspector.component';

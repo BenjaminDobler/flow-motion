@@ -1,3 +1,6 @@
+
+
+<div style="width: 3000px;height: 3000px; position: relative;">
 <svg #svg_canvas style="position: absolute; top: 0; left: 0" [style.background]="backgroundColor()" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
   <!-- <defs>
     <pattern id=":S4:" patternUnits="userSpaceOnUse" width="20" height="20">
@@ -14,7 +17,7 @@
   <ng-content></ng-content>
 </div>
 
-
+<div class="overlay-container" [style.transform]="`scale(${dragService.scale()})`">
 @let group = selectionManager.selectedGroup();
 
 <!--draw selection hightlights-->
@@ -64,3 +67,5 @@
     <rect [attr.x]="dropTarget.gX()" [attr.y]="dropTarget.gY()" [attr.width]="dropTarget.width()" [attr.height]="dropTarget.height()" fill="none" stroke="#ff0000" stroke-width="3" />
   }
 </svg>
+</div>
+</div>

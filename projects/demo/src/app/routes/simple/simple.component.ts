@@ -11,10 +11,11 @@ import {
   SelectionManager,
   SVGCanvas,
   SvgCanvasComponent,
+  TimelineComponent,
+  TimelineService,
 } from '@richapps/ngx-bond';
 import { PropertyContainerComponent } from '../../components/property-container/property-container.component';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
-import { MotionPathComponent, TimelineComponent, TimelineService } from '@richapps/ngx-bond-timeline';
 import { ConnectionContainerComponent } from '../../../../../ngx-bond/src/lib/components/connection-container/connection-container.component';
 import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { ChildInspectorComponent } from '../../components/child-inspector/child-inspector.component';

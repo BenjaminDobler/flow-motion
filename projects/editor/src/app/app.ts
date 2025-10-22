@@ -22,6 +22,7 @@ import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { InspectorComponent } from './components/inspector/inspector.component';
 import { ChildInspectorComponent } from './components/child-inspector/child-inspector.component';
 import { IconComponent } from '@richapps/ui-components';
+import { NodeTableComponent } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-root',
@@ -103,6 +104,10 @@ export class App {
         y: 100,
       });
     };
+  }
+
+  addNodeTable() {
+    this.componentFactory.addComponent(NodeTableComponent);
   }
 
   addText() {

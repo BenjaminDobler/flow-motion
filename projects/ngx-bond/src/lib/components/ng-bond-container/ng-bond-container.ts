@@ -75,18 +75,18 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'number',
       prefixIcon: 'rotate',
     },
-    // {
-    //   name: 'bounds',
-    //   type: 'DOMRect',
-    //   noneSerializable: true,
-    //   readonly: true,
-    // },
-    // {
-    //   name: 'globalBounds',
-    //   type: 'DOMRect',
-    //   noneSerializable: true,
-    //   readonly: true,
-    // },
+    {
+      name: 'bounds',
+      type: 'DOMRect',
+      noneSerializable: true,
+      readonly: true,
+    },
+    {
+      name: 'globalBounds',
+      type: 'DOMRect',
+      noneSerializable: true,
+      readonly: true,
+    },
   ];
 
   get inspectableProperties() {
@@ -239,6 +239,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     effect(() => {
       const x = this.x();
       const y = this.y();
+      console.log('xy changed ', this.id(), x, y)
       const inited = this.inited();
       this.setPositionImmediately(x, y);
     });
@@ -272,6 +273,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   setPositionImmediately(x: number, y: number) {
     const xBy = x - this.previousX;
     const yBy = y - this.previousY;
+    
     if (this.itemElement && this.positioning !== 'none') {
       if (this.positioning === 'absolute') {
         this.itemElement.style.left = `${x}px`;
@@ -434,15 +436,19 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       const isTopHeightDrag = move.startOffsetY < this.resizeOffset;
 
       if (this.resizable() === false || (!isBottomHeightDrag && !isLeftWidthDrag && !isRightWidthDrag && !isTopHeightDrag)) {
-        const offsetX = move.originalEvent.x - move.startOffsetX;
-        const offsetY = move.originalEvent.y - move.startOffsetY;
+        const scale = this.ngBondService ? this.ngBondService.scale() : 1;
+
+        let offsetX = move.originalEvent.x - move.startOffsetX;
+        let offsetY = move.originalEvent.y - move.startOffsetY;
+
         let x = offsetX - this.parentRect.left;
         let y = offsetY - this.parentRect.top;
 
-        if (this.ngBondService) {
-          x = x / this.ngBondService.scale();
-          y = y / this.ngBondService.scale();
-        }
+        console.log('GX', this.parent()?.gX(), this.parentRect.left);
+
+          x = x / scale;
+          y = y / scale;
+
         this.pos(x, y);
       } else if (isBottomHeightDrag) {
         let height = move.originalEvent.y - this.itemRect.top + this.itemRect.height - move.startOffsetY;
@@ -520,12 +526,31 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     const itemElement = this.el?.nativeElement;
 
     const itemRect = itemElement.getBoundingClientRect();
+    const scale = this.ngBondService ? this.ngBondService.scale() : 1;
 
     const containerX = this.parent()?.gX?.() || 0;
     const containerY = this.parent()?.gY?.() || 0;
 
-    const x = itemRect.left - containerX - (this.world?.rect?.left || 0);
-    const y = itemRect.top - containerY - (this.world?.rect?.top || 0);
+    // const x = itemRect.left - containerX - (this.world?.rect?.left || 0);
+    // const y = itemRect.top - containerY - (this.world?.rect?.top || 0);
+
+    let worldLeft = this.world?.rect?.left || 0;
+    let worldTop = this.world?.rect?.top || 0;
+
+    let worldEl = this.world?.el?.nativeElement;
+
+
+    worldLeft = worldLeft - (worldEl?.scrollLeft || 0);
+    worldTop = worldTop - (worldEl?.scrollTop || 0);
+
+    let gX = itemRect.left - worldLeft;
+    let gY = itemRect.top - worldTop;
+
+    gX = gX / scale;
+    gY = gY / scale;
+
+    const x = gX - containerX;
+    const y = gY - containerY;
 
     this.x.set(x);
     this.y.set(y);

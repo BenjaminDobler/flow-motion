@@ -37,6 +37,13 @@
               <label style="display: flex; align-items: center; gap: 5px">
                 <input type="range" [min]="prop.min" [max]="prop.max" [step]="prop.step" [(ngModel)]="prop.target[prop.name]" />
               </label>
+            } @else if(prop.type === 'DOMRect') {
+              <div>
+                x: {{ prop.target[prop.name]().left }}
+                y: {{ prop.target[prop.name]().top }}
+              </div>
+
+            
             } @else {
               <div>{{ prop.name }} {{ prop.type }}</div>
             }

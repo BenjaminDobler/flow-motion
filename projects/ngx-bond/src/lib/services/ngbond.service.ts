@@ -204,10 +204,23 @@ export class NgBondService {
       const endMarkerOrient = linkProperties?.endMarkerOrient || 'auto';
 
       const link: Link = {
-        x1: computed(() => (p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : undefined)),
-        y1: computed(() => (p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : undefined)),
-        x2: computed(() => (p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : undefined)),
-        y2: computed(() => (p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : undefined)),
+        x1: computed(() => {
+          const x = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : 0;
+          console.log('link x1', x);  
+          return x;
+        }),
+        y1: computed(() => {
+          const y = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : 0;
+          return y;
+        }),
+        x2: computed(() => {
+          const x = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : 0;
+          return x;
+        }),
+        y2: computed(() => {
+          const y = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : 0;
+          return y;
+        }),
         inputId: id1,
         outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
         inspectableProperties: inspectableLinkProperties,
@@ -231,6 +244,8 @@ export class NgBondService {
           endMarkerOrient: signal(endMarkerOrient as string),
         },
         path: computed(() => {
+          const scale = this.scale();
+          console.log('scale in path computation', scale);
           const cType = link.properties.curveType();
           const curveRadius = link.properties.curveRadius();
           let pathFunction;
@@ -243,10 +258,22 @@ export class NgBondService {
           } else {
             pathFunction = getMultiLinePath;
           }
-          const x1 = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : 0;
-          const y1 = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : 0;
-          const x2 = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : 0;
-          const y2 = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : 0;
+
+
+          console.log('###G', p2.gX(), p2.gY());
+
+          let x1 = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : 0;
+          let y1 = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : 0;
+          let x2 = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : 0;
+          let y2 = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : 0;
+
+          // x1 = x1 / scale;
+          // y1 = y1 / scale;
+          // x2 = x2 / scale;
+          // y2 = y2 / scale;
+
+          console.log('link path coords', x1, y1, x2, y2);
+
           const p = pathFunction(x1 ?? 0, y1 ?? 0, x2 ?? 0, y2 ?? 0, p1Position, p2Position, curveRadius, property1, p2);
           return p;
         }),
@@ -295,6 +322,8 @@ export class NgBondService {
   }
 
   updateDragPreview(x: number, y: number) {
+    console.log('updateDragPreview', x, y);
+
     if (this.snap()) {
       let smalledDist = Number.POSITIVE_INFINITY;
       let smallestEl;

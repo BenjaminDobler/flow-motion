@@ -7,13 +7,14 @@ import { ImageComponent } from '../components/editables/image/image.component';
 import { TextComponentComponent } from '../components/editables/text-component/text-component.component';
 import { SelectionManager } from './selection.manager';
 import { NgBondService, inspectableLinkProperties } from './ngbond.service';
-import { InspectableProperty, NgBondContainer, NGBondItem, NgBondWorld, Path, SVGCanvas } from '../../public-api';
+import { InspectableProperty, NgBondContainer, NGBondItem, NgBondWorld, NodeTableComponent, Path, SVGCanvas } from '../../public-api';
 import { PathDirectiveDirective } from '../components/editables/path-directive.directive';
 
 const componentNameToClass = {
   _ContainerComponent: ContainerComponent,
   _ImageComponent: ImageComponent,
   _TextComponentComponent: TextComponentComponent,
+  _NodeTableComponent: NodeTableComponent
 };
 
 @Injectable()

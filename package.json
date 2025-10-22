@@ -11,7 +11,9 @@
     "lint": "ng lint",
     "build:libs": "ng build ngx-drag && ng build ngx-split && ng build ui-components && ng build ngx-pentool && ng build ngx-bond",
     "ngx-pentool:build": "ng build ngx-pentool",
-    "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool"
+    "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool",
+    "ui-components:link": "node --experimental-strip-types scripts/link.lib.ts --project=ui-components",
+    "link:libs": "npm run ui-components:link && npm run ngx-pentool:link"
   },
   "private": true,
   "dependencies": {

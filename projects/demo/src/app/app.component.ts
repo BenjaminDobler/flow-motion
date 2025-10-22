@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ComponentFactory, ImageComponent, KeyManager, MotionPathService, NgBondService, SelectionManager, SVGCanvas, TextComponentComponent } from '@richapps/ngx-bond';
 
 import { RouterModule } from '@angular/router';
-import { TimelineService } from '@richapps/ngx-bond-timeline';
+import { TimelineService } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-root',

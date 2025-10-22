@@ -71,6 +71,8 @@ export class NgBondProperty {
   container? = inject(NgBondContainer, { optional: true });
 
   constructor() {
+
+
     const drag = makeDraggable(this.el.nativeElement);
 
     if (this.container) {

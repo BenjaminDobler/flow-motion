@@ -58,6 +58,15 @@ export class NgBondWorld implements NGBondItem {
       alias: 'Background',
       type: 'color',
       category: 'Canvas',
+    },
+    {
+      name: 'scale',
+      alias: 'Scale',
+      type: 'range',
+      min: 0.1,
+      max: 5,
+      step: 0.01,
+      category: 'Canvas',
     }
   ];
 
@@ -75,7 +84,7 @@ export class NgBondWorld implements NGBondItem {
 
   type = 'world';
 
-  backgroundColor = signal<string>('#ffffff');
+  backgroundColor = signal<string>('#1e1e1e');
 
   disabled$ = toObservable(this.selectionManager.disabled);
   private keymanager: KeyManager = inject(KeyManager);
@@ -84,6 +93,8 @@ export class NgBondWorld implements NGBondItem {
   worldHost!: ViewContainerRef;
 
   id = signal<string>('world');
+
+  scale = model<number>(1);
 
   children = signal<NGBondItem[]>([]);
   x = signal(0);
@@ -110,6 +121,11 @@ export class NgBondWorld implements NGBondItem {
 
       this.endP.set(null);
       this.startP.set(null);
+    });
+
+    effect(() => {
+      const scale = this.scale();
+      this.dragService.scale.set(scale);
     });
   }
 
@@ -150,7 +166,11 @@ export class NgBondWorld implements NGBondItem {
     const drag = makeDraggable(this.el.nativeElement, dis$);
 
     fromEvent<MouseEvent>(window, 'mousemove').subscribe((evt) => {
-      this.selectionManager.mouseMove(evt.clientX - this.rect!.left, evt.clientY - this.rect!.top);
+      let x = evt.clientX - this.rect!.left;
+      let y = evt.clientY - this.rect!.top;
+      x = x / this.dragService.scale();
+      y = y / this.dragService.scale();
+      this.selectionManager.mouseMove(x, y);
     });
 
     drag.dragStart$.subscribe((evt) => {
@@ -158,14 +178,16 @@ export class NgBondWorld implements NGBondItem {
         return;
       }
       this.wasDrag = true;
-      this.startP.set({ x: evt.offsetX, y: evt.offsetY });
+      const scale = this.dragService.scale();
+      this.startP.set({ x: evt.offsetX / scale, y: evt.offsetY / scale });
     });
 
     drag.dragMove$.subscribe((evt) => {
       if (this.selectionManager.disabled()) {
         return;
       }
-      this.endP.set({ x: evt.startOffsetX + evt.deltaX, y: evt.startOffsetY + evt.deltaY });
+      const scale = this.dragService.scale();
+      this.endP.set({ x: (evt.startOffsetX + evt.deltaX) / scale, y: (evt.startOffsetY + evt.deltaY) / scale });
       const r = this.selectionRect();
       if (r) {
         // const targets = this.dragService.dragElements().filter((t) => {

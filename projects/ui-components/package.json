@@ -1,12 +1,17 @@
 {
-  "name": "ui-components",
-  "version": "0.0.1",
+  "name": "@richapps/ui-components",
+  "version": "0.0.2",
   "peerDependencies": {
     "@angular/common": "^20.1.0",
     "@angular/core": "^20.1.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "exports": {
+    "./theming": {
+      "sass": "./theme/theme.scss"
+    }
   },
   "sideEffects": false
 }

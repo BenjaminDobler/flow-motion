@@ -14,7 +14,7 @@ import {
   TextComponentComponent,
   LinkPropertiesComponent,
 } from '@richapps/ngx-bond';
-import { InspectorTweenProperties, TimelineService } from '@richapps/ngx-bond-timeline';
+import { InspectorTweenProperties, TimelineService } from '@richapps/ngx-bond';
 
 type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'tween';
 type Tab = {
