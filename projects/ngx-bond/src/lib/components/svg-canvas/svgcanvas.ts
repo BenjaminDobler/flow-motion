@@ -14,6 +14,8 @@ export class SVGCanvas {
 
   paths = signal<any[]>([]);
 
+  scale = 1;
+
   keys = inject(KeyManager);
 
   onNewPathAdded?: (path: Path) => void;
@@ -188,7 +190,7 @@ export class SVGCanvas {
       this.pointsToSegment.forEach((segment: any) => {
         if (segment.type === 'C') {
           segment.points.forEach((p: any) => {
-            const dist = distance(p, { x: event.clientX - parentRect.left, y: event.clientY - parentRect.top });
+            const dist = distance(p, { x: (event.clientX - parentRect.left) / this.scale, y: (event.clientY - parentRect.top) / this.scale });
             if (dist < smallestDistance) {
               smallestDistance = dist;
               n = p;
@@ -198,9 +200,9 @@ export class SVGCanvas {
         } else if (segment.type === 'L') {
           const toP = segment.points[1];
           const fromP = segment.points[0];
-          const nearestPoint = findNearestPointOnLine(event.clientX - parentRect.left, event.clientY - parentRect.top, fromP.x, fromP.y, toP.x, toP.y);
+          const nearestPoint = findNearestPointOnLine((event.clientX - parentRect.left) / this.scale, (event.clientY - parentRect.top) / this.scale, fromP.x, fromP.y, toP.x, toP.y);
 
-          const dist = distance(nearestPoint, { x: event.clientX - parentRect.left, y: event.clientY - parentRect.top });
+          const dist = distance(nearestPoint, { x: (event.clientX - parentRect.left) / this.scale, y: (event.clientY - parentRect.top) / this.scale });
           if (dist < smallestDistance) {
             smallestDistance = dist;
             n = nearestPoint;
@@ -219,7 +221,7 @@ export class SVGCanvas {
 
     mouseMove$.pipe(filter((x) => !this.dragging)).subscribe((evt: MouseEvent) => {
       if (this.mode() === 'pen') {
-        let nextPoint = { x: evt.clientX - parentRect.left, y: evt.clientY - parentRect.top };
+        let nextPoint = { x: (evt.clientX - parentRect.left) / this.scale, y: (evt.clientY - parentRect.top) / this.scale };
 
         if (this.keys.isKeyDown('Shift') && this.selectedPathElement) {
           nextPoint = getSnappedAnglePoint(nextPoint, this.selectedPathElement.points()[this.selectedPathElement.points().length - 1]);
@@ -234,7 +236,7 @@ export class SVGCanvas {
           return !this.insertionPointActive && this.mode() === 'pen' && !x.target.classList.contains('point');
         }),
         tap((downEvent: MouseEvent) => {
-          let nextPoint = { x: downEvent.clientX - parentRect.left, y: downEvent.clientY - parentRect.top };
+          let nextPoint = { x: (downEvent.clientX - parentRect.left) / this.scale, y: (downEvent.clientY - parentRect.top) / this.scale };
 
           if (this.keys.isKeyDown('Shift') && this.selectedPathElement) {
             nextPoint = getSnappedAnglePoint(nextPoint, this.selectedPathElement.points()[this.selectedPathElement.points().length - 1]);
@@ -304,7 +306,7 @@ export class SVGCanvas {
               } else if (moves > 3) {
                 this.dragging = true;
                 if (downPoint.controlPoint1) {
-                  let nextPoint = { x: dragMoveEvent.clientX - parentRect.left, y: dragMoveEvent.clientY - parentRect.top };
+                  let nextPoint = { x: (dragMoveEvent.clientX - parentRect.left) / this.scale, y: (dragMoveEvent.clientY - parentRect.top) / this.scale };
                   if (this.keys.isKeyDown('Shift') && this.selectedPathElement) {
                     nextPoint = getSnappedAnglePoint(nextPoint, this.selectedPathElement.points()[this.selectedPathElement.points().length - 1]);
                   }
@@ -316,7 +318,7 @@ export class SVGCanvas {
                 }
 
                 if (downPoint.controlPoint2) {
-                  let nextPoint = { x: dragMoveEvent.clientX - parentRect.left, y: dragMoveEvent.clientY - parentRect.top };
+                  let nextPoint = { x: (dragMoveEvent.clientX - parentRect.left) / this.scale, y: (dragMoveEvent.clientY - parentRect.top) / this.scale };
                   if (this.keys.isKeyDown('Shift') && this.selectedPathElement) {
                     nextPoint = getSnappedAnglePoint(nextPoint, this.selectedPathElement.points()[this.selectedPathElement.points().length - 1]);
                   }
@@ -364,7 +366,6 @@ export class SVGCanvas {
     if (!this.svg || !this.mode || this.mode() !== 'pen') {
       return;
     }
-
     const newPath = new Path(this);
     this.paths.set([...this.paths(), newPath]);
     if (d) {
@@ -461,7 +462,7 @@ export class SVGCanvas {
     if (this.svg) {
       parentRect = this.svg.getBoundingClientRect();
     }
-    const segIndex = isInWhichSegment(target, clickEvent.clientX - parentRect.left, clickEvent.clientY - parentRect.top);
+    const segIndex = isInWhichSegment(target, (clickEvent.clientX - parentRect.left) / this.scale, (clickEvent.clientY - parentRect.top) / this.scale);
     const segment = target.getPathData()[segIndex];
 
     let points = this.selectedPathElement?.points() || [];
@@ -482,8 +483,8 @@ export class SVGCanvas {
             finalize(() => {
               if (moveCount < 3) {
                 const p = new Point(this.selectedPathElement as Path, 'point');
-                p.x = clickEvent.clientX - parentRect.left;
-                p.y = clickEvent.clientY - parentRect.top;
+                p.x = (clickEvent.clientX - parentRect.left) / this.scale;
+                p.y = (clickEvent.clientY - parentRect.top) / this.scale;
                 points = insertAt(points, pointIndex, p);
               }
               this.isCurveDragging = false;
@@ -493,8 +494,8 @@ export class SVGCanvas {
             moveCount++;
 
             const mousePoint = {
-              x: evt.clientX - parentRect.left,
-              y: evt.clientY - parentRect.top,
+              x: (evt.clientX - parentRect.left) / this.scale,
+              y: (evt.clientY - parentRect.top) / this.scale,
             };
 
             if (moveCount > 3) {

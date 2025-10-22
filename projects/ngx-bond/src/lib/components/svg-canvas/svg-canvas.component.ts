@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { PathDirectiveDirective } from './path-directive.directive';
 import { PathPointComponent } from './path-point/path-point.component';
 import { SVGCanvas } from './svgcanvas';
@@ -14,11 +14,17 @@ export class SvgCanvasComponent {
   svg = inject(SVGCanvas);
   drawSvg = viewChild<ElementRef<SVGElement>>('drawSvg');
 
+  scale = input(1);
+
   constructor() {
     afterNextRender(() => {
       if (this.drawSvg()?.nativeElement) {
         this.svg.init(this.drawSvg()?.nativeElement as SVGAElement);
       }
     });
+
+    effect(() => {
+      this.svg.scale = this.scale();
+    }); 
   }
 }
