@@ -122,7 +122,6 @@ export class SVGCanvas {
         if (this.svg) {
           this.svg.style.pointerEvents = 'auto';
         }
-        console.log('set pen cursor class');
         document.body.classList.add('pen-cursor');
       } else {
         document.body.classList.remove('pen-cursor');

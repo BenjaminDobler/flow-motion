@@ -22,7 +22,6 @@ export function isInWhichSegment(pathElement: any, x: number, y: number) {
   // check at all length point to see if it matches
   // the coordinates of the click
   const len = pathElement.getTotalLength();
-  console.log('path length', len, x, y);
   for (var i = 0; i < len; i++) {
     var pt = pathElement.getPointAtLength(i);
     // you need to take into account the stroke width, hence the +- 2

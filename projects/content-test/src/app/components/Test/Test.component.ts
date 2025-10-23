@@ -12,6 +12,5 @@ export class TestComponent {
   parent = inject(WorldComponent)
 
   constructor() {
-    console.log('TestComponent initialized with parent:', this.parent);
   }
  }

@@ -16,50 +16,29 @@ export class WorldComponent {
   @ContentChildren(TestComponent, { descendants: true })
   contentDirectives!: TestComponent[];
 
-    @ViewChildren(TestComponent)
+  @ViewChildren(TestComponent)
   viewChildren3!: any;
 
   viewChildren2 = viewChildren<TestComponent>(TestComponent);
 
-  @ViewChildren('viewRef', {read: ViewContainerRef})
-    public viewRefs?: QueryList<ViewContainerRef>;
+  @ViewChildren('viewRef', { read: ViewContainerRef })
+  public viewRefs?: QueryList<ViewContainerRef>;
 
-
-  constructor() {
-    effect(() => {
-      console.log('Content directive initialized with children:', this.contentChildren());
-    });
-    effect(() => {
-      console.log('ViewChildren directive initialized with children:', this.viewChildren());
-    });
-    effect(() => {
-      console.log('ContentChildren2 directive initialized with children:', this.contentChildren2());
-    });
-
-    effect(() => {
-      console.log('ViewChildren2 directive initialized with children:', this.viewChildren2());
-    });
-
-    effect(() => {
-      console.log('Content Directives:', this.viewChildren3);
-    });
-    
-  }
+  constructor() {}
 
   ngAfterViewInit() {
     if (this.viewRefs) {
-        this.viewRefs.changes.subscribe((list: QueryList<ViewContainerRef>) => {
-            list.forEach((viewRef: ViewContainerRef, index: number) => {
-                console.log(`ViewContainerRef at index ${index}:`, viewRef);
-            });
+      this.viewRefs.changes.subscribe((list: QueryList<ViewContainerRef>) => {
+        list.forEach((viewRef: ViewContainerRef, index: number) => {
+          console.log(`ViewContainerRef at index ${index}:`, viewRef);
         });
+      });
     }
   }
 
   logDirectives() {
-    console.log('Content Directives:', this.contentDirectives);      
+    console.log('Content Directives:', this.contentDirectives);
 
-          console.log('Content Directives:', this.viewChildren3);
-
+    console.log('Content Directives:', this.viewChildren3);
   }
 }

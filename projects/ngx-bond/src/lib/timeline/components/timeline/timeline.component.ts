@@ -152,11 +152,9 @@ export class TimelineComponent {
   }
 
   onTrackContextMenuSelected(data: any, track: FLTrack) {
-    console.log('Track context menu selected:', event, track);
     const position = data.initEvent.offsetX;
     const time = position * (this.timelineService.millisecondsPerPixel() || 1);
     
-    console.log('Add Keyframe at time:', time);
     this.timelineService.addKeyframe(track, Math.round(time));
   }
 

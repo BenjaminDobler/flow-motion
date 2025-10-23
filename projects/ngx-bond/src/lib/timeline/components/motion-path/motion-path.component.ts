@@ -46,7 +46,6 @@ export class MotionPathComponent {
     effect(() => {
       const selectedTween = this.timelineService.selectedTween();
 
-      console.log('selected tween changed:', selectedTween);
       if (!selectedTween) {
         this.svgEdit?.clearAll();
       } else {
@@ -57,7 +56,6 @@ export class MotionPathComponent {
             this.svgEdit.setPath(motionPath);
           } else {
             const d = `M${selectedTween.start().value().x} ${selectedTween.start().value().y} L${selectedTween.end().value().x} ${selectedTween.end().value().y}`;
-            console.log('Setting path:', d);
             initPath = d;
             this.svgEdit.setPath(d);
           }

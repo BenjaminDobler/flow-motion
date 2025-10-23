@@ -153,7 +153,6 @@ export class Path {
     path.id.set(data.id);
     path.isClosed.set(data.isClosed);
     path.fill.set(data.fill);
-    console.log('set fill ' + data.fill);
     path.stroke.set(data.stroke);
     path.strokeWidth.set(data.strokeWidth);
     path.strokeDasharray.set(data.strokeDasharray);
@@ -170,7 +169,6 @@ export class Path {
 }
 
 function generatePointsFromPath(selectedPathElement: Path, path: SVGPathElement) {
-  console.log('Generating points from path', path);
   const segments = (path as any).getPathData();
 
   const points: Point[] = [];

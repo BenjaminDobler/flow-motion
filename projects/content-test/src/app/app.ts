@@ -20,11 +20,8 @@ export class App {
 
 
   constructor() {
-    console.log('App component initialized');
-    effect(() => {
-      console.log('Directives:', this.directives());
-    });
   }
+  
   createComponent() {
     if (this.worldHost) {
       const componentRef = this.worldHost.createComponent(TestComponent, {

@@ -162,7 +162,6 @@ export class NgBondWorld implements NGBondItem {
   }
 
   addChild(child: NGBondItem) {
-    console.log('add child', child);
     this.children.update((c) => [...c, child]);
     this.selectionManager.rootChildren.update((c) => [...c, child as NgBondContainer]);
   }

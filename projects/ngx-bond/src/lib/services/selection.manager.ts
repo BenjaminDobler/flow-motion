@@ -75,11 +75,6 @@ export class SelectionManager {
     let yMax = first.gY() + first.height();
 
     this.selectionTargets().forEach((target) => {
-      // const bounds = 'globalBounds' in target && target.globalBounds
-      //   ? target.globalBounds
-      //   : target.bounds;
-      // console.log('target bounds: ', bounds);
-
       const bounds = target.globalBounds();
 
       xMin = Math.min(xMin, bounds.left);
@@ -151,7 +146,6 @@ export class SelectionManager {
   editContainer = signal<NgBondContainer | null>(null);
 
   onContainerDblClick(container: NgBondContainer, evt: MouseEvent) {
-    console.log('dblclick on container', container);
     this.setContainerForEditing(container);
     evt.stopPropagation();
     evt.preventDefault();
@@ -165,7 +159,6 @@ export class SelectionManager {
         t.editMode.set(false);
         t.backgroundMode.set(true);
       } else {
-        console.log('set edit mode true for', t);
         t.editMode.set(true);
       }
     });
@@ -173,7 +166,6 @@ export class SelectionManager {
   }
 
   onWorldDblClick(evt: MouseEvent) {
-    console.log('dblclick on world');
     if (this.editContainer()) {
       this.select(this.editContainer() as NgBondContainer);
       this.enableSelection();

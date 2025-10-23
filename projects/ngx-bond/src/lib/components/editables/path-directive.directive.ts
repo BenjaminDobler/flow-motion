@@ -173,24 +173,7 @@ export class PathDirectiveDirective {
       this.container.displayName.set('Path ');
     } 
     this.container.type = this.type;
-    // const resizeObserver = new ResizeObserver((entries) => {
-    //   for (const entry of entries) {
-    //     if (entry.contentBoxSize) {
-    //       const width = entry.contentBoxSize[0]?.inlineSize || entry.contentRect.width;
-    //       const height = entry.contentBoxSize[0]?.blockSize || entry.contentRect.height;
-
-    //       // this.container.width.set(width);
-    //       // this.container.height.set(height);
-    //       console.log('Size changed to', width, height);
-    //     }
-    //   }
-
-    //   console.log('Size changed');
-    // });
-
-    // resizeObserver.observe(this.container.el?.nativeElement);
-
-    // const debouncedPathChange = toSignal(toObservable(this.d).pipe(distinctUntilChanged(), debounceTime(500)));
+    
     let previousPoints: Point[] = [];
 
     effect(() => {
@@ -205,12 +188,6 @@ export class PathDirectiveDirective {
 
       newPoints.forEach((p) => {
         this['point-position-changed-' + p.id] = new EventEmitter();// new Subject<{ x: number; y: number }>();
-
-        console.log('ppp ', this['point-position-' + p.id]);
-
-
-        
-        console.log('point added', p.id);
 
 
 

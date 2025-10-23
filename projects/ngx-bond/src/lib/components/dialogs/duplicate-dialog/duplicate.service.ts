@@ -16,12 +16,9 @@ export class DuplicateService {
     });
 
     dialogRef.closed.subscribe((result) => {
-      console.log('The dialog was closed', result);
       for(let i=0; i < (Number(result?.copies) || 1); i++) {
         this.components.copySelected([container]);
         const c = this.components.paste();
-        console.log(c);
-
         if (c.length > 0) {
           const el = c[0];
           el.x.set(el.x() + (Number(result?.x) || 0) * (i+1));

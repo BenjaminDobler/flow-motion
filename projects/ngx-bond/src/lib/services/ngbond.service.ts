@@ -206,7 +206,6 @@ export class NgBondService {
       const link: Link = {
         x1: computed(() => {
           const x = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : 0;
-          console.log('link x1', x);  
           return x;
         }),
         y1: computed(() => {
@@ -245,7 +244,6 @@ export class NgBondService {
         },
         path: computed(() => {
           const scale = this.scale();
-          console.log('scale in path computation', scale);
           const cType = link.properties.curveType();
           const curveRadius = link.properties.curveRadius();
           let pathFunction;
@@ -259,46 +257,15 @@ export class NgBondService {
             pathFunction = getMultiLinePath;
           }
 
-
-          console.log('###G', p2.gX(), p2.gY());
-
           let x1 = p1?.gX ? p1.gX() + (p1.width ? p1.width() / 2 : 0) : 0;
           let y1 = p1?.gY ? p1.gY() + (p1.height ? p1.height() / 2 : 0) : 0;
           let x2 = p2?.gX ? p2.gX() + (p2.width ? p2.width() / 2 : 0) : 0;
           let y2 = p2?.gY ? p2.gY() + (p2.height ? p2.height() / 2 : 0) : 0;
 
-          // x1 = x1 / scale;
-          // y1 = y1 / scale;
-          // x2 = x2 / scale;
-          // y2 = y2 / scale;
-
-          console.log('link path coords', x1, y1, x2, y2);
-
           const p = pathFunction(x1 ?? 0, y1 ?? 0, x2 ?? 0, y2 ?? 0, p1Position, p2Position, curveRadius, property1, p2);
           return p;
         }),
       };
-
-      //return link;
-
-      // return {
-      //   x1,
-      //   y1,
-      //   x2,
-      //   y2,
-      //   inputId: id1,
-      //   outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
-      //   strokeWidth: property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2,
-      //   stroke: property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '',
-      //   properties: {
-      //     animate,
-      //     strokeWidth: property1?.bondstrokewidth() || linkProperties?.strokeWidth || defProps.strokeWidth || 2,
-      //     stroke: property1?.bondcolor() || linkProperties?.stroke || defProps.stroke || '',
-      //     strokeDasharray: linkProperties?.strokeDasharray || defProps.strokeDasharray || '10',
-      //   },
-      //   path: pathFunction(x1 ?? 0, y1 ?? 0, x2 ?? 0, y2 ?? 0, p1Position, p2Position, defProps?.curveRadius || 10, property1, p2),
-      // };
-      //});
 
       if (add) {
         this.links.update((x) => [...x, link]);
@@ -322,8 +289,6 @@ export class NgBondService {
   }
 
   updateDragPreview(x: number, y: number) {
-    console.log('updateDragPreview', x, y);
-
     if (this.snap()) {
       let smalledDist = Number.POSITIVE_INFINITY;
       let smallestEl;
@@ -381,17 +346,12 @@ export class NgBondService {
   }
 
   removeLink(link: any) {
-    console.log('removing link', link);
     const p1 = this.dragElements().find((d) => d.id() === link.inputId);
     const p2 = this.dragElements().find((d) => d.id() === link.outputId);
-
-    console.log('p1', p1);
-    console.log('p2', p2);
 
     const property1 = p1?.injector.get(NgBondProperty);
     const property2 = p2?.injector.get(NgBondProperty);
     if (!property1 || !property2) {
-      console.warn(`No properties found for link: ${link}`);
       return;
     }
 

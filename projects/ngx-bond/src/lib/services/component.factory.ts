@@ -77,22 +77,6 @@ export class ComponentFactory {
       directives: directiveSetup,
     });
 
-    // directives.map((d) => {
-    //   const bindings = d.inspectableProperties
-    //     .filter((p) => p.event)
-    //     .forEach((p) => {
-    //       console.log('Setting up event binding for', p.name, 'on', d.name);
-    //       console.log(componentRef.instance);
-    //       (componentRef.instance as any)[p.name].subscribe((evt: any) => {
-    //         this.propertyChanged.next({
-    //           id,
-    //           property: p.name,
-    //           value: evt,
-    //         });
-    //       });
-    //     });
-    // });
-
     if ((componentRef.instance as any).inspectableProperties) {
       for (const prop of (componentRef.instance as any).inspectableProperties) {
         if (!prop.noneAnimatable) {
