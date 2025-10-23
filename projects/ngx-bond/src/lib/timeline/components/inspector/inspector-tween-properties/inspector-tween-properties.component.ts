@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TimelineService } from '../../../services/timeline.service';
 import { FormsModule } from '@angular/forms';
-import { EdSelectComponent, EdSelectOptionComponent } from '@richapps/ui-components';
+
 import { SelectionManager, SVGCanvas } from '../../../../../public-api';
+import { EdSelectComponent, EdSelectOptionComponent } from '@richapps/ui-components';
 
 @Component({
   selector: 'inspector-tween-properties',

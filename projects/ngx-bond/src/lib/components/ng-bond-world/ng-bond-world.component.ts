@@ -25,9 +25,10 @@ import { ComponentFactory } from '../../services/component.factory';
 import { ImageComponent } from '../editables/image/image.component';
 import { ConnectionDirective } from '../editables/connection.directive';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, fromEvent } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, debounceTime, fromEvent } from 'rxjs';
 import { InspectableProperty } from '../../types/types';
+import { ResizeDirective } from '../../directives/resize-directive';
 
 export interface NGBondItem {
   x: Signal<number>;
@@ -51,6 +52,12 @@ export interface NGBondItem {
   templateUrl: './ng-bond-world.component.html',
   styleUrl: './ng-bond-world.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: ResizeDirective,
+      outputs: ['resize'],
+    },
+  ],
   providers: [],
   host: {
     '(click)': 'onClick($event)',
@@ -92,7 +99,7 @@ export class NgBondWorld implements NGBondItem {
       name: 'scale',
       alias: 'Scale',
       type: 'number',
-      format: (value: number)=>{
+      format: (value: number) => {
         return Math.round(value * 100);
       },
       min: 0.1,
@@ -108,6 +115,8 @@ export class NgBondWorld implements NGBondItem {
   }
 
   displayName = model<string>('World');
+
+  resizeObserver = inject(ResizeDirective);
 
   public el: ElementRef<HTMLElement> = inject(ElementRef);
   protected dragService: NgBondService = inject(NgBondService);
@@ -159,6 +168,13 @@ export class NgBondWorld implements NGBondItem {
       const scale = this.scale();
       this.dragService.scale.set(scale);
     });
+
+    this.resizeObserver.resize.pipe(debounceTime(100), takeUntilDestroyed()).subscribe((rect) => {
+      console.log('World resized', rect);
+      this.rect = this.rect = this.el.nativeElement.getBoundingClientRect();
+    });
+
+    console.log('resize observer', this.resizeObserver);
   }
 
   addChild(child: NGBondItem) {
@@ -178,7 +194,7 @@ export class NgBondWorld implements NGBondItem {
 
   onWheel(event: WheelEvent) {
     if (event.metaKey || event.ctrlKey) {
-          event.preventDefault();
+      event.preventDefault();
 
       // Zooming
       this.handleZoom(event);
