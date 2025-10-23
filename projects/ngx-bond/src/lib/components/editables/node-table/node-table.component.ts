@@ -1,14 +1,19 @@
 import { afterNextRender, Component, effect, inject, model, signal } from '@angular/core';
-import { InspectableProperty, NgBondContainer, NgBondProperty } from '../../../../public-api';
+import { InspectableProperty, NgBondContainer, NgBondProperty, SelectionManager } from '../../../../public-api';
 
 @Component({
   selector: 'lib-node-table',
   imports: [NgBondContainer, NgBondProperty],
   templateUrl: './node-table.component.html',
   styleUrl: './node-table.component.scss',
+  host: {
+    '(dblclick)': 'onDblClick($event)',
+  },
 })
 export class NodeTableComponent {
   container = inject(NgBondContainer);
+  selection = inject(SelectionManager);
+
   title = model('Node Table');
   type = 'node-table';
 
@@ -41,6 +46,33 @@ export class NodeTableComponent {
       if (this.container.displayName() === '') {
         this.container.displayName.set('Node Table ');
       }
-    }); 
+    });
+  }
+
+  addRow() {
+    this.fields.update((fields) => {
+      return [...fields, { name: 'New Field', type: 'string' }];
+    });
+    setTimeout(() => {
+      this.container.recalculateSize();
+    });
+  }
+
+  removeRow(index: number) {
+    this.fields.update((fields) => {
+      const newFields = [...fields];
+      newFields.splice(index, 1);
+      return newFields;
+    });
+    setTimeout(() => {
+      this.container.recalculateSize();
+    });
+  }
+
+  onDblClick(evt: MouseEvent) {
+    this.selection.disabled.set(true);
+    this.selection.unselectAll();
+    evt.stopPropagation();
+    evt.preventDefault();
   }
 }

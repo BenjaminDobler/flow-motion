@@ -5,9 +5,10 @@ import { BackgroundColorPropertyDirective } from '../directives/backgroundColorP
 import { ContainerComponent } from '../components/editables/container-component/container-component.component';
 import { ImageComponent } from '../components/editables/image/image.component';
 import { TextComponentComponent } from '../components/editables/text-component/text-component.component';
+import { NodeTableComponent } from '../components/editables/node-table/node-table.component';
 import { SelectionManager } from './selection.manager';
 import { NgBondService, inspectableLinkProperties } from './ngbond.service';
-import { InspectableProperty, NgBondContainer, NGBondItem, NgBondWorld, NodeTableComponent, Path, PathDirectiveDirective, SVGCanvas } from '../../public-api';
+import { InspectableProperty, NgBondContainer, NGBondItem, NgBondWorld, Path, PathDirectiveDirective, SVGCanvas } from '../../public-api';
 
 const componentNameToClass = {
   _ContainerComponent: ContainerComponent,
@@ -71,6 +72,8 @@ export class ComponentFactory {
       console.error('World is not set. Cannot add component.');
       return;
     }
+
+    console.log('directive setup ', directiveSetup);
 
     const componentRef = host.createComponent(componentClass, {
       directives: directiveSetup,
@@ -156,7 +159,10 @@ export class ComponentFactory {
     //   });
     // });
 
+    console.log(componentRef.instance);
+
     for (const key in inputs) {
+      console.log('Setting input ', key, inputs[key]);
       componentRef.setInput(key, inputs[key]);
     }
 
@@ -289,8 +295,11 @@ export class ComponentFactory {
 
   deserializeElement(element: any, host?: any) {
     const addChildren = (el: any, componentHost: any) => {
+      
       const componentClass = componentNameToClass[el.name as keyof typeof componentNameToClass];
-
+      console.log(componentNameToClass);
+      console.log('el ', el);
+      console.log('component class ', componentClass);
       let componentProps = el.elementProperties.reduce((acc: any, prop: any) => {
         acc[prop.name] = prop.value;
         return acc;

@@ -9,11 +9,13 @@
   <div class="card-content">
     @for (field of fields(); track $index) {
       <div class="list-item">
-        <span>{{ field.name }}</span>
-        <span class="tx-muted">{{ field.type }}</span>
+        <span contenteditable>{{ field.name }}</span>
+        <span contenteditable class="tx-muted">{{ field.type }}</span>
         <div class="connection-indicator left" positioning="none" [draggable]="false" [bondproperty]="`${this.container.id()}_${field.name}_left`"></div>
         <div class="connection-indicator right" positioning="none" [draggable]="false" [bondproperty]="`${this.container.id()}_${field.name}_right`"></div>
       </div>
     }
   </div>
 </div>
+
+<div (click)="addRow()" style="width: 20px; height: 20px; position: absolute; bottom:0; right: 0; background: var(--highlight-color)"></div>

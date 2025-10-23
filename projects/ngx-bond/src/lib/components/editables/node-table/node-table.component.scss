@@ -10,6 +10,7 @@
   font-family: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 13px;
   overflow: hidden;
+  min-width:300px;
 
   .card-header {
     background-image: linear-gradient(to top, oklab(0.141 0.00136333 -0.00481054 / 0.3) 0px, rgba(0, 0, 0, 0) 100%);

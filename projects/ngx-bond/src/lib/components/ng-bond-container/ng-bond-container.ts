@@ -606,6 +606,16 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     this.y.set(y);
   }
 
+
+  recalculateSize() {
+    this.el.nativeElement.style.width = 'auto';
+    this.el.nativeElement.style.height = 'auto';
+    const itemElement = this.el?.nativeElement;
+    const itemRect = itemElement.getBoundingClientRect();
+    this.setWidth(itemRect.width);
+    this.setHeight(itemRect.height);
+  }
+
   ngOnDestroy() {
     this.parent()?.removeChild(this);
     if (this.ngBondService) {

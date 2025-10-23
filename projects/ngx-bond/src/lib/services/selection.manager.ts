@@ -147,6 +147,7 @@ export class SelectionManager {
       }
     });
   }
+ 
 
   setAll(targets: NgBondContainer[]) {
     this.selectionTargets.set(targets);
