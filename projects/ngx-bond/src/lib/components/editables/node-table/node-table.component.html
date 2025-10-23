@@ -1,5 +1,3 @@
-
-
 <div class="card">
   <div class="card-header">
     <div class="tx">
@@ -18,4 +16,6 @@
   </div>
 </div>
 
-<div (click)="addRow()" style="width: 20px; height: 20px; position: absolute; bottom:0; right: 0; background: var(--highlight-color)"></div>
+@if (container.editMode()) {
+  <div (click)="addRow()" style="width: 20px; height: 20px; position: absolute; bottom: 0; right: 0; background: var(--highlight-color)"></div>
+}

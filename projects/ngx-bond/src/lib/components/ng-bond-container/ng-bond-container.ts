@@ -15,6 +15,9 @@ import { InspectableProperty } from '../../types/types';
     '[style.touchAction]': "'none'",
     '[class.selected]': 'isSelected()',
     '[class.approached]': 'isApproached()',
+    '[class.editMode]': 'editMode()',
+    '[class.backgroundMode]': 'backgroundMode()',
+    '(dblclick)': 'onDblClick($event)',
   },
 })
 export class NgBondContainer implements NGBondItem, OnDestroy {
@@ -94,6 +97,9 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   el: ElementRef = inject(ElementRef);
+
+  editMode = signal<boolean>(false);
+  backgroundMode = signal<boolean>(false);
 
   @Input()
   positioning: 'none' | 'absolute' | 'transform' = 'absolute';
@@ -256,6 +262,18 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
         this.updateHeight(h);
       }
     });
+
+    effect(() => {
+      const e = this.editMode();
+      console.log('edit mode changed', e);
+    });
+
+  }
+
+  onDblClick(evt: MouseEvent) {
+    if (this.selectionManager) {
+      this.selectionManager.onContainerDblClick(this, evt);
+    }
   }
 
   addChild(child: NGBondItem) {

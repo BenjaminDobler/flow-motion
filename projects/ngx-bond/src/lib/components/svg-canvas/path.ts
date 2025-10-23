@@ -144,6 +144,10 @@ export class Path {
     };
   }
 
+  delete() {
+    this.canvas.deletePath(this);
+  }
+
   static deserialize(data: any, canvas: SVGCanvas): Path {
     const path = new Path(canvas);
     path.id.set(data.id);

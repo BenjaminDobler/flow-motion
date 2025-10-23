@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ComponentRef, computed, ElementRef, inject, input, model, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ComponentRef, computed, effect, ElementRef, inject, input, model, viewChild, ViewChild, ViewContainerRef } from '@angular/core';
 import { NgBondProperty } from '../../ng-bond-property/ng-bond-property';
 import { FormsModule } from '@angular/forms';
 import { ContextMenu } from '@richapps/ui-components';
@@ -6,16 +6,12 @@ import { DuplicateService } from '../../dialogs/duplicate-dialog/duplicate.servi
 import { InspectableProperty } from '../../../types/types';
 import { NgBondContainer, SelectionManager } from '../../../../public-api';
 
-
 @Component({
   selector: 'editable-container',
   imports: [NgBondProperty, FormsModule],
   templateUrl: './container-component.component.html',
   styleUrl: './container-component.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '(dblclick)': 'onDblClick($event)',
-  },
   hostDirectives: [
     {
       directive: ContextMenu,
@@ -68,7 +64,7 @@ export class ContainerComponent {
 
   duplicateService = inject(DuplicateService);
 
-  linkScale = computed(()=>{
+  linkScale = computed(() => {
     const scale = this.container.ngBondService?.scale() || 1;
     return 1 / scale;
   });
@@ -97,19 +93,15 @@ export class ContainerComponent {
     if (this.container.displayName() === '') {
       this.container.displayName.set('Container ');
     }
-  }
 
-  onDblClick(evt: MouseEvent) {
-    this.selection.disabled.set(true);
-
-    //this.selection.unselectAll();
-    evt.stopPropagation();
-    evt.preventDefault();
-    this.focusTextarea();
-  }
-
-  onBlur() {
-    this.selection.disabled.set(false);
+    effect(() => {
+      const e = this.container.editMode();
+      if (e) {
+        setTimeout(() => {
+          this.focusTextarea();
+        });
+      }
+    });
   }
 
   detachChild(viewRef: ComponentRef<any>) {

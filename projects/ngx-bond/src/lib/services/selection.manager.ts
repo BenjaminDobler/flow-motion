@@ -147,7 +147,43 @@ export class SelectionManager {
       }
     });
   }
- 
+
+  editContainer = signal<NgBondContainer | null>(null);
+
+  onContainerDblClick(container: NgBondContainer, evt: MouseEvent) {
+    console.log('dblclick on container', container);
+    this.setContainerForEditing(container);
+    evt.stopPropagation();
+    evt.preventDefault();
+  }
+
+  setContainerForEditing(container: NgBondContainer) {
+    this.disableSelection();
+    this.unselectAll();
+    this.rootChildren().forEach((t: NgBondContainer) => {
+      if (t !== container) {
+        t.editMode.set(false);
+        t.backgroundMode.set(true);
+      } else {
+        console.log('set edit mode true for', t);
+        t.editMode.set(true);
+      }
+    });
+    this.editContainer.set(container);
+  }
+
+  onWorldDblClick(evt: MouseEvent) {
+    console.log('dblclick on world');
+    if (this.editContainer()) {
+      this.select(this.editContainer() as NgBondContainer);
+      this.enableSelection();
+      this.rootChildren().forEach((t: NgBondContainer) => {
+        t.editMode.set(false);
+        t.backgroundMode.set(false);
+      });
+      this.editContainer.set(null);
+    }
+  }
 
   setAll(targets: NgBondContainer[]) {
     this.selectionTargets.set(targets);

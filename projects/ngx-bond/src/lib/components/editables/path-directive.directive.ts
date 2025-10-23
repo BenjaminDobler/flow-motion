@@ -362,6 +362,10 @@ export class PathDirectiveDirective {
     }
   }
 
+  beforeRemove() {
+    this.path()?.delete();
+  }
+
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();

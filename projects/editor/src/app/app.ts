@@ -26,7 +26,7 @@ import { NodeTableComponent } from '@richapps/ngx-bond';
 
 @Component({
   selector: 'app-root',
-  imports: [SvgCanvasComponent, IconComponent,  NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
+  imports: [SvgCanvasComponent, IconComponent, NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService, DuplicateService],
@@ -46,12 +46,13 @@ export class App {
   protected motionPath = inject(MotionPathService);
   protected serialization = inject(SerializationService);
 
-
   svg = inject(SVGCanvas);
 
   ngAfterViewInit() {
     this.svg.modeChange.subscribe((m) => {
       if (!this.svg.selectedPathElement && m === 'pen') {
+        console.log('SVG MODE PEN - DISABLING SELECTION');
+        console.log(this.svg.selectedPathElement);
         this.selection.disabled.set(true);
       }
     });
@@ -116,64 +117,9 @@ export class App {
 
   async save() {
     this.serialization.serialize();
-    // const components = this.componentFactory.serializeComponents();
-    // const animation = this.timelineService.timeline();
-    // const animationClone = JSON.parse(JSON.stringify(animation));
-
-    // animation.groups.forEach((group: any) => {
-    //   group.tracks.forEach((track: any) => {
-    //     track.keyframes.forEach((keyframe: any, index: number) => {
-    //       keyframe.index = index;
-    //     });
-    //   });
-    // });
-
-    // const fileHandle = await showSaveFilePicker({
-    //   types: [
-    //     {
-    //       description: 'JSON Files',
-    //       accept: { 'application/json': ['.json'] },
-    //     },
-    //   ],
-    // });
-
-    // // Create a writer (request permission if necessary).
-    // const writer = await fileHandle.createWritable();
-    // // Write the full length of the contents
-    // await writer.write(JSON.stringify({ components, animation }, null, 2));
-    // // Close the file and write the contents to disk
-    // await writer.close();
   }
 
   async load() {
-
     this.serialization.loadSerialized();
-    // const fileHandle = await window.showOpenFilePicker({
-    //   types: [
-    //     {
-    //       description: 'JSON Files',
-    //       accept: { 'application/json': ['.json'] },
-    //     },
-    //   ],
-    // });
-
-    // const file = await fileHandle[0].getFile();
-    // const contents = await file.text();
-    // const { components, animation } = JSON.parse(contents);
-
-    // animation.groups.forEach((group: any) => {
-    //   group.tracks.forEach((track: any) => {
-    //     track.tweens.forEach((tween: any, index: number) => {
-    //       tween.start = track.keyframes[tween.start.index];
-    //       tween.end = track.keyframes[tween.end.index];
-    //     });
-    //   });
-    // });
-
-    // this.componentFactory.loadSerialized(components);
-    // this.timelineService.timeline.set(animation);
-
-    // // this.componentFactory.loadSerialized()
-    // // this.timelineService.loadAnimation(animation);
   }
 }

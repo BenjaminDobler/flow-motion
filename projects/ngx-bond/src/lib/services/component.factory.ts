@@ -14,7 +14,7 @@ const componentNameToClass = {
   _ContainerComponent: ContainerComponent,
   _ImageComponent: ImageComponent,
   _TextComponentComponent: TextComponentComponent,
-  _NodeTableComponent: NodeTableComponent
+  _NodeTableComponent: NodeTableComponent,
 };
 
 @Injectable()
@@ -72,8 +72,6 @@ export class ComponentFactory {
       console.error('World is not set. Cannot add component.');
       return;
     }
-
-    console.log('directive setup ', directiveSetup);
 
     const componentRef = host.createComponent(componentClass, {
       directives: directiveSetup,
@@ -153,22 +151,13 @@ export class ComponentFactory {
     componentRef.setInput('bondcontainer', id);
     componentRef.setInput('positioning', 'transform');
 
-    // additionalDirectives.forEach((dir) => {
-    //   dir.properties.forEach(()=>{
-
-    //   });
-    // });
-
-    console.log(componentRef.instance);
-
     for (const key in inputs) {
-      console.log('Setting input ', key, inputs[key]);
       componentRef.setInput(key, inputs[key]);
     }
 
     const name = bondContainerInstance.displayName();
 
-    this.componentAdded.next({id, displayName: name});
+    this.componentAdded.next({ id, displayName: name });
     return componentRef;
   }
 
@@ -276,11 +265,9 @@ export class ComponentFactory {
 
     const links: { inputId: string; outputId: string; props: any }[] = [];
     this.bondService.links().forEach((link) => {
-
       const props: any = {};
       inspectableLinkProperties.forEach((prop) => {
         if (!prop.noneSerializable) {
-          console.log('setter name ', prop.name);
           props[prop.name] = (link.properties as any)[prop.name]();
         }
       });
@@ -295,11 +282,7 @@ export class ComponentFactory {
 
   deserializeElement(element: any, host?: any) {
     const addChildren = (el: any, componentHost: any) => {
-      
       const componentClass = componentNameToClass[el.name as keyof typeof componentNameToClass];
-      console.log(componentNameToClass);
-      console.log('el ', el);
-      console.log('component class ', componentClass);
       let componentProps = el.elementProperties.reduce((acc: any, prop: any) => {
         acc[prop.name] = prop.value;
         return acc;
@@ -320,13 +303,11 @@ export class ComponentFactory {
           addChildren(child, cHost?.instance.insertSlot);
         });
       }, 1);
-      return cHost?.instance
+      return cHost?.instance;
     };
 
-    console.log('Adding element', element.name);
     if (element.name === 'SVGPath') {
       // Special handling for SVGPath since it has no component class
-      console.log('Adding SVG Path', element);
       const pathDirectiveProps = element.directives.find((d: any) => d.name === '_PathDirectiveDirective')?.properties;
       const pathData = element.pathData;
 
@@ -334,7 +315,6 @@ export class ComponentFactory {
       this.svgCanvas.paths.update((paths) => {
         return [...paths, p];
       });
-      console.log(pathDirectiveProps);
       p.draw();
       return null;
     } else {
@@ -357,7 +337,6 @@ export class ComponentFactory {
     const host = this.world?.worldHost;
 
     data.elements.forEach((element: any) => {
-      console.log('Adding element', element.name);
       this.deserializeElement(element, host);
     });
 
@@ -407,7 +386,6 @@ export class ComponentFactory {
 
     setTimeout(() => {
       this.selectionManager.selectionTargets().forEach((target) => {
-        console.log('Moving target to group', target);
         const container = this.containerElementMap.get(target as NgBondContainer);
         if (container) {
           const x = target.gX() - minX;
@@ -428,7 +406,6 @@ export class ComponentFactory {
           target.parent.set(bondContainerInstance);
           bondContainerInstance.addChild(target);
 
-          console.log('New local position:', x, y);
           target.x.set(x);
           target.y.set(y);
         }
@@ -459,8 +436,7 @@ export class ComponentFactory {
   }
 
   addSvgContainer(container: NgBondContainer, directiveInstances: any[] = []) {
-    console.log('get path directive ', container);
-    
+
     const pathDirective = container.injector.get(PathDirectiveDirective);
 
     this.containerElementMap.set(container, {
@@ -483,7 +459,6 @@ export class ComponentFactory {
     container.inspectableProperties
       .filter((p) => p.event)
       .forEach((p) => {
-        console.log('prop ', p);
         (container as any)[p.event as any].subscribe((evt: any) => {
           this.propertyChanged.next({
             id,
@@ -505,11 +480,17 @@ export class ComponentFactory {
         });
       });
 
-    this.componentAdded.next({id: container.id(), displayName: container.displayName()});
+    this.componentAdded.next({ id: container.id(), displayName: container.displayName() });
   }
 
   removeComponent(item: NgBondContainer) {
     const container = this.containerElementMap.get(item);
+
+    container?.directives.forEach((d: any) => {
+      if (d.beforeRemove) {
+        d.beforeRemove();
+      }
+    });
     this.selectionManager.unselect(item);
 
     item.parent()?.removeChild(item);
@@ -535,13 +516,11 @@ export class ComponentFactory {
       const el = this.serializeComponent(target);
       this.clipboard.push(el);
     });
-    console.log('Copied to clipboard', this.clipboard);
   }
 
   copyInPlace(targets: NgBondContainer[]) {
     this.copySelected(targets);
     this.paste();
-
   }
 
   paste() {

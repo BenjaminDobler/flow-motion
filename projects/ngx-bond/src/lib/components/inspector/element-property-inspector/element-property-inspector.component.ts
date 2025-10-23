@@ -31,7 +31,12 @@ export class ElementPropertyInspectorComponent {
   categories = computed(() => {
     const categories: any[] = [];
 
-    const elements = this.selectionManager.selectionTargets();
+    let elements = this.selectionManager.selectionTargets();
+    const editContainer = this.selectionManager.editContainer();
+    console.log('----- editContainer', editContainer);
+    if (editContainer) {
+      elements = [...elements, editContainer];
+    }
 
     const world = this.componentFactory.world;
     let worldInspectableProps: any[] = [];

@@ -54,6 +54,7 @@ export interface NGBondItem {
   providers: [],
   host: {
     '(click)': 'onClick($event)',
+    '(dblclick)': 'onDoubleClick($event)',
     '(drop)': 'onDrop($event)',
     '(dragover)': '$event.preventDefault()',
     '(dragenter)': '$event.preventDefault()',
@@ -288,6 +289,11 @@ export class NgBondWorld implements NGBondItem {
     if (!hasComponent) {
       this.selectionManager.unselectAll();
     }
+  }
+
+  onDoubleClick(evt: MouseEvent) {
+    // this.selectionManager.disabled.set(true);
+    this.selectionManager.onWorldDblClick(evt);
   }
 
   onDrop(e: DragEvent) {
