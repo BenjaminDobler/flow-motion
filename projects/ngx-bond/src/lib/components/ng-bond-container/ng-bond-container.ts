@@ -27,6 +27,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     {
       name: 'x',
       alias: 'X',
+      prefix: 'X',
       category: 'Position',
       type: 'number',
       noneAnimatable: true,
@@ -37,6 +38,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     {
       name: 'y',
       alias: 'Y',
+      prefix: 'Y',
       category: 'Position',
       noneAnimatable: true,
       type: 'number',
@@ -47,6 +49,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     {
       name: 'width',
       alias: 'W',
+      prefix: 'W',
       category: 'Layout',
       type: 'number',
       group: {
@@ -55,6 +58,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     },
     {
       name: 'height',
+      prefix: 'H',
       category: 'Layout',
       alias: 'H',
       type: 'number',
