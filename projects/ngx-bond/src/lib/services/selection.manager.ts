@@ -116,7 +116,11 @@ export class SelectionManager {
 
     this.keyManager.keyDown$.subscribe((evt) => {
       if (this.keyManager.keydownMap.has('Escape')) {
-        this.unselectAll();
+        if (this.editContainer()) {
+          this.escapeEditoMode();
+        } else {
+          this.unselectAll();
+        }
       } else if (evt.key === 'ArrowRight') {
         const xBy = this.keyManager.isKeyDown('Shift') ? 10 : 1;
         this.moveBy(xBy, 0, this.dragTarget() as NgBondContainer);
@@ -166,6 +170,10 @@ export class SelectionManager {
   }
 
   onWorldDblClick(evt: MouseEvent) {
+    this.escapeEditoMode();
+  }
+
+  escapeEditoMode() {
     if (this.editContainer()) {
       this.select(this.editContainer() as NgBondContainer);
       this.enableSelection();

@@ -100,6 +100,8 @@ export class ContainerComponent {
         setTimeout(() => {
           this.focusTextarea();
         });
+      } else {
+        this.textareaEl()?.nativeElement.blur();
       }
     });
   }
