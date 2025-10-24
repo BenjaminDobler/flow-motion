@@ -65,7 +65,7 @@ export const inspectableLinkProperties: InspectableProperty[] = [
   {
     name: 'startMarker',
     type: 'select',
-    options: ['none', 'arrow1','arrow2', 'circle', 'square', 'diamond'],
+    options: ['none', 'arrow1', 'arrow2', 'circle', 'square', 'diamond'],
   },
   {
     name: 'startMarkerOrient',
@@ -75,7 +75,7 @@ export const inspectableLinkProperties: InspectableProperty[] = [
   {
     name: 'endMarker',
     type: 'select',
-    options: ['none', 'arrow1','arrow2', 'circle', 'square', 'diamond'],
+    options: ['none', 'arrow1', 'arrow2', 'circle', 'square', 'diamond'],
   },
   {
     name: 'endMarkerOrient',
@@ -157,7 +157,7 @@ export class NgBondService {
     return p1;
   }
 
-  createLink(id1: string, id2: string | DragPoint, linkProperties?: LinkProperties, add = true) {
+  createLink(id1: string, id2: string | DragPoint, linkProperties?: any, add = true) {
     const p1 = this.getBrondPropertyById(id1);
     const property1 = p1?.injector.get(NgBondProperty);
 
@@ -189,6 +189,7 @@ export class NgBondService {
       property1?.hasLink.set(true);
       property1?.isStartOfLink.set(true);
     }
+
 
     if (p1) {
       const defProps = this.defaultProperties();
@@ -244,7 +245,7 @@ export class NgBondService {
         },
         path: computed(() => {
           const scale = this.scale();
-          const cType = link.properties.curveType();
+          let cType = link.properties.curveType();
           const curveRadius = link.properties.curveRadius();
           let pathFunction;
           if (cType === 'bezier') {
@@ -293,39 +294,21 @@ export class NgBondService {
       let smalledDist = Number.POSITIVE_INFINITY;
       let smallestEl;
       for (const el of this.dragElements()) {
-        if (el instanceof NgBondProperty) {
-          if (el.container) {
-            const dist = getDistance({ x, y }, { x: el.container.gX(), y: el.container.gY() });
-            if (dist < smalledDist) {
-              smalledDist = dist;
-              smallestEl = el;
-            }
+        if (el.type === 'link-target') {
+          const dist = getDistance({ x, y }, { x: el.gX(), y: el.gY() });
+          if (dist < smalledDist) {
+            smalledDist = dist;
+            smallestEl = el;
           }
         }
       }
       if (this.currentDragSource && smalledDist < this.snapDistance() && smallestEl) {
-        this.currentSnapTarget = smallestEl;
+        this.currentSnapTarget = smallestEl.injector.get(NgBondProperty);
         const l = this.createLink(
           this.currentDragSource.id(),
           smallestEl.id(),
           {
-            stroke: signal('#333'),
-            strokeDasharray: signal('5,5'),
-            strokeWidth: signal(3),
-            curveType: signal('straight'),
-            curveRadius: signal(0),
-            animate: signal(false),
-            animationBubbleCount: signal(0),
-            animationBubbleDuration: signal(0),
-            animationBubbleRadius: signal(3),
-            animationBubbleColor: signal('#333'),
-            textOnPath: signal(''),
-            midPoint: signal({ x: 0, y: 0 }),
-            totalLength: signal(0),
-            startMarker: signal('none'),
-            endMarker: signal('none'),
-            startMarkerOrient: signal('auto'),
-            endMarkerOrient: signal('auto'),
+            stroke: '#333',
           },
           false
         );
