@@ -8,7 +8,7 @@ import { TimelineService } from '../../services/timeline.service';
   imports: [],
   templateUrl: './motion-path.component.html',
   styleUrl: './motion-path.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MotionPathComponent {
   svgCanvas = viewChild<ElementRef>('svg_canvas');
@@ -24,15 +24,11 @@ export class MotionPathComponent {
         this.svgEdit.init();
 
         this.svgEdit.pathChanged$.pipe(distinctUntilChanged()).subscribe((d) => {
-          console.log('motion path changed ', d);
-
           if (this.timelineService.selectedTween() !== null) {
             const selectedTween = this.timelineService.selectedTween();
             if (selectedTween) {
               const straightMotionPath = `M${selectedTween.start().value().x} ${selectedTween.start().value().y} L${selectedTween.end().value().x} ${selectedTween.end().value().y}`;
               if (d !== straightMotionPath) {
-                console.log('it is not the same ');
-                console.log(d, straightMotionPath);
                 this.timelineService.selectedTween()!.motionPath.set(d);
               }
 

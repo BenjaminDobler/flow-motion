@@ -15,6 +15,7 @@
   //   }
   // }
 
+  --connector-padding: 0px;
   --connector-size: 10px;
   --connector-offset: calc(var(--connector-size) / 2 * -1);
 
@@ -33,7 +34,7 @@
 .left-connector {
   position: absolute;
   border-radius: 100%;
-  left: calc(var(--connector-offset));
+  left: calc(var(--connector-offset) + var(--connector-padding) * -1);
   top: 50%;
   transform: translateY(-50%);
   width: var(--connector-size);
@@ -43,7 +44,7 @@
 .right-connector {
   position: absolute;
   border-radius: 100%;
-  right: calc(var(--connector-offset));
+  right: calc(var(--connector-offset) + var(--connector-padding) * -1);
   top: 50%;
   transform: translateY(-50%);
   width: var(--connector-size);
@@ -53,7 +54,7 @@
 .top-connector {
   position: absolute;
   border-radius: 100%;
-  top: calc(var(--connector-offset));
+  top: calc(var(--connector-offset) + var(--connector-padding) * -1);
   left: 50%;
   transform: translateX(-50%);
   width: var(--connector-size);
@@ -63,7 +64,7 @@
 .bottom-connector {
   position: absolute;
   border-radius: 100%;
-  bottom: calc(var(--connector-offset));
+  bottom: calc(var(--connector-offset) + var(--connector-padding) * -1);
   left: 50%;
   transform: translateX(-50%);
   width: var(--connector-size);

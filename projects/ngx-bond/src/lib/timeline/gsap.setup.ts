@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 
 gsap.registerPlugin(MotionPathHelper, MotionPathPlugin, EasePack);
 
-const props = ['x', 'y', 'width', 'height', 'borderRadius', 'backgroundColor', 'rotate', 'bgColor', 'pathPosition', 'opacity', 'fontSize', 'color', 'strokeDasharray', 'pathprogress'];
+const props = ['x', 'y', 'width', 'height', 'connectionOffset', 'borderRadius', 'backgroundColor', 'rotate', 'bgColor', 'pathPosition', 'opacity', 'fontSize', 'color', 'strokeDasharray', 'pathprogress'];
 
 export const configureGsap = () => {
   props.forEach((prop) => {

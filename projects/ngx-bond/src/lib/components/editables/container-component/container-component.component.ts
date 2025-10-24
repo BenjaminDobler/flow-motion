@@ -49,6 +49,11 @@ export class ContainerComponent {
       },
       options: ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900],
     },
+    {
+      category: 'Connection',
+      name: 'connectionOffset',
+      type: 'number',
+    }
   ];
 
   contextMenuData = input<any[]>([
@@ -79,6 +84,7 @@ export class ContainerComponent {
 
   textareaEl = viewChild<ElementRef<HTMLTextAreaElement>>('textArea');
 
+  connectionOffset = model(0);
   text = model('');
   fontSize = model(16);
   color = model('white');
@@ -104,6 +110,25 @@ export class ContainerComponent {
         this.textareaEl()?.nativeElement.blur();
       }
     });
+
+    
+    let isFirstOffsetChange = true;
+    effect(() => {
+      const offset = this.connectionOffset();
+      if (isFirstOffsetChange) {
+        isFirstOffsetChange = false;
+        return;
+      }
+      this.el.nativeElement.style.setProperty('--connector-padding', `${offset}px`);
+      this.container.updatePosition();
+      this.container.children().forEach(child => {
+        if (child.type === 'link-target') {
+          (child as NgBondContainer).updatePosition();
+          //console.log('link target to update ', child);
+        }   
+      });
+    
+    })
   }
 
   detachChild(viewRef: ComponentRef<any>) {
