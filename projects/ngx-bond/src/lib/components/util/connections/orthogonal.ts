@@ -15,17 +15,14 @@ export function getOrhogonalConnection(
   p1: NgBondProperty,
   p2: NgBondProperty | DragPoint
 ) {
-
-
-  const parent = ((p1.container) as NgBondContainer).parent();
+  const parent = (p1.container as NgBondContainer).parent() as NgBondContainer;
   const rect1 = { width: parent?.width() || 0, height: parent?.height() || 0, left: parent?.gX(), top: parent?.gY() };
-
+  const connectionOffset1 = parent.connectionOffset ? parent.connectionOffset() : 0;
+  let connectionOffset2 = 0;
   let distance1 = 0;
   let distance2 = 0;
   if (p1Position === 'bottom' || p1Position === 'top') {
-    distance1 = rect1 && typeof p1.x === 'function' && typeof p1.width === 'function'
-      ? (p1.x() + p1.width() / 2) / rect1.width
-      : 0;
+    distance1 = rect1 && typeof p1.x === 'function' && typeof p1.width === 'function' ? (p1.x() + p1.width() / 2) / rect1.width : 0;
   }
 
   if (p1Position === 'left' || p1Position === 'right') {
@@ -34,7 +31,8 @@ export function getOrhogonalConnection(
   let rect2 = { width: 2, height: 2, left: x2, top: y2 };
 
   if ('container' in p2) {
-    const parent = ((p2.container) as NgBondContainer).parent();
+    const parent = (p2.container as NgBondContainer).parent() as NgBondContainer;
+    connectionOffset2 = parent.connectionOffset ? parent.connectionOffset() : 0;
     rect2 = { width: parent?.width() || 0, height: parent?.height() || 0, left: parent?.gX() || 0, top: parent?.gY() || 0 };
 
     if (p2Position === 'bottom' || p2Position === 'top') {
@@ -51,6 +49,16 @@ export function getOrhogonalConnection(
       distance2 = (p2Y + p2Height / 2) / rect2?.height;
     }
   }
+
+  rect1.left -= connectionOffset1;
+  rect1.top -= connectionOffset1;
+  rect1.width += connectionOffset1 * 2;
+  rect1.height += connectionOffset1 * 2;
+
+  rect2.left -= connectionOffset2;
+  rect2.top -= connectionOffset2;
+  rect2.width += connectionOffset2 * 2;
+  rect2.height += connectionOffset2 * 2;
 
   const path = OrthogonalConnector.route({
     pointA: { shape: rect1 as any, side: p1Position, distance: distance1 },

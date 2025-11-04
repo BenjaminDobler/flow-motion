@@ -94,6 +94,11 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       noneSerializable: true,
       readonly: true,
     },
+    {
+      category: 'Connection',
+      name: 'connectionOffset',
+      type: 'number',
+    },
   ];
 
   get inspectableProperties() {
@@ -101,6 +106,8 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   el: ElementRef = inject(ElementRef);
+
+  connectionOffset = model(0);
 
   editMode = signal<boolean>(false);
   backgroundMode = signal<boolean>(false);
@@ -271,7 +278,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       const e = this.editMode();
       console.log('edit mode changed', e);
     });
-
   }
 
   onDblClick(evt: MouseEvent) {
@@ -503,29 +509,29 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
         y = y / scale;
 
         this.pos(x, y);
-      } 
-      
+      }
+
       if (isBottomHeightDrag || bottomRightCornerDrag || bottomLeftCornerDrag) {
         let offsetY = move.originalEvent.y;
         let y = offsetY - this.parentRect.top;
         y = y / scale;
         bottomHeightDrag(0, y);
-      } 
-      
+      }
+
       if (isRightWidthDrag || bottomRightCornerDrag || topRightCornerDrag) {
         let offsetX = move.originalEvent.x;
         let x = offsetX - this.parentRect.left;
         x = x / scale;
         rightWidthDrag(x, 0);
-      } 
-      
+      }
+
       if (isLeftWidthDrag || bottomLeftCornerDrag || topLeftCornerDrag) {
         let offsetX = move.originalEvent.x;
         let x = offsetX - this.parentRect.left;
         x = x / scale;
         leftWidthDrag(x, 0);
-      } 
-      
+      }
+
       if (isTopHeightDrag || topLeftCornerDrag || topRightCornerDrag) {
         console.log('topHeightDrag');
         let offsetY = move.originalEvent.y;
@@ -628,7 +634,6 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     this.x.set(x);
     this.y.set(y);
   }
-
 
   recalculateSize() {
     this.el.nativeElement.style.width = 'auto';

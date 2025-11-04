@@ -48,11 +48,6 @@ export class ContainerComponent {
         name: 'fontSizeWeight',
       },
       options: ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900],
-    },
-    {
-      category: 'Connection',
-      name: 'connectionOffset',
-      type: 'number',
     }
   ];
 
@@ -84,7 +79,6 @@ export class ContainerComponent {
 
   textareaEl = viewChild<ElementRef<HTMLTextAreaElement>>('textArea');
 
-  connectionOffset = model(0);
   text = model('');
   fontSize = model(16);
   color = model('white');
@@ -114,7 +108,7 @@ export class ContainerComponent {
     
     let isFirstOffsetChange = true;
     effect(() => {
-      const offset = this.connectionOffset();
+      const offset = this.container.connectionOffset();
       if (isFirstOffsetChange) {
         isFirstOffsetChange = false;
         return;
