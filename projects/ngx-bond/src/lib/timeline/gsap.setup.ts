@@ -1,11 +1,17 @@
 import { MotionPathHelper } from 'gsap/MotionPathHelper';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import EasePack from 'gsap/EasePack';
 import { gsap } from 'gsap';
 
-gsap.registerPlugin(MotionPathHelper, MotionPathPlugin, EasePack);
 
-const props = ['x', 'y', 'width', 'height', 'connectionOffset', 'borderRadius', 'backgroundColor', 'rotate', 'bgColor', 'pathPosition', 'opacity', 'fontSize', 'color', 'strokeDasharray', 'pathprogress'];
+// MorphSVGPlugin.defaultRender = (rawData: any, target: any)=>{
+//   console.log('default render function', rawData, target);
+// };
+
+gsap.registerPlugin(MotionPathHelper, MotionPathPlugin, EasePack, MorphSVGPlugin);
+
+const props = ['x', 'y', 'width', 'height', 'pathdata', 'connectionOffset', 'borderRadius', 'backgroundColor', 'rotate', 'bgColor', 'pathPosition', 'opacity', 'fontSize', 'color', 'strokeDasharray', 'pathprogress'];
 
 export const configureGsap = () => {
   props.forEach((prop) => {
@@ -50,37 +56,37 @@ export const configureGsap = () => {
     },
   });
 
-  for (let id = 0; id < 100; id++) {
-    gsap.registerPlugin({
-      name: `signal_point-position-${id}`,
-      get(target: any) {
-        const point = target
-          .path()
-          .points()
-          .find((p: any) => p.id === id);
-        return {
-          x: point.x,
-          y: point.y,
-        };
-      },
-      init(target: any, endValue: any, b: any) {
-        const point = target
-          .path()
-          .points()
-          .find((p: any) => p.id === id);
+  // for (let id = 0; id < 100; id++) {
+  //   gsap.registerPlugin({
+  //     name: `signal_point-position-${id}`,
+  //     get(target: any) {
+  //       const point = target
+  //         .path()
+  //         .points()
+  //         .find((p: any) => p.id === id);
+  //       return {
+  //         x: point.x,
+  //         y: point.y,
+  //       };
+  //     },
+  //     init(target: any, endValue: any, b: any) {
+  //       const point = target
+  //         .path()
+  //         .points()
+  //         .find((p: any) => p.id === id);
 
-        const currentValue = {
-          x: point.x | 0,
-          y: point.y | 0,
-        };
-        const data: any = this;
-        data.target = point;
-        data.interp = gsap.utils.interpolate(currentValue, endValue);
-      },
-      render(progress: any, data: any) {
-        data.target.x = data.interp(progress).x;
-        data.target.y = data.interp(progress).y;
-      },
-    });
-  }
+  //       const currentValue = {
+  //         x: point.x | 0,
+  //         y: point.y | 0,
+  //       };
+  //       const data: any = this;
+  //       data.target = point;
+  //       data.interp = gsap.utils.interpolate(currentValue, endValue);
+  //     },
+  //     render(progress: any, data: any) {
+  //       data.target.x = data.interp(progress).x;
+  //       data.target.y = data.interp(progress).y;
+  //     },
+  //   });
+  // }
 };

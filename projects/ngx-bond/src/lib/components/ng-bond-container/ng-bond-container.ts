@@ -345,6 +345,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   }
 
   private updateBounds() {
+    const scale = this.ngBondService ? this.ngBondService.scale() : 1;
     this.itemElement = this.el?.nativeElement;
     if (this.itemElement && this.itemElement.parentElement) {
       this.itemRect = this.itemElement.getBoundingClientRect();

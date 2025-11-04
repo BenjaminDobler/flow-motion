@@ -1,13 +1,16 @@
-import { afterNextRender, Component, effect, inject, model, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, model, signal } from '@angular/core';
 import { InspectableProperty, NgBondContainer, NgBondProperty, SelectionManager } from '../../../../public-api';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'lib-node-table',
-  imports: [NgBondContainer, NgBondProperty],
+  imports: [NgBondContainer, NgBondProperty, FormsModule],
   templateUrl: './node-table.component.html',
   styleUrl: './node-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(dblclick)': 'onDblClick($event)',
+    '[class.edit-mode]': 'container.editMode()',
   },
 })
 export class NodeTableComponent {
@@ -68,6 +71,22 @@ export class NodeTableComponent {
       this.container.recalculateSize();
     });
   }
+
+  onFieldInput(field: any,prop: string, event: any) {
+    console.log(event);
+    const content = event.target.innerText;
+    console.log('content ', content);
+    field[prop] = content;
+  }
+
+  updateFields() {
+    console.log('updating fields');
+    this.fields.update((fields) => {
+      return [...fields];
+    });
+  };
+
+
 
   onDblClick(evt: MouseEvent) {
     this.selection.disabled.set(true);

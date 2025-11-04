@@ -156,7 +156,28 @@ export class TimelineService {
                     keyframe.time() / 1000
                   );
                 } else {
-                  timeline.to(targetDirective, props, keyframe.time() / 1000);
+                
+                  if (track.name() === 'pathdata') {
+                    const duration = (nextKeyframe.time() - keyframe.time()) / 1000;
+                    const start = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    start.setAttribute('d', keyframe.value());
+
+                    timeline.fromTo(
+                      targetDirective.el.nativeElement,
+                      { morphSVG: keyframe.value() },
+                      {
+                        morphSVG: nextKeyframe.value(),
+                        ease: tween.easing() || 'none',
+                        duration,
+                        render: (rawPath: any, target: any) => {
+                          console.log('render ', rawPath, target);
+                        },
+                      },
+                      keyframe.time() / 1000
+                    );
+                  } else {
+                    timeline.to(targetDirective, props, keyframe.time() / 1000);
+                  }
                 }
               }
             }

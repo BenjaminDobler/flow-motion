@@ -19,6 +19,8 @@ export class SVGCanvas {
 
   onNewPathAdded?: (path: Path) => void;
 
+  editMode = signal<boolean>(true);
+
   //private _d: string = '';
   insertionPointActive = false;
   //   public get d(): string {

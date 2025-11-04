@@ -452,10 +452,15 @@ export class ComponentFactory {
         });
       });
 
+      console.log('path inspectableProperties', pathDirective.inspectableProperties);
+
     pathDirective.inspectableProperties
-      .filter((p) => p.event)
+      //.filter((p) => p.event)
       .forEach((p) => {
-        (pathDirective as any)[p.event as any].subscribe((evt: any) => {
+                  const eventProp = p.event ? p.event : p.name;
+                  console.log('Subscribing to path event prop', eventProp);
+
+        (pathDirective as any)[eventProp as any].subscribe((evt: any) => {
           this.propertyChanged.next({
             id,
             property: p.name,
@@ -463,6 +468,8 @@ export class ComponentFactory {
           });
         });
       });
+
+      this.selectionManager.setContainerForEditing(container);
 
     this.componentAdded.next({ id: container.id(), displayName: container.displayName() });
   }

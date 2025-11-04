@@ -1,6 +1,6 @@
 {
   "name": "@richapps/ngx-drag",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "peerDependencies": {
     "@angular/common": "^20.1.0",

@@ -398,14 +398,24 @@ export class SelectionManager {
   }
 
   mouseMove(x: number, y: number) {
-    this.rootChildren().forEach((target) => {
+    console.log('\n\n\n');
+    const checkChildren = (target: NgBondContainer) => {
       const dist = GeometryUtils.Distance({ x, y }, target.globalBounds());
 
       if (dist < 20) {
         target.approached(true);
+        console.log('approached ', target.displayName(), dist);
       } else {
         target.approached(false);
+        // console.log('not approached ', target, dist );
       }
+      target.children().forEach((child) => {
+        checkChildren(child as NgBondContainer);
+      });
+    };
+
+    this.rootChildren().forEach((target) => {
+      checkChildren(target);
     });
   }
 }

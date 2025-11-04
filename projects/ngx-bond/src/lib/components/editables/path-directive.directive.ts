@@ -1,4 +1,4 @@
-import { afterNextRender, computed, Directive, effect, ElementRef, EventEmitter, inject, Injector, input, model, output, signal } from '@angular/core';
+import { afterNextRender, computed, Directive, effect, ElementRef, EventEmitter, inject, Injector, input, model, output, signal, untracked } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { outputToObservable, toObservable } from '@angular/core/rxjs-interop';
 import { NgBondContainer } from '../ng-bond-container/ng-bond-container';
@@ -6,12 +6,10 @@ import { ComponentFactory } from '../../services/component.factory';
 import { SelectionManager } from '../../services/selection.manager';
 import { Path } from '../svg-canvas/path';
 import { Point } from '../svg-canvas/point';
+import { SVGCanvas } from '../svg-canvas/svgcanvas';
 
 @Directive({
   selector: '[pathdirective]',
-  host: {
-    '(dblclick)': 'onDblClick($event)',
-  },
   hostDirectives: [
     {
       directive: NgBondContainer,
@@ -46,9 +44,7 @@ export class PathDirectiveDirective {
       name: 'fill',
       type: 'color',
       setterName: 'fill',
-      isSignal: true,
       event: 'fillChanged',
-      serializable: true,
     },
     {
       name: 'totalLength',
@@ -103,6 +99,11 @@ export class PathDirectiveDirective {
       event: 'strokeLineCapChanged',
       serializable: true,
     },
+    {
+      name: 'pathdata',
+      type: 'string',
+      animatable: true,
+    },
   ];
 
   get inspectableProperties() {
@@ -116,6 +117,7 @@ export class PathDirectiveDirective {
   selection = inject(SelectionManager);
 
   injector = inject(Injector);
+  svg = inject(SVGCanvas);
 
   enabled = true;
 
@@ -162,83 +164,109 @@ export class PathDirectiveDirective {
 
   destroyed$ = new Subject<void>();
 
-  d = computed(() => {
-    return this.path()?.d() || '';
-  });
+  // d = computed(() => {
+  //   return this.path()?.d() || '';
+  // });
+
+  pathdata = model<string>('');
 
   constructor() {
-
-
     if (this.container.displayName() === '') {
       this.container.displayName.set('Path ');
-    } 
+    }
     this.container.type = this.type;
-    
+
     let previousPoints: Point[] = [];
 
     effect(() => {
-      const path = this.path();
-      const points = this.path()?.points();
-      console.log('Points changed', points?.length);
-
-      // find all new points recognized by their id
-      const newPoints = points.filter((p) => !previousPoints.includes(p));
-      // find all removed points recognized by their id
-      const removedPoints = previousPoints.filter((p) => !points.includes(p));
-
-      newPoints.forEach((p) => {
-        this['point-position-changed-' + p.id] = new EventEmitter();// new Subject<{ x: number; y: number }>();
-
-
-
-        this.componentFactory.containerElementMap.get(this.container)?.propertyDirectiveMap.set('point-position-' + p.id, this);
-
-
-        this.inspectableProperties.push({
-          name: 'point-position-' + p.id,
-          type: 'position',
-          setterName: 'point-position-' + p.id,
-          isSignal: false,
-          event: 'point-position-changed-' + p.id,
-          serializable: false,
-        });
-
-        const sub = p.positionChanged.subscribe(() => {
-          if (this.dragging()) {
-            return;
-          }
-          console.log('Point moved, updating path bounding box ', p.id, p.x, p.y);
-
-          this.componentFactory.propertyChanged.next({ id: this.container.id(), property: 'point-position-' + p.id, value: { x: p.x, y: p.y, id: p.id } });
-        });
+      const d = this.path()?.d() || '';
+      console.log('Path d changed', d);
+      untracked(() => {
+        this.pathdata.set(d);
       });
-
-      removedPoints.forEach((p) => {
-        console.log('Point removed, unsubscribing ', p.id);
-      });
-
-      previousPoints = [...points];
     });
 
     effect(() => {
+      const pathdata = this.pathdata();
+      console.log('Path data changed', pathdata);
+      if (pathdata !== this.path()?.d()) {
+        console.log('Updating path d from pathdata property', pathdata);
+        untracked(() => {});
+        //this.path()?.d.set(pathdata);
+        this.path()?.setD(pathdata);
+      }
+    });
+
+    effect(() => {
+      // const path = this.path();
+      // const points = this.path()?.points();
+      // console.log('Points changed', points?.length);
+      // // find all new points recognized by their id
+      // const newPoints = points.filter((p) => !previousPoints.includes(p));
+      // // find all removed points recognized by their id
+      // const removedPoints = previousPoints.filter((p) => !points.includes(p));
+      // newPoints.forEach((p) => {
+      //   this['point-position-changed-' + p.id] = new EventEmitter();// new Subject<{ x: number; y: number }>();
+      //   this.componentFactory.containerElementMap.get(this.container)?.propertyDirectiveMap.set('point-position-' + p.id, this);
+      //   this.inspectableProperties.push({
+      //     name: 'point-position-' + p.id,
+      //     type: 'position',
+      //     setterName: 'point-position-' + p.id,
+      //     isSignal: false,
+      //     event: 'point-position-changed-' + p.id,
+      //     serializable: false,
+      //   });
+      //   const sub = p.positionChanged.subscribe(() => {
+      //     if (this.dragging()) {
+      //       return;
+      //     }
+      //     console.log('Point moved, updating path bounding box ', p.id, p.x, p.y);
+      //     this.componentFactory.propertyChanged.next({ id: this.container.id(), property: 'point-position-' + p.id, value: { x: p.x, y: p.y, id: p.id } });
+      //   });
+      // });
+      // removedPoints.forEach((p) => {
+      //   console.log('Point removed, unsubscribing ', p.id);
+      // });
+      // previousPoints = [...points];
+    });
+
+
+    let isBoundChange = false;
+    effect(() => {
       const d = this.path()?.d() || '';
 
-      if (this.dragging()) {
+      if (this.dragging() || this.container.editMode()) {
         return;
       }
+      console.log('#####Path d changed for bounding box update', d);
 
       const rect = this.path()?.boundingBox();
       this.container.width.set(rect?.width || 0);
       this.container.height.set(rect?.height || 0);
-      //this.container.setPositionImmediately(rect?.left || 0, rect?.top || 0);
       this.container.x.set(rect?.x || 0);
       this.container.y.set(rect?.y || 0);
-      //});
+      isBoundChange = true;
+    });
+
+    effect(() => {
+      const editMode = this.container.editMode();
+      console.log('Path edit mode changed', editMode);
+      if (editMode) {
+        this.path()?.editMode.set(true);
+        if (this.path()) {
+          const path = this.path();
+          path.canvas.selectedPathElement = path;
+        }
+      } else {
+        this.path()?.editMode.set(false);
+        this.svg.unselectPath();
+      }
     });
 
     effect(() => {
       const d = this.path()?.d() || '';
       const length = this.container.el?.nativeElement.getTotalLength();
+      console.log('Path total length ', length, ' for d ', d);
       this.totalLength.set(length || 0);
     });
 
@@ -268,8 +296,10 @@ export class PathDirectiveDirective {
 
     effect(() => {
       const pathprogress = this.pathprogress();
-      this.strokeDasharray.set(this.totalLength() + '');
-      this.strokeDashoffset.set(this.totalLength() - this.totalLength() * (pathprogress / 100));
+      //const totalLength = this.totalLength();
+      const length = this.container.el?.nativeElement.getTotalLength();
+      this.strokeDasharray.set(length + '');
+      this.strokeDashoffset.set(length - length * (pathprogress / 100));
       this.pathprogressChanged.emit(pathprogress);
     });
 
@@ -304,14 +334,16 @@ export class PathDirectiveDirective {
 
     let isFirst = true;
 
-
-    this.container.positionUpdated.subscribe(()=>{
-
-    });
+    this.container.positionUpdated.subscribe(() => {});
 
     const p$ = outputToObservable(this.container.positionUpdated);
 
     p$.pipe(takeUntil(this.destroyed$)).subscribe((position) => {
+      console.log('position updated ', position);
+      if (isBoundChange) {
+        isBoundChange = false;
+        return;
+      }
       if (position.xBy === 0 && position.yBy === 0) {
         return;
       }
@@ -326,17 +358,6 @@ export class PathDirectiveDirective {
       this.container.id.set(this.path().id());
       this.componentFactory.addSvgContainer(this.container, [this]);
     });
-  }
-
-  onDblClick(evt: MouseEvent) {
-    this.selection.disabled.set(true);
-    if (this.path()) {
-      const path = this.path();
-      path.canvas.selectedPathElement = path;
-      this.selection.unselectAll();
-      evt.stopPropagation();
-      evt.preventDefault();
-    }
   }
 
   beforeRemove() {

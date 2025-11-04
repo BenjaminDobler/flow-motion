@@ -26,6 +26,13 @@
     }
   }
 
+  input {
+    field-sizing: content;
+    background: transparent;
+    color: #fff;
+    border: none;
+  }
+
   .card-content {
     padding-top: 8px;
     padding-bottom: 8px;
@@ -78,5 +85,14 @@
 }
 
 .tx-muted {
-  color: oklab(0.705 0.00415142 -0.0144141 / 0.6);
+  color: oklab(0.705 0.00415142 -0.0144141 / 0.6) !important;
+}
+
+
+:host {
+  &.edit-mode {
+    input {
+      opacity: 0.1;
+    }
+  }
 }

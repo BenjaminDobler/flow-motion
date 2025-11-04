@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, inject, input, Input, Output, AfterViewInit } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, inject, input, Input, Output, AfterViewInit, output } from '@angular/core';
 import { makeDraggable } from './drag.util';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -34,6 +34,9 @@ export class DraggerDirective implements AfterViewInit {
     x: number;
     y: number;
   }>();
+
+  dragStart = output<void>();
+  dragEnd = output<void>();
 
   @Output()
   widthUpdated: EventEmitter<number> = new EventEmitter<number>();
@@ -105,6 +108,7 @@ export class DraggerDirective implements AfterViewInit {
     drag.dragStart$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
       itemRect = itemElement.getBoundingClientRect();
       parentRect = parentElement.getBoundingClientRect();
+      this.dragStart.emit();
     });
     drag.dragMove$.pipe(takeUntil(this.onDestroy$)).subscribe((move) => {
       this.resizeOffset = this.resizable ? this.resizeOffset : 0;
@@ -155,6 +159,10 @@ export class DraggerDirective implements AfterViewInit {
 
     drag.dragStart$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
       // console.log('drag start');
+    });
+
+    drag.dragEnd$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.dragEnd.emit();
     });
   }
 

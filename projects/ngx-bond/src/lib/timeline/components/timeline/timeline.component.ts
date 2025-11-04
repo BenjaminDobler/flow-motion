@@ -41,7 +41,7 @@ export class TimelineComponent {
     }
 
     this.selectedTween.set(tween);
-    if (tween.track.name() === 'position') {
+    //if (tween.track.name() === 'position') {
       // show motion path
       this.tweenSelected.emit(tween);
 
@@ -51,7 +51,7 @@ export class TimelineComponent {
       }
 
       this.timelineService.selectedTween.set(tween);
-    } 
+    //} 
   }
 
 

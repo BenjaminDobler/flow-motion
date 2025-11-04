@@ -11,6 +11,7 @@ export class Path {
   points = signal<Point[]>([]);
   id = signal<string>('');
   isClosed = signal<boolean>(false);
+  editMode = signal<boolean>(true);
 
   pointCount = 0;
 
@@ -148,6 +149,15 @@ export class Path {
     this.canvas.deletePath(this);
   }
 
+  setD(d: string) {
+    //this.d.set(d);
+    const svgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    svgPath.setAttribute('d', d);
+    const points = generatePointsFromPath2(this, svgPath);  
+    this.points.set(points);
+    this.draw();
+  }
+
   static deserialize(data: any, canvas: SVGCanvas): Path {
     const path = new Path(canvas);
     path.id.set(data.id);
@@ -167,6 +177,8 @@ export class Path {
     return path;
   }
 }
+
+
 
 function generatePointsFromPath(selectedPathElement: Path, path: SVGPathElement) {
   const segments = (path as any).getPathData();
@@ -216,6 +228,59 @@ function generatePointsFromPath(selectedPathElement: Path, path: SVGPathElement)
   });
 
   selectedPathElement?.points.set(points);
+
+  // this.draw();
+}
+
+
+function generatePointsFromPath2(selectedPathElement: Path, path: SVGPathElement) {
+  const segments = (path as any).getPathData();
+
+  const points: Point[] = [];
+
+  segments.forEach((seg: any, index: number) => {
+    const previousPoint = points[points.length - 1];
+    if (seg.type === 'M') {
+      const p = new Point(selectedPathElement as Path, 'point');
+      p.x = seg.values[0];
+      p.y = seg.values[1];
+      points.push(p);
+    }
+    if (seg.type === 'L') {
+      const p = new Point(selectedPathElement as Path, 'point');
+      p.x = seg.values[0];
+      p.y = seg.values[1];
+      points.push(p);
+    }
+    if (seg.type === 'C') {
+      const p = new Point(selectedPathElement as Path, 'point');
+      p.x = seg.values[4];
+      p.y = seg.values[5];
+
+      const controlPoint1 = new Point(selectedPathElement as Path, 'control');
+
+      controlPoint1.x = seg.values[0];
+      controlPoint1.y = seg.values[1];
+      controlPoint1.centerPoint = previousPoint;
+
+      const controlPoint2 = new Point(selectedPathElement as Path, 'control');
+      controlPoint2.x = seg.values[2];
+      controlPoint2.y = seg.values[3];
+      controlPoint2.centerPoint = p;
+
+      p.controlPoint1 = controlPoint2;
+      previousPoint.controlPoint2 = controlPoint1;
+
+      if (previousPoint.controlPoint1 && previousPoint.controlPoint2) {
+        previousPoint.controlPoint1.opposite = previousPoint.controlPoint2;
+        previousPoint.controlPoint2.opposite = previousPoint.controlPoint1;
+      }
+
+      points.push(p);
+    }
+  });
+
+  return points;
 
   // this.draw();
 }

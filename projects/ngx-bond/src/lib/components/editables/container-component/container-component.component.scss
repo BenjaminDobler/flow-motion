@@ -8,23 +8,17 @@
   align-items: center;
   justify-content: center;
 
-  // &.selected {
-  //   .connector {
-  //     background: #ff0000;
-  //     visibility: visible;
-  //   }
-  // }
-
   --connector-padding: 0px;
   --connector-size: 10px;
   --connector-offset: calc(var(--connector-size) / 2 * -1);
 
   &.approached {
-    .connector {
+    > .connector {
       visibility: visible;
     }
   }
 }
+
 
 .connector {
   visibility: hidden;
