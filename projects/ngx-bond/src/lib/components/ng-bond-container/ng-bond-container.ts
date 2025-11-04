@@ -74,6 +74,7 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
     },
     {
       name: 'displayName',
+      label: 'Name',
       type: 'string',
       noneAnimatable: true,
     },
@@ -82,21 +83,47 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
       type: 'number',
       prefixIcon: 'rotate',
     },
-    {
-      name: 'bounds',
-      type: 'DOMRect',
-      noneSerializable: true,
-      readonly: true,
-    },
-    {
-      name: 'globalBounds',
-      type: 'DOMRect',
-      noneSerializable: true,
-      readonly: true,
-    },
+    // {
+    //   name: 'bounds',
+    //   type: 'DOMRect',
+    //   noneSerializable: true,
+    //   readonly: true,
+    // },
+    // {
+    //   name: 'globalBounds',
+    //   type: 'DOMRect',
+    //   noneSerializable: true,
+    //   readonly: true,
+    // },
     {
       category: 'Connection',
       name: 'connectionOffset',
+      label: 'Offset',
+      type: 'number',
+    },
+    {
+      category: 'Connection',
+
+      name: 'leftTopPosition',
+      label: 'Left Top',
+      type: 'number',
+    },
+    {
+      category: 'Connection',
+      name: 'rightTopPosition',
+      label: 'Right Top',
+      type: 'number',
+    },
+    {
+      category: 'Connection',
+      name: 'leftBottomPosition',
+      label: 'Left Bottom',
+      type: 'number',
+    },
+    {
+      category: 'Connection',
+      name: 'rightBottomPosition',
+      label: 'Right Bottom',
       type: 'number',
     },
   ];
@@ -108,6 +135,10 @@ export class NgBondContainer implements NGBondItem, OnDestroy {
   el: ElementRef = inject(ElementRef);
 
   connectionOffset = model(0);
+  leftTopPosition = model(50);
+  rightTopPosition = model(50);
+  leftBottomPosition = model(50);
+  rightBottomPosition = model(50);
 
   editMode = signal<boolean>(false);
   backgroundMode = signal<boolean>(false);

@@ -1,12 +1,27 @@
-import { afterNextRender, computed, ContentChild, ContentChildren, Directive, effect, ElementRef, inject, Input, isSignal, model, output, signal, ViewChild, viewChild, ViewChildren } from '@angular/core';
+import {
+  afterNextRender,
+  computed,
+  ContentChild,
+  ContentChildren,
+  Directive,
+  effect,
+  ElementRef,
+  inject,
+  Input,
+  isSignal,
+  model,
+  output,
+  signal,
+  ViewChild,
+  viewChild,
+  ViewChildren,
+} from '@angular/core';
 import { InspectableProperty } from '../types/types';
 
 @Directive({
   selector: '[backgroundColorProperty]',
   exportAs: 'backgroundColorProperty',
-  host: {
-
-  },
+  host: {},
 })
 export class BackgroundColorPropertyDirective {
   static inspectableProperties: InspectableProperty[] = [
@@ -96,7 +111,82 @@ export class BackgroundColorPropertyDirective {
       name: 'borderColor',
       type: 'color',
       category: 'Border',
-    }
+    },
+    {
+      name: 'mixBlendMode',
+      type: 'select',
+      options: [
+        'normal',
+        'multiply',
+        'screen',
+        'overlay',
+        'darken',
+        'lighten',
+        'color-dodge',
+        'color-burn',
+        'hard-light',
+        'soft-light',
+        'difference',
+        'exclusion',
+        'hue',
+        'saturation',
+        'color',
+        'luminosity',
+      ],
+    },
+    {
+      name: 'blur',
+      label: 'Blur',
+      type: 'number',
+      suffix: 'px',
+      category: 'Filter',
+    },
+    {
+      name: 'brightness',
+      label: 'Brightness',
+      type: 'number',
+
+      suffix: '%',
+      category: 'Filter',
+    },
+    {
+      name: 'contrast',
+      label: 'Contrast',
+      type: 'range',
+      min: 0,
+      max: 100,
+      step: 1,
+      suffix: '%',
+      category: 'Filter',
+    },
+    {
+      name: 'grayscale',
+      label: 'Grayscale',
+      type: 'number',
+      suffix: '%',
+      category: 'Filter',
+    },
+    {
+      name: 'hueRotate',
+      label: 'Hue Rotate',
+      type: 'number',
+      suffix: 'deg',
+      category: 'Filter',
+    },
+    {
+      name: 'invert',
+      label: 'Invert',
+      type: 'number',
+      suffix: '%',
+      category: 'Filter',
+    },
+    {
+      name: 'saturate',
+      label: 'Saturate',
+      type: 'number',
+      suffix: '%',
+      category: 'Filter',
+    },
   ];
 
   get inspectableProperties() {
@@ -113,7 +203,6 @@ export class BackgroundColorPropertyDirective {
   borderColor = model('#000000');
   borderEnabled = model(false);
 
-
   border = computed(() => {
     if (!this.borderEnabled()) {
       return 'none';
@@ -125,6 +214,7 @@ export class BackgroundColorPropertyDirective {
     return 'none';
   });
 
+  mixBlendMode = model('normal');
 
   borderWidth = model(0);
 
@@ -146,6 +236,40 @@ export class BackgroundColorPropertyDirective {
 
   shadowColorAlpha = model(51);
 
+  filter = computed(() => {
+    const filters = [];
+    if (this.blur() > 0) {
+      filters.push(`blur(${this.blur()}px)`);
+    }
+    if (this.brightness() !== 100) {
+      filters.push(`brightness(${this.brightness()}%)`);
+    }
+    if (this.contrast() !== 100) {
+      filters.push(`contrast(${this.contrast()}%)`);
+    }
+    if (this.grayscale() > 0) {
+      filters.push(`grayscale(${this.grayscale()}%)`);
+    }
+    if (this.hueRotate() > 0) {
+      filters.push(`hue-rotate(${this.hueRotate()}deg)`);
+    }
+    if (this.invert() > 0) {
+      filters.push(`invert(${this.invert()}%)`);
+    }
+    if (this.saturate() !== 100) {
+      filters.push(`saturate(${this.saturate()}%)`);
+    }
+    return filters.join(' ');
+  });
+
+  blur = model(0);
+  brightness = model(100);
+  contrast = model(100);
+  grayscale = model(0);
+  hueRotate = model(0);
+  invert = model(0);
+  saturate = model(100);
+
   shadowCss = computed(() => {
     if (!this.shadowEnabled()) {
       return 'none';
@@ -158,14 +282,24 @@ export class BackgroundColorPropertyDirective {
   });
 
   constructor() {
-
     let content = this.el.nativeElement.querySelector('.content-container');
     let inited = signal(false);
 
-    afterNextRender(()=>{
+    afterNextRender(() => {
       content = this.el.nativeElement.querySelector('.content-container');
       inited.set(true);
-    })
+    });
+
+    effect(() => {
+      if (!inited()) return;
+
+      const filter = this.filter();
+      if (content) {
+        content.style.filter = filter;
+      } else {
+        this.el.nativeElement.style.filter = filter;
+      }
+    });
 
     effect(() => {
       if (!inited()) return;
@@ -181,6 +315,14 @@ export class BackgroundColorPropertyDirective {
     effect(() => {
       if (!inited()) return;
 
+      const mixBlendMode = this.mixBlendMode();
+
+      this.el.nativeElement.style.mixBlendMode = mixBlendMode;
+    });
+
+    effect(() => {
+      if (!inited()) return;
+
       const opacity = this.opacity();
       if (content) {
         content.style.opacity = opacity;
@@ -189,7 +331,7 @@ export class BackgroundColorPropertyDirective {
       }
     });
 
-    effect(() => {  
+    effect(() => {
       if (!inited()) return;
 
       const borderRadius = this.borderRadius();
@@ -209,7 +351,7 @@ export class BackgroundColorPropertyDirective {
       } else {
         this.el.nativeElement.style.overflow = overflow;
       }
-    }); 
+    });
 
     effect(() => {
       if (!inited()) return;
@@ -220,9 +362,7 @@ export class BackgroundColorPropertyDirective {
       } else {
         this.el.nativeElement.style.border = border;
       }
-    }); 
-
-    
+    });
 
     effect(() => {
       if (!inited()) return;

@@ -20,5 +20,6 @@ export interface InspectableProperty {
   group?: { name: string };
   noneAnimatable?: boolean;
   arrayItemType?: any;
+  label?: string;
   format?: (value: any) => any;
 }

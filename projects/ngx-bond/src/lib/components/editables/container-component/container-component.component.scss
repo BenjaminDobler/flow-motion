@@ -12,13 +12,17 @@
   --connector-size: 10px;
   --connector-offset: calc(var(--connector-size) / 2 * -1);
 
+  --leftTopPosition: 50%;
+  --rightTopPosition: 50%;
+  --leftBottomPosition: 50%;
+  --rightBottomPosition: 50%;
+
   &.approached {
     > .connector {
       visibility: visible;
     }
   }
 }
-
 
 .connector {
   visibility: hidden;
@@ -29,7 +33,7 @@
   position: absolute;
   border-radius: 100%;
   left: calc(var(--connector-offset) + var(--connector-padding) * -1);
-  top: 50%;
+  top: var(--leftTopPosition);
   transform: translateY(-50%);
   width: var(--connector-size);
   height: var(--connector-size);
@@ -39,7 +43,7 @@
   position: absolute;
   border-radius: 100%;
   right: calc(var(--connector-offset) + var(--connector-padding) * -1);
-  top: 50%;
+  top: var(--rightTopPosition);
   transform: translateY(-50%);
   width: var(--connector-size);
   height: var(--connector-size);
@@ -49,7 +53,7 @@
   position: absolute;
   border-radius: 100%;
   top: calc(var(--connector-offset) + var(--connector-padding) * -1);
-  left: 50%;
+  left: var(--leftTopPosition);
   transform: translateX(-50%);
   width: var(--connector-size);
   height: var(--connector-size);
@@ -59,12 +63,11 @@
   position: absolute;
   border-radius: 100%;
   bottom: calc(var(--connector-offset) + var(--connector-padding) * -1);
-  left: 50%;
+  left: var(--leftBottomPosition);
   transform: translateX(-50%);
   width: var(--connector-size);
   height: var(--connector-size);
 }
-
 
 textarea {
   field-sizing: content;

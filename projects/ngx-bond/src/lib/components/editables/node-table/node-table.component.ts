@@ -1,6 +1,7 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, model, signal } from '@angular/core';
 import { InspectableProperty, NgBondContainer, NgBondProperty, SelectionManager } from '../../../../public-api';
 import { FormsModule } from '@angular/forms';
+import { BackgroundColorPropertyDirective } from '../../../directives/backgroundColorProperty.directive';
 
 @Component({
   selector: 'lib-node-table',
@@ -16,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 export class NodeTableComponent {
   container = inject(NgBondContainer);
   selection = inject(SelectionManager);
+  baseStyles = inject(BackgroundColorPropertyDirective);
 
   title = model('Node Table');
   type = 'node-table';
@@ -48,6 +50,7 @@ export class NodeTableComponent {
     afterNextRender(() => {
       if (this.container.displayName() === '') {
         this.container.displayName.set('Node Table ');
+        this.baseStyles.backgroundColor.set('none');
       }
     });
   }

@@ -48,7 +48,7 @@ export class ContainerComponent {
         name: 'fontSizeWeight',
       },
       options: ['normal', 'bold', 'bolder', 'lighter', 100, 200, 300, 400, 500, 600, 700, 800, 900],
-    }
+    },
   ];
 
   contextMenuData = input<any[]>([
@@ -105,7 +105,6 @@ export class ContainerComponent {
       }
     });
 
-    
     let isFirstOffsetChange = true;
     effect(() => {
       const offset = this.container.connectionOffset();
@@ -115,14 +114,52 @@ export class ContainerComponent {
       }
       this.el.nativeElement.style.setProperty('--connector-padding', `${offset}px`);
       this.container.updatePosition();
-      this.container.children().forEach(child => {
+      this.container.children().forEach((child) => {
         if (child.type === 'link-target') {
           (child as NgBondContainer).updatePosition();
           //console.log('link target to update ', child);
-        }   
+        }
       });
-    
-    })
+    });
+
+    // let isFirstLeftTopPositionChange = true;
+    // effect(() => {
+    //   const leftTopPosition = this.container.leftTopPosition();
+    //   if (isFirstLeftTopPositionChange) {
+    //     isFirstLeftTopPositionChange = false;
+    //     return;
+    //   }
+    //   this.el.nativeElement.style.setProperty('--left-top-position', `${leftTopPosition}%`);
+    //   this.container.updatePosition();
+    //   this.container.children().forEach((child) => {
+    //     if (child.type === 'link-target') {
+    //       (child as NgBondContainer).updatePosition();
+    //       //console.log('link target to update ', child);
+    //     }
+    //   });
+    // });
+
+    const addConnectionPositioningEffect = (property: 'leftTopPosition' | 'rightTopPosition' | 'leftBottomPosition' | 'rightBottomPosition') => {
+      let isFirstLeftTopPositionChange = true;
+      effect(() => {
+        const leftTopPosition = this.container[property]();
+        if (isFirstLeftTopPositionChange) {
+          isFirstLeftTopPositionChange = false;
+          return;
+        }
+        this.el.nativeElement.style.setProperty(`--${property}`, `${leftTopPosition}%`);
+        this.container.updatePosition();
+        this.container.children().forEach((child) => {
+          if (child.type === 'link-target') {
+            (child as NgBondContainer).updatePosition();
+          }
+        });
+      });
+    };
+    addConnectionPositioningEffect('leftTopPosition');
+    addConnectionPositioningEffect('rightTopPosition');
+    addConnectionPositioningEffect('leftBottomPosition');
+    addConnectionPositioningEffect('rightBottomPosition');
   }
 
   detachChild(viewRef: ComponentRef<any>) {

@@ -11,6 +11,9 @@
       @if (group.name === 'ungrouped') {
         @for (prop of group.props; track $index) {
           <div class="properties-panel_row">
+            @if (prop.label) {
+              <label>{{ prop.label }}</label>
+            }
             @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
               {{ prop.suffixIcon }}
               <input-component
@@ -30,9 +33,7 @@
             } @else if (prop.type === 'color') {
               <color [(ngModel)]="prop.target[prop.name]"></color>
             } @else if (prop.type === 'checkbox') {
-              <label style="display: flex; align-items: center; gap: 5px">
                 <input type="checkbox" [(ngModel)]="prop.target[prop.name]" />
-              </label>
             } @else if (prop.type === 'range') {
               <label style="display: flex; align-items: center; gap: 5px">
                 <input type="range" [min]="prop.min" [max]="prop.max" [step]="prop.step" [(ngModel)]="prop.target[prop.name]" />
@@ -47,6 +48,9 @@
       } @else {
         <div class="properties-panel_row">
           @for (prop of group.props; track $index) {
+            @if (prop.label) {
+              <label>{{ prop.label }}</label>
+            }
             @if (prop.type === 'number' || prop.type === 'text' || prop.type === 'string') {
               <input-component
                 [prefix]="prop.prefix"
@@ -65,9 +69,7 @@
             } @else if (prop.type === 'color') {
               <color [(ngModel)]="prop.target[prop.name]"></color>
             } @else if (prop.type === 'range') {
-              <label style="display: flex; align-items: center; gap: 5px">
-                <input style="width: 100%;" type="range" [min]="prop.min" [max]="prop.max" [step]="prop.step" [(ngModel)]="prop.target[prop.name]" />
-              </label>
+                <input style="width: 100%" type="range" [min]="prop.min" [max]="prop.max" [step]="prop.step" [(ngModel)]="prop.target[prop.name]" />
             } @else {
               <div>
                 {{ prop.name }}
