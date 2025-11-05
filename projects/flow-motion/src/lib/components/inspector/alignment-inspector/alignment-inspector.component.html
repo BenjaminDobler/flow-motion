@@ -1,77 +1,75 @@
-<!-- <div style="margin-bottom: 10px">
-  @for (selection of selectionManager.selectionTargets(); track $index) {
-    <div class="bond-item" style="white-space: nowrap">
-      ID: {{ selection.id() }}
-      <button (click)="selectionManager.unselect(selection)">Remove</button>
-    </div>
-  }
-</div> -->
+<div class="properties-panel" style="width: 100%">
+  <div class="properties-panel_header">
+    <h2>Alignment</h2>
+  </div>
 
-<button (click)="selectionManager.align('left')">
-  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-    <path
-      fill="var(--color-icon)"
-      fill-rule="evenodd"
-      d="M17.25 10a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-8.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75zm-4 5a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75z"
-      clip-rule="evenodd"
-    ></path>
-    <path fill="var(--color-icon-tertiary)" d="M6 17.5a.5.5 0 0 1-1 0v-12a.5.5 0 0 1 1 0z"></path>
-  </svg>
-</button>
-<button (click)="selectionManager.align('horizontal-center')">
-  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-    <path
-      fill="var(--color-icon)"
-      fill-rule="evenodd"
-      d="M17.25 10a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-9.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75zm-2 5a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75z"
-      clip-rule="evenodd"
-    ></path>
-    <path fill="var(--color-icon-tertiary)" fill-rule="evenodd" d="M13 17.5a.5.5 0 0 1-1 0V15h1zm0-4.5v-3h-1v3zm0-7.5V8h-1V5.5a.5.5 0 0 1 1 0" clip-rule="evenodd"></path>
-  </svg>
-</button>
-<button (click)="selectionManager.align('right')">
-  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-    <path
-      fill="var(--color-icon)"
-      fill-rule="evenodd"
-      d="M6.75 10A.75.75 0 0 1 6 9.25v-.5A.75.75 0 0 1 6.75 8h8.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75zm4 5a.75.75 0 0 1-.75-.75v-.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75z"
-      clip-rule="evenodd"
-    ></path>
-    <path fill="var(--color-icon-tertiary)" d="M18 17.5a.5.5 0 0 0 1 0v-12a.5.5 0 0 0-1 0z"></path>
-  </svg>
-</button>
+  <div class="properties-panel_row">
+    <button (click)="selectionManager.align('left')">
+      <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
+        <path
+          fill="var(--color-icon)"
+          fill-rule="evenodd"
+          d="M17.25 10a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-8.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75zm-4 5a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75z"
+          clip-rule="evenodd"
+        ></path>
+        <path fill="var(--color-icon-tertiary)" d="M6 17.5a.5.5 0 0 1-1 0v-12a.5.5 0 0 1 1 0z"></path>
+      </svg>
+    </button>
+    <button (click)="selectionManager.align('horizontal-center')">
+      <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
+        <path
+          fill="var(--color-icon)"
+          fill-rule="evenodd"
+          d="M17.25 10a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-9.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75zm-2 5a.75.75 0 0 0 .75-.75v-.5a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v.5c0 .414.336.75.75.75z"
+          clip-rule="evenodd"
+        ></path>
+        <path fill="var(--color-icon-tertiary)" fill-rule="evenodd" d="M13 17.5a.5.5 0 0 1-1 0V15h1zm0-4.5v-3h-1v3zm0-7.5V8h-1V5.5a.5.5 0 0 1 1 0" clip-rule="evenodd"></path>
+      </svg>
+    </button>
+    <button (click)="selectionManager.align('right')">
+      <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
+        <path
+          fill="var(--color-icon)"
+          fill-rule="evenodd"
+          d="M6.75 10A.75.75 0 0 1 6 9.25v-.5A.75.75 0 0 1 6.75 8h8.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75zm4 5a.75.75 0 0 1-.75-.75v-.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75z"
+          clip-rule="evenodd"
+        ></path>
+        <path fill="var(--color-icon-tertiary)" d="M18 17.5a.5.5 0 0 0 1 0v-12a.5.5 0 0 0-1 0z"></path>
+      </svg>
+    </button>
 
-<button (click)="selectionManager.align('top')">
-  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-    <path
-      fill="var(--color-icon)"
-      fill-rule="evenodd"
-      d="M10 17.25a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-8.5A.75.75 0 0 1 8.75 8h.5a.75.75 0 0 1 .75.75zm5-4a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 .75.75z"
-      clip-rule="evenodd"
-    ></path>
-    <path fill="var(--color-icon-tertiary)" d="M17.5 6a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"></path>
-  </svg>
-</button>
-<button (click)="selectionManager.align('vertical-center')">
-  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-    <path
-      fill="var(--color-icon)"
-      fill-rule="evenodd"
-      d="M10 6.75A.75.75 0 0 0 9.25 6h-.5a.75.75 0 0 0-.75.75v9.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75zm5 2a.75.75 0 0 0-.75-.75h-.5a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75z"
-      clip-rule="evenodd"
-    ></path>
-    <path fill="var(--color-icon-tertiary)" fill-rule="evenodd" d="M17.5 11a.5.5 0 0 1 0 1H15v-1zM13 11h-3v1h3zm-7.5 0H8v1H5.5a.5.5 0 0 1 0-1" clip-rule="evenodd"></path>
-  </svg>
-</button>
-<button (click)="selectionManager.align('bottom')">
-  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
-    <path
-      fill="var(--color-icon)"
-      fill-rule="evenodd"
-      d="M10 6.75A.75.75 0 0 0 9.25 6h-.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75zm5 4a.75.75 0 0 0-.75-.75h-.5a.75.75 0 0 0-.75.75v4.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75z"
-      clip-rule="evenodd"
-    ></path>
-    <path fill="var(--color-icon-tertiary)" d="M17.5 18a.5.5 0 0 1 0 1h-12a.5.5 0 0 1 0-1z"></path>
-  </svg>
-</button>
-<br />
+    <button (click)="selectionManager.align('top')">
+      <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
+        <path
+          fill="var(--color-icon)"
+          fill-rule="evenodd"
+          d="M10 17.25a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-8.5A.75.75 0 0 1 8.75 8h.5a.75.75 0 0 1 .75.75zm5-4a.75.75 0 0 1-.75.75h-.5a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 .75.75z"
+          clip-rule="evenodd"
+        ></path>
+        <path fill="var(--color-icon-tertiary)" d="M17.5 6a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"></path>
+      </svg>
+    </button>
+    <button (click)="selectionManager.align('vertical-center')">
+      <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
+        <path
+          fill="var(--color-icon)"
+          fill-rule="evenodd"
+          d="M10 6.75A.75.75 0 0 0 9.25 6h-.5a.75.75 0 0 0-.75.75v9.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75zm5 2a.75.75 0 0 0-.75-.75h-.5a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75z"
+          clip-rule="evenodd"
+        ></path>
+        <path fill="var(--color-icon-tertiary)" fill-rule="evenodd" d="M17.5 11a.5.5 0 0 1 0 1H15v-1zM13 11h-3v1h3zm-7.5 0H8v1H5.5a.5.5 0 0 1 0-1" clip-rule="evenodd"></path>
+      </svg>
+    </button>
+    <button (click)="selectionManager.align('bottom')">
+      <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24">
+        <path
+          fill="var(--color-icon)"
+          fill-rule="evenodd"
+          d="M10 6.75A.75.75 0 0 0 9.25 6h-.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75zm5 4a.75.75 0 0 0-.75-.75h-.5a.75.75 0 0 0-.75.75v4.5c0 .414.336.75.75.75h.5a.75.75 0 0 0 .75-.75z"
+          clip-rule="evenodd"
+        ></path>
+        <path fill="var(--color-icon-tertiary)" d="M17.5 18a.5.5 0 0 1 0 1h-12a.5.5 0 0 1 0-1z"></path>
+      </svg>
+    </button>
+  </div>
+</div>
