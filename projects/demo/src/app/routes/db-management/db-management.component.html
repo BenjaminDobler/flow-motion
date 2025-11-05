@@ -27,7 +27,7 @@
     <connection-container [animationBubbleCount]="inspector.animationBubbleCount()" [animationBubbleDuration]="inspector.animationBubbleDuration()"></connection-container>
 
     @for (table of tables; track $index) {
-      <div class="card" [bondcontainer]="table.name" [x]="200" [y]="200">
+      <div class="card" [fm-container]="table.name" [x]="200" [y]="200">
         <div class="card-header">
           <div class="tx">
             <span class="tx-muted">/</span><span>{{ table.name }}</span>

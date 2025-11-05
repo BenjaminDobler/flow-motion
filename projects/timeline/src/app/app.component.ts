@@ -1,6 +1,6 @@
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { TimelineComponent, TimelineService, InspectorComponent, MotionPathComponent } from '@richapps/ngx-bond-timeline';
-import { ComponentFactory, KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+import { TimelineComponent, TimelineService, InspectorComponent, MotionPathComponent } from '@richapps/flow-motion-timeline';
+import { ComponentFactory, KeyManager, NgBondContainer, FMService, NgBondWorld, SelectionManager } from '@richapps/flow-motion';
 import { gsap } from 'gsap';
 
 
@@ -58,7 +58,7 @@ gsap.registerPlugin({
   imports: [TimelineComponent, NgBondWorld, InspectorComponent, NgBondContainer, MotionPathComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [NgBondService, SelectionManager, KeyManager, TimelineService, InspectorComponent, ComponentFactory, SelectionManager],
+  providers: [FMService, SelectionManager, KeyManager, TimelineService, InspectorComponent, ComponentFactory, SelectionManager],
   host: {},
 })
 export class AppComponent {
@@ -71,7 +71,7 @@ export class AppComponent {
   @ViewChild(NgBondWorld)
   ngBondWorld!: NgBondWorld;
 
-  bondService = inject(NgBondService);
+  fmService = inject(FMService);
 
   timelineService = inject(TimelineService);
   // svgEdit?: SVGEdit;

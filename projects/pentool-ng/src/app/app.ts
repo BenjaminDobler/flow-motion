@@ -5,20 +5,20 @@ import {
   ElementTreeComponent,
   KeyManager,
   NgBondContainer,
-  NgBondService,
+  FMService,
   NgBondWorld,
   Path,
   PathDirectiveDirective,
   SelectionManager,
   SVGCanvas,
   SvgCanvasComponent,
-} from '@richapps/ngx-bond';
+} from '@richapps/flow-motion';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   imports: [SvgCanvasComponent, ElementTreeComponent, NgBondWorld, FormsModule, ElementPropertyInspectorComponent],
-  providers: [NgBondService, SelectionManager, KeyManager, ComponentFactory, SVGCanvas],
+  providers: [FMService, SelectionManager, KeyManager, ComponentFactory, SVGCanvas],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   host: {

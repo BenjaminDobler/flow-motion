@@ -17,7 +17,7 @@
       @for (declaration of schemaAst.declarations; track $index) {
         @if (declaration.kind === "model") {
           @let name = declaration.name.value;
-          <div class="card" [bondcontainer]="name">
+          <div class="card" [fm-container]="name">
             <div class="card-header">
               <div class="tx">
                 <span class="tx-muted">/</span

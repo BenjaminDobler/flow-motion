@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EditorComponent, NgxEditorModel } from 'ngx-monaco-editor-v2';
 import { formatAst, parsePrismaSchema, PrismaSchema } from '@loancrate/prisma-schema-parser';
-import { KeyManager, NgBondContainer, NgBondService, NgBondWorld, SelectionManager } from '@richapps/ngx-bond';
+import { KeyManager, NgBondContainer, FMService, NgBondWorld, SelectionManager } from '@richapps/flow-motion';
 
 declare let monaco: any;
 const examplePrismaSchema = `
@@ -54,7 +54,7 @@ interface Model {
   imports: [EditorComponent, FormsModule, NgBondContainer, NgBondWorld],
   templateUrl: './prisma.component.html',
   styleUrl: './prisma.component.scss',
-  providers: [NgBondService, SelectionManager, KeyManager],
+  providers: [FMService, SelectionManager, KeyManager],
 })
 export class PrismaComponent {
   editor: any;

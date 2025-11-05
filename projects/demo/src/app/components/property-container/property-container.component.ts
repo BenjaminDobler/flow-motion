@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgBondContainer, NgBondProperty } from '@richapps/ngx-bond';
+import { NgBondContainer, NgBondProperty } from '@richapps/flow-motion';
  
 
 

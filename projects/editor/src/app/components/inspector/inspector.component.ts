@@ -2,20 +2,19 @@ import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } fr
 import { FormsModule } from '@angular/forms';
 import {
   Link,
-  NgBondContainer,
-  NgBondProperty,
-  NgBondService,
+  FMService,
   SelectionManager,
   ComponentFactory,
   ElementPropertyInspectorComponent,
-  ElementTreeComponent,
   AlignmentInspectorComponent,
   ConnectionInspectorComponent,
   TextComponentComponent,
   LinkPropertiesComponent,
   InspectorTweenProperties,
   TimelineService,
-} from '@richapps/ngx-bond';
+  FMContainer,
+  FMProperty,
+} from '@richapps/flow-motion';
 
 type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'tween';
 type Tab = {
@@ -39,7 +38,7 @@ type Tab = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectorComponent {
-  protected bondService: NgBondService = inject(NgBondService);
+  protected fmService: FMService = inject(FMService);
   protected selected = signal<tabType>('element-inspector');
   protected selectionManager: SelectionManager = inject(SelectionManager);
   protected componentFactory = inject(ComponentFactory);
@@ -62,19 +61,19 @@ export class InspectorComponent {
 
   updateAnimateLink(link: Link, evt: Event) {
     const target = evt.target as HTMLInputElement;
-    const container = this.bondService.getBrondPropertyById(link.inputId);
+    const container = this.fmService.getBrondPropertyById(link.inputId);
 
     if (!container) {
       console.warn(`No container found for link inputId: ${link.inputId}`);
       return;
     }
 
-    const property1 = container.injector.get(NgBondProperty);
+    const property1 = container.injector.get(FMProperty);
 
     property1.animatedLink.set(target.checked);
   }
 
-  toggleSelection(target: NgBondContainer) {
+  toggleSelection(target: FMContainer) {
     if (this.selectionManager.isSelected(target)) {
       this.selectionManager.unselect(target);
     } else {

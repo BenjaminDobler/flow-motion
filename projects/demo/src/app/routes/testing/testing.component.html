@@ -43,9 +43,9 @@
   <path [attr.d]="resultPath()" stroke="#fff" stroke-width="3" fill="none"></path>
 </svg>
 
-<div bondcontainer class="container" #p1="bondcontainer" positioning="transform" style="transform: translate(100px, 100px);position: absolute; width: 120px; height: 120px; background: #3674b5"></div>
+<div fm-container class="container" #p1="fm-container" positioning="transform" style="transform: translate(100px, 100px);position: absolute; width: 120px; height: 120px; background: #3674b5"></div>
 
-<div bondcontainer class="container" #p2="bondcontainer" positioning="transform" style="transform: translate(600px, 500px);position: absolute; width: 120px; height: 120px; background: #fada7a"></div>
+<div fm-container class="container" #p2="fm-container" positioning="transform" style="transform: translate(600px, 500px);position: absolute; width: 120px; height: 120px; background: #fada7a"></div>
 
 <input [value]="rectMargin()" (change)="updateMargin($any($event.target).value)" type="number" min="0" max="100" />
 

@@ -5,7 +5,7 @@ import {
   MotionPathService,
   NgBondContainer,
   NgBondProperty,
-  NgBondService,
+  FMService,
   NgBondWorld,
   PathDirectiveDirective,
   SelectionManager,
@@ -13,10 +13,10 @@ import {
   SvgCanvasComponent,
   TimelineComponent,
   TimelineService,
-} from '@richapps/ngx-bond';
+} from '@richapps/flow-motion';
 import { PropertyContainerComponent } from '../../components/property-container/property-container.component';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
-import { ConnectionContainerComponent } from '../../../../../ngx-bond/src/lib/components/connection-container/connection-container.component';
+import { ConnectionContainerComponent } from '../../../../../flow-motion/src/lib/components/connection-container/connection-container.component';
 import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { ChildInspectorComponent } from '../../components/child-inspector/child-inspector.component';
 
@@ -33,7 +33,7 @@ import { ChildInspectorComponent } from '../../components/child-inspector/child-
 })
 export class SimpleComponent {
   svgCanvas = viewChild(SvgCanvasComponent);
-  protected ngBondService: NgBondService = inject(NgBondService);
+  protected ngBondService: FMService = inject(FMService);
   protected timelineService: TimelineService = inject(TimelineService);
   protected selection: SelectionManager = inject(SelectionManager);
   protected componentFactory = inject(ComponentFactory);

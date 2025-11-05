@@ -119,20 +119,20 @@
         }
       }
     },
-    "ngx-bond": {
+    "flow-motion": {
       "projectType": "library",
-      "root": "projects/ngx-bond",
-      "sourceRoot": "projects/ngx-bond/src",
+      "root": "projects/flow-motion",
+      "sourceRoot": "projects/flow-motion/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngx-bond/tsconfig.lib.prod.json"
+              "tsConfig": "projects/flow-motion/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/ngx-bond/tsconfig.lib.json"
+              "tsConfig": "projects/flow-motion/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -140,7 +140,7 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "tsConfig": "projects/ngx-bond/tsconfig.spec.json",
+            "tsConfig": "projects/flow-motion/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -151,10 +151,10 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/ngx-bond/**/*.ts",
-              "projects/ngx-bond/**/*.html"
+              "projects/flow-motion/**/*.ts",
+              "projects/flow-motion/**/*.html"
             ],
-            "eslintConfig": "projects/ngx-bond/eslint.config.js"
+            "eslintConfig": "projects/flow-motion/eslint.config.js"
           }
         }
       }
@@ -688,20 +688,20 @@
         }
       }
     },
-    "ngx-bond-timeline": {
+    "flow-motion-timeline": {
       "projectType": "library",
-      "root": "projects/ngx-bond-timeline",
-      "sourceRoot": "projects/ngx-bond-timeline/src",
+      "root": "projects/flow-motion-timeline",
+      "sourceRoot": "projects/flow-motion-timeline/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngx-bond-timeline/tsconfig.lib.prod.json"
+              "tsConfig": "projects/flow-motion-timeline/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/ngx-bond-timeline/tsconfig.lib.json"
+              "tsConfig": "projects/flow-motion-timeline/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -709,7 +709,7 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "tsConfig": "projects/ngx-bond-timeline/tsconfig.spec.json",
+            "tsConfig": "projects/flow-motion-timeline/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -720,10 +720,10 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/ngx-bond-timeline/**/*.ts",
-              "projects/ngx-bond-timeline/**/*.html"
+              "projects/flow-motion-timeline/**/*.ts",
+              "projects/flow-motion-timeline/**/*.html"
             ],
-            "eslintConfig": "projects/ngx-bond-timeline/eslint.config.js"
+            "eslintConfig": "projects/flow-motion-timeline/eslint.config.js"
           }
         }
       }

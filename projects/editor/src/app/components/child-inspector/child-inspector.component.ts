@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ElementPropertyInspectorComponent, ElementTreeComponent } from '@richapps/ngx-bond';
+import { ElementPropertyInspectorComponent, ElementTreeComponent } from '@richapps/flow-motion';
 
 @Component({
   selector: 'child-inspector',

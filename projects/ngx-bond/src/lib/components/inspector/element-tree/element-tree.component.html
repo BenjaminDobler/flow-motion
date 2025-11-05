@@ -1,5 +1,0 @@
-@let children = bondService.world?.children();
-
-@for (child of children; track $index) {
-  <tree-child (onremove)="removeComponent($event)" [child]="child"></tree-child>
-}

@@ -4,7 +4,7 @@ import {
   Link,
   NgBondContainer,
   NgBondProperty,
-  NgBondService,
+  FMService,
   SelectionManager,
   ComponentFactory,
   ElementPropertyInspectorComponent,
@@ -13,8 +13,8 @@ import {
   ConnectionInspectorComponent,
   TextComponentComponent,
   LinkPropertiesComponent,
-} from '@richapps/ngx-bond';
-import { InspectorTweenProperties, TimelineService } from '@richapps/ngx-bond';
+} from '@richapps/flow-motion';
+import { InspectorTweenProperties, TimelineService } from '@richapps/flow-motion';
 
 type tabType = 'properties' | 'children' | 'selection' | 'element-inspector' | 'tween';
 type Tab = {
@@ -37,7 +37,7 @@ type Tab = {
   styleUrl: './inspector.component.scss',
 })
 export class InspectorComponent {
-  protected bondService: NgBondService = inject(NgBondService);
+  protected fmService: FMService = inject(FMService);
   protected selected = signal<tabType>('element-inspector');
   protected selectionManager: SelectionManager = inject(SelectionManager);
   protected componentFactory = inject(ComponentFactory);
@@ -60,7 +60,7 @@ export class InspectorComponent {
 
   updateAnimateLink(link: Link, evt: Event) {
     const target = evt.target as HTMLInputElement;
-    const container = this.bondService.getBrondPropertyById(link.inputId);
+    const container = this.fmService.getBrondPropertyById(link.inputId);
 
     if (!container) {
       console.warn(`No container found for link inputId: ${link.inputId}`);

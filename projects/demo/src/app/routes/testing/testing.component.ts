@@ -1,6 +1,6 @@
 import { Component, effect, signal, viewChild } from '@angular/core';
-import { NgBondContainer } from '@richapps/ngx-bond';
-import { getDistance, Line, Point, Rect } from '@richapps/ngx-bond';
+import { NgBondContainer } from '@richapps/flow-motion';
+import { getDistance, Line, Point, Rect } from '@richapps/flow-motion';
 
 const key = (point: Point) => {
   return point.x + '_' + point.y;

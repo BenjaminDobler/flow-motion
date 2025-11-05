@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { NgBondContainer, NgBondWorld, NgBondService, NgBondProperty, SelectionManager, KeyManager } from '@richapps/ngx-bond';
+import { NgBondContainer, NgBondWorld, FMService, NgBondProperty, SelectionManager, KeyManager } from '@richapps/flow-motion';
 import { InspectorComponent } from '../../components/inspector/inspector.component';
-import { ConnectionContainerComponent } from '../../../../../ngx-bond/src/lib/components/connection-container/connection-container.component';
+import { ConnectionContainerComponent } from '../../../../../flow-motion/src/lib/components/connection-container/connection-container.component';
 
 const dbData = [
   {
@@ -43,10 +43,10 @@ const dbData = [
   imports: [NgBondContainer, NgBondWorld, InspectorComponent, NgBondProperty, ConnectionContainerComponent],
   templateUrl: './db-management.component.html',
   styleUrl: './db-management.component.scss',
-  providers: [NgBondService, SelectionManager, KeyManager],
+  providers: [FMService, SelectionManager, KeyManager],
 })
 export class DbManagementComponent {
   tables = dbData;
 
-  bondService: NgBondService = inject(NgBondService);
+  fmService: FMService = inject(FMService);
 }

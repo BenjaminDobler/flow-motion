@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ComponentFactory, ImageComponent, KeyManager, MotionPathService, NgBondService, SelectionManager, SVGCanvas, TextComponentComponent } from '@richapps/ngx-bond';
+import { ComponentFactory, ImageComponent, KeyManager, MotionPathService, FMService, SelectionManager, SVGCanvas, TextComponentComponent } from '@richapps/flow-motion';
 
 import { RouterModule } from '@angular/router';
-import { TimelineService } from '@richapps/ngx-bond';
+import { TimelineService } from '@richapps/flow-motion';
 
 @Component({
   selector: 'app-root',
   imports: [RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService],
+  providers: [FMService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(drop)': 'onDrop($event)',
@@ -24,7 +24,7 @@ import { TimelineService } from '@richapps/ngx-bond';
 export class AppComponent {
   title = 'demo';
 
-  protected ngBondService: NgBondService = inject(NgBondService);
+  protected ngBondService: FMService = inject(FMService);
   protected componentFactory: ComponentFactory = inject(ComponentFactory);
   protected timelineService: TimelineService = inject(TimelineService);
   protected svg = inject(SVGCanvas);

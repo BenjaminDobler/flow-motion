@@ -10,8 +10,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@richapps/ngx-bond": [
-        "./dist/ngx-bond"
+      "@richapps/flow-motion": [
+        "./dist/flow-motion"
       ],
       "@richapps/ngx-drag": [
         "./dist/ngx-drag"

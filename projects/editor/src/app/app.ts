@@ -1,15 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
 import {
-  NgBondWorld,
   SvgCanvasComponent,
   ConnectionContainerComponent,
-  NgBondService,
+  FMService,
   ComponentFactory,
   SelectionManager,
   KeyManager,
   SVGCanvas,
   MotionPathService,
-  NgBondContainer,
   TextComponentComponent,
   ImageComponent,
   SerializationService,
@@ -17,19 +15,21 @@ import {
   TimelineComponent,
   DuplicateService,
   PathDirectiveDirective,
-} from '@richapps/ngx-bond';
+  FMWorld,
+  FMContainer,
+} from '@richapps/flow-motion';
 import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { InspectorComponent } from './components/inspector/inspector.component';
 import { ChildInspectorComponent } from './components/child-inspector/child-inspector.component';
 import { IconComponent } from '@richapps/ui-components';
-import { NodeTableComponent } from '@richapps/ngx-bond';
+import { NodeTableComponent } from '@richapps/flow-motion';
 
 @Component({
   selector: 'app-root',
-  imports: [SvgCanvasComponent, IconComponent, NgBondWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
+  imports: [SvgCanvasComponent, IconComponent, FMWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  providers: [NgBondService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService, DuplicateService],
+  providers: [FMService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService, DuplicateService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(dblclick)': 'this.onDoubleClick($event)',
@@ -39,7 +39,7 @@ export class App {
   protected readonly title = signal('editor');
 
   svgCanvas = viewChild(SvgCanvasComponent);
-  protected ngBondService: NgBondService = inject(NgBondService);
+  protected ngBondService: FMService = inject(FMService);
   protected timelineService: TimelineService = inject(TimelineService);
   protected selection: SelectionManager = inject(SelectionManager);
   protected componentFactory = inject(ComponentFactory);
@@ -67,7 +67,7 @@ export class App {
         const path = this.svg.selectedPathElement;
         this.svg.unselectPath();
 
-        this.componentFactory.containerElementMap.forEach((container: any, key: NgBondContainer) => {
+        this.componentFactory.containerElementMap.forEach((container: any, key: FMContainer) => {
           container.directives.forEach((dir: any) => {
             if (dir.type === 'path-directive') {
               if ((dir as PathDirectiveDirective).path() === path) {
