@@ -137,7 +137,7 @@ export class TimelineService {
                   const proxyElement = {
                     x: targetDirective.x(),
                     y: targetDirective.y(),
-                    //rotation: targetDirective.rotate ? targetDirective.rotate() : 0,
+                    rotation: targetDirective.rotate ? targetDirective.rotate() : 0,
                   };
 
                   timeline.to(
@@ -154,7 +154,7 @@ export class TimelineService {
                         targetDirective.x.set(proxyElement.x);
                         targetDirective.y.set(proxyElement.y);
                         if (tween.autoRotate()) {
-                        targetDirective.rotate.set(proxyElement.rotation);
+                          targetDirective.rotate.set(proxyElement.rotation);
                         }
                       },
                     },
