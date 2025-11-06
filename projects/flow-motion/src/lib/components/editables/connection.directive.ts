@@ -1,4 +1,4 @@
-import { Directive, effect, inject, input, model, output, signal, untracked } from '@angular/core';
+import { Directive, effect, inject, model, signal } from '@angular/core';
 import { svgPathBbox } from 'svg-path-bbox';
 import { FMContainer } from '../fm-container/fm-container';
 import { Link } from '../../services/fm.service';

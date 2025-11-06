@@ -28,6 +28,7 @@
     "@angular/router": "^20.1.4",
     "@loancrate/prisma-schema-parser": "^3.0.0",
     "gsap": "^3.13.0",
+    "html-to-image": "^1.11.13",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^20.0.0",
     "path-data-polyfill": "^1.0.10",

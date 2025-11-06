@@ -23,6 +23,7 @@ import { InspectorComponent } from './components/inspector/inspector.component';
 import { ChildInspectorComponent } from './components/child-inspector/child-inspector.component';
 import { IconComponent } from '@richapps/ui-components';
 import { NodeTableComponent } from '@richapps/flow-motion';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,7 @@ export class App {
   protected readonly title = signal('editor');
 
   svgCanvas = viewChild(SvgCanvasComponent);
+  world = viewChild(FMWorld);
   protected ngBondService: FMService = inject(FMService);
   protected timelineService: TimelineService = inject(TimelineService);
   protected selection: SelectionManager = inject(SelectionManager);
@@ -121,5 +123,18 @@ export class App {
 
   async load() {
     this.serialization.loadSerialized();
+  }
+
+  async exportImage() {
+
+
+    toJpeg(this.world()!.el.nativeElement as any, { quality: 0.95 }).then((dataUrl) => {
+      const link = document.createElement('a');
+      link.download = 'export.jpeg';
+      link.href = dataUrl;
+      link.click();
+    });
+
+    
   }
 }
