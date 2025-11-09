@@ -170,11 +170,9 @@ export class FMWorld implements FMItem {
     });
 
     this.resizeObserver.resize.pipe(debounceTime(100), takeUntilDestroyed()).subscribe((rect) => {
-      console.log('World resized', rect);
       this.rect = this.rect = this.el.nativeElement.getBoundingClientRect();
     });
 
-    console.log('resize observer', this.resizeObserver);
   }
 
   addChild(child: FMItem) {

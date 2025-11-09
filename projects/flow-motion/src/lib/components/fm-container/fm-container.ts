@@ -279,10 +279,13 @@ export class FMContainer implements FMItem, OnDestroy {
 
     this.parent()?.addChild(this);
 
-    effect(() => {
-      const selectionManagerDisabled = this.selectionManager?.disabled() || false;
-      this.disabled$.next(selectionManagerDisabled);
-    });
+    // effect(() => {
+    //   const selectionManagerDisabled = this.selectionManager?.disabled() || false;
+    //   console.log('Container selection manager disabled changed to ', selectionManagerDisabled);
+    //   //this.disabled$.next(selectionManagerDisabled);
+    // });
+
+    
 
     effect(() => {
       const x = this.x();
@@ -305,10 +308,7 @@ export class FMContainer implements FMItem, OnDestroy {
       }
     });
 
-    effect(() => {
-      const e = this.editMode();
-      console.log('edit mode changed', e);
-    });
+
   }
 
   onDblClick(evt: MouseEvent) {
@@ -564,7 +564,6 @@ export class FMContainer implements FMItem, OnDestroy {
       }
 
       if (isTopHeightDrag || topLeftCornerDrag || topRightCornerDrag) {
-        console.log('topHeightDrag');
         let offsetY = move.originalEvent.y;
         let y = offsetY - this.parentRect.top;
         y = y / scale;

@@ -174,9 +174,6 @@ export class TimelineService {
                         morphSVG: nextKeyframe.value(),
                         ease: tween.easing() || 'none',
                         duration,
-                        render: (rawPath: any, target: any) => {
-                          console.log('render ', rawPath, target);
-                        },
                       },
                       keyframe.time() / 1000
                     );

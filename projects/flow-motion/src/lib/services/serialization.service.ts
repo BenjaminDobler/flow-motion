@@ -6,7 +6,7 @@ export class SerializationService {
   private timeline = inject(TimelineService);
   private components = inject(ComponentFactory);
 
-  serialize() {
+  serialize(toLocalStorage = true) {
     const components = this.components.serializeComponents();
     const timelineData = this.timeline.timeline;
 
@@ -42,38 +42,48 @@ export class SerializationService {
       };
     });
 
-
     components.timeline = {
       groups: serializedData,
     };
     components.canvas = {
       backgroundColor: this.components.world?.backgroundColor(),
-    }
+    };
 
-    localStorage.setItem('serialized', JSON.stringify(components, null, 2));
+    if (toLocalStorage) {
+      localStorage.setItem('serialized', JSON.stringify(components, null, 2));
+    }
+    return components;
   }
 
-  loadSerialized() {
-    const serialized = localStorage.getItem('serialized');
+  loadSerialized(data?: any) {
 
-    if (serialized) {
-      const serializedObj: any = JSON.parse(serialized);
-
-      this.components.loadSerialized(serializedObj);
-
-      this.components.world?.backgroundColor.set(serializedObj.canvas.backgroundColor);
+    // clear all
+    this.components.clearAll();
 
 
-      const timelineData = serializedObj.timeline;
-      const flGroups = timelineData.groups.map((g: any) => {
-        const flGroup = new FLGroup(g.id, g.name);
-        g.tracks.forEach((track: any) => {
+    let serializedObj: any = data;
+    if (!data) {
+      const serialized = localStorage.getItem('serialized');
 
-          const flTrack = new FLTrack(track.name,flGroup);
-          flTrack.name.set(track.name);
-          flTrack.keyframes.set(track.keyframes.map((kf: any) => new FLKeyframe(kf.time, kf.value, flTrack)));
+      if (serialized) {
+        serializedObj = JSON.parse(serialized);
+      }
+    }
 
-          flTrack.tweens.set(track.tweens.map((tween: any) => {
+    this.components.loadSerialized(serializedObj);
+
+    this.components.world?.backgroundColor.set(serializedObj.canvas.backgroundColor);
+
+    const timelineData = serializedObj.timeline;
+    const flGroups = timelineData.groups.map((g: any) => {
+      const flGroup = new FLGroup(g.id, g.name);
+      g.tracks.forEach((track: any) => {
+        const flTrack = new FLTrack(track.name, flGroup);
+        flTrack.name.set(track.name);
+        flTrack.keyframes.set(track.keyframes.map((kf: any) => new FLKeyframe(kf.time, kf.value, flTrack)));
+
+        flTrack.tweens.set(
+          track.tweens.map((tween: any) => {
             const start = flTrack.keyframes().find((kf) => {
               return kf.time() === tween.start.time;
             });
@@ -82,19 +92,17 @@ export class SerializationService {
             t.easing.set(tween.easing);
             t.motionPath.set(tween.motionPath);
             return t;
-          }));
+          })
+        );
 
-          flGroup.tracks.update((tracks) => [...tracks, flTrack]);
-        });
-        return flGroup;
+        flGroup.tracks.update((tracks) => [...tracks, flTrack]);
       });
+      return flGroup;
+    });
 
-    
-
-      setTimeout(() => {
-        this.timeline.timeline.groups.set(flGroups);
-        this.timeline.createGsapTimeline();
-      }, 500);
-    }
+    setTimeout(() => {
+      this.timeline.timeline.groups.set(flGroups);
+      this.timeline.createGsapTimeline();
+    }, 500);
   }
 }

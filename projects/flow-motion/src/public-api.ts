@@ -11,6 +11,7 @@ export * from './lib/services/selection.manager';
 export * from './lib/services/key.manager';
 export * from './lib/services/component.factory';
 export * from './lib/services/serialization.service';
+export * from './lib/services/history';
 export * from './lib/components/dialogs/duplicate-dialog/duplicate.service';
 export * from './lib/utils/geo.utils';
 export * from './lib/components/util/geo';

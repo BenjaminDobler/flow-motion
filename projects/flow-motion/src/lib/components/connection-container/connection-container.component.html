@@ -18,11 +18,11 @@
     </marker> -->
 
     @for (link of dragService.links(); track $index) {
-      <marker [attr.id]="'start-arrow-' + $index" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" fill="context-stroke" [attr.orient]="link.properties.startMarkerOrient()">
+      <marker [attr.id]="'start-arrow-' + $index" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" fill="context-stroke" [attr.orient]="link.startMarkerOrient()">
         <path d="M 0 0 L 10 5 L 0 10 z" />
       </marker>
 
-      <marker [attr.id]="'start-arrow2-' + $index" stroke="context-stroke" fill="context-stroke" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" [attr.orient]="link.properties.startMarkerOrient()">
+      <marker [attr.id]="'start-arrow2-' + $index" stroke="context-stroke" fill="context-stroke" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" [attr.orient]="link.startMarkerOrient()">
         <path d="M 0 0 L 10 5 L 0 10 z" />
       </marker>
 
@@ -34,11 +34,11 @@
         <rect x="2" y="2" width="6" height="6" />
       </marker>
 
-      <marker [attr.id]="'end-arrow-' + $index" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" fill="context-stroke" [attr.orient]="link.properties.endMarkerOrient()">
+      <marker [attr.id]="'end-arrow-' + $index" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" fill="context-stroke" [attr.orient]="link.endMarkerOrient()">
         <path d="M 0 0 L 10 5 L 0 10 z" />
       </marker>
 
-      <marker [attr.id]="'end-arrow2-' + $index" stroke="context-stroke" fill="context-stroke" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" [attr.orient]="link.properties.endMarkerOrient()">
+      <marker [attr.id]="'end-arrow2-' + $index" stroke="context-stroke" fill="context-stroke" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" [attr.orient]="link.endMarkerOrient()">
         <path d="M 0 0 L 10 5 L 0 10 z" />
       </marker>
 
@@ -65,34 +65,35 @@
       style="pointer-events: all"
       connection
       class="draw"
-      [attr.stroke]="link.properties.stroke()"
-      [attr.stroke-width]="link.properties.strokeWidth()"
+      [attr.stroke]="link.stroke()"
+      [attr.stroke-width]="link.strokeWidth()"
       [attr.d]="link.path()"
-      [attr.stroke-dasharray]="link.properties.strokeDasharray()"
+      [attr.stroke-dasharray]="link.strokeDasharray()"
+      [attr.stroke-dashoffset]="link.strokeDashoffset()"
       fill="none"
       [link]="link"
-      [attr.marker-end]="`url(#end-${link.properties.endMarker()}-${$index})`"
-      [attr.marker-start]="`url(#start-${link.properties.startMarker()}-${$index})`"
+      [attr.marker-end]="`url(#end-${link.endMarker()}-${$index})`"
+      [attr.marker-start]="`url(#start-${link.startMarker()}-${$index})`"
     />
 
     />
 
-    @if (link.properties.textOnPath() !== '') {
+    @if (link.textOnPath() !== '') {
       <text font-size="20">
-        <textPath [attr.startOffset]="link.properties.totalLength() / 2" text-anchor="middle" dominant-baseline="middle" [attr.href]="'#link-' + $index">{{ link.properties.textOnPath() }}</textPath>
+        <textPath [attr.startOffset]="link.totalLength() / 2" text-anchor="middle" dominant-baseline="middle" [attr.href]="'#link-' + $index">{{ link.textOnPath() }}</textPath>
       </text>
     }
 
-    @let animate = link.properties.animate();
+    @let animate = link.animate();
     @if (animate && pathanimation()) {
       <ng-container *ngTemplateOutlet="pathanimation(); context: { path: link.path() }"></ng-container>
     } @else if (animate) {
-      @let duration = link.properties.animationBubbleDuration();
-      @let count = link.properties.animationBubbleCount();
+      @let duration = link.animationBubbleDuration();
+      @let count = link.animationBubbleCount();
       @let step = duration / count;
 
-      @for (count of countToArray(link.properties.animationBubbleCount()); track $index) {
-        <circle [attr.r]="link.properties.animationBubbleRadius()" [attr.fill]="link.properties.animationBubbleColor()">
+      @for (count of countToArray(link.animationBubbleCount()); track $index) {
+        <circle [attr.r]="link.animationBubbleRadius()" [attr.fill]="link.animationBubbleColor()">
           <animateMotion [attr.dur]="duration + 's'" [attr.begin]="$index * step + 's'" repeatCount="indefinite" [attr.path]="link.path()" />
         </circle>
 
@@ -132,20 +133,20 @@
   @if (dragService.snapLink()) {
     <path
       class="draw"
-      [attr.stroke]="dragService.snapLink()?.properties?.stroke()"
-      [attr.stroke-width]="dragService.snapLink()?.properties?.strokeWidth()"
+      [attr.stroke]="dragService.snapLink()?.stroke()"
+      [attr.stroke-width]="dragService.snapLink()?.strokeWidth()"
       [attr.d]="dragService.snapLink()?.path()"
-      [attr.stroke-dasharray]="dragService.snapLink()?.properties?.strokeDasharray()"
+      [attr.stroke-dasharray]="dragService.snapLink()?.strokeDasharray()"
       fill="none"
     />
   }
 </svg>
 
 @for (link of dragService.links(); track $index) {
-  @if (link.properties.textOnPath() !== '') {
-    <div [style.transform]="`translate(${link.properties.midPoint().x}px, ${link.properties.midPoint().y}px)`" style="position: absolute; left: 0; top: 0; pointer-events: none">
+  @if (link.textOnPath() !== '') {
+    <div [style.transform]="`translate(${link.midPoint().x}px, ${link.midPoint().y}px)`" style="position: absolute; left: 0; top: 0; pointer-events: none">
       <div style="transform: translateX(-50%)">
-        {{ link.properties.textOnPath() }}
+        {{ link.textOnPath() }}
       </div>
     </div>
   }

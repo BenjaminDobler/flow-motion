@@ -17,27 +17,31 @@
         <div class="properties-panel_row">
           <label>{{ prop.name }}</label>
           @if (prop.type === 'select') {
-            <!-- <select [(ngModel)]="link.properties[prop.name]">
+            <!-- <select [(ngModel)]="link[prop.name]">
             @for (option of prop.options; track $index) {
               <option [value]="option">{{ option }}</option>
             }
           </select> -->
 
-            <ed-select [(ngModel)]="link.properties[prop.name]">
+            <ed-select [(ngModel)]="link[prop.name]">
               @for (option of prop.options; track $index) {
                 <ed-select-option [value]="option">{{ option }}</ed-select-option>
               }
             </ed-select>
+          } @else if (prop.type === 'range') {
+            <label style="display: flex; align-items: center; gap: 5px">
+              <input type="range" [min]="prop.min" [max]="prop.max" [step]="prop.step" [(ngModel)]="link[prop.name]" />
+            </label>
           } @else if (prop.type === 'DOMRect') {
             {{ dir[prop.name]().left }}, {{ dir[prop.name]().top }}, {{ dir[prop.name]().width }},
             {{ dir[prop.name]().height }}
           } @else if (prop.type === 'checkbox') {
-            <input type="checkbox" [(ngModel)]="link.properties[prop.name]" />
+            <input type="checkbox" [(ngModel)]="link[prop.name]" />
           } @else if (prop.type === 'color') {
-            <color [(ngModel)]="link.properties[prop.name]"></color>
+            <color [(ngModel)]="link[prop.name]"></color>
           } @else {
-            <!-- <input [attr.type]="prop.type" [(ngModel)]="link.properties[prop.name]" /> -->
-            <input-component [type]="prop.type" [(ngModel)]="link.properties[prop.name]"></input-component>
+            <!-- <input [attr.type]="prop.type" [(ngModel)]="link[prop.name]" /> -->
+            <input-component [type]="prop.type" [(ngModel)]="link[prop.name]"></input-component>
           }
         </div>
       }

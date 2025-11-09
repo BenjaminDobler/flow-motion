@@ -1,4 +1,4 @@
-import { ComponentRef, inject, Injectable, inputBinding, outputBinding, ViewContainerRef } from '@angular/core';
+import { ComponentRef, effect, inject, Injectable, Injector, inputBinding, outputBinding, runInInjectionContext, ViewContainerRef } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
@@ -8,7 +8,8 @@ import { TextComponentComponent } from '../components/editables/text-component/t
 import { NodeTableComponent } from '../components/editables/node-table/node-table.component';
 import { SelectionManager } from './selection.manager';
 import { FMService, inspectableLinkProperties } from './fm.service';
-import { FMContainer, FMItem, FMWorld, InspectableProperty, Path, PathDirectiveDirective, SVGCanvas } from '../../public-api';
+import { ConnectionDirective, FMContainer, FMItem, FMWorld, InspectableProperty, Link, Path, PathDirectiveDirective, SVGCanvas } from '../../public-api';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const componentNameToClass = {
   _ContainerComponent: ContainerComponent,
@@ -29,14 +30,25 @@ export class ComponentFactory {
   world?: FMWorld;
   svgCanvas = inject(SVGCanvas);
 
+  injector = inject(Injector);
+
   clipboard: any[] = [];
+
+  changes$ = new Subject<void>();
 
   constructor() {
     this.selectionManager.components = this;
   }
 
+  clearAll() {
+    this.containerElementMap.forEach((value, key) => {
+      this.removeComponent(key);
+    });
+    this.containerElementMap.clear();
+    this.componentCount = 0;
+  }
+
   addComponent(componentClass: { new (...args: any[]): void } = ContainerComponent, inputs: any = {}, defaultID?: string, host?: any): ComponentRef<any> | undefined {
-    console.log('Adding component of class', componentClass.name);
     let id = 'some-id-' + this.componentCount;
     this.componentCount++;
 
@@ -49,8 +61,6 @@ export class ComponentFactory {
     }
 
     const directives = [FMContainer, BackgroundColorPropertyDirective];
-
-    console.log('0');
 
     const directiveSetup = directives.map((d) => {
       // const bindings = d.inspectableProperties
@@ -71,19 +81,14 @@ export class ComponentFactory {
       };
     });
 
-    console.log('0.1');
-
     if (!this.world) {
       console.error('World is not set. Cannot add component.');
       return;
     }
-    console.log('0.2');
 
     const componentRef = host.createComponent(componentClass, {
       directives: directiveSetup,
     });
-
-    console.log('0.3');
 
     if ((componentRef.instance as any).inspectableProperties) {
       for (const prop of (componentRef.instance as any).inspectableProperties) {
@@ -100,9 +105,7 @@ export class ComponentFactory {
       }
     }
 
-    console.log('1');
     const bondContainerInstance = componentRef.injector.get(FMContainer);
-    console.log('2');
 
     const directiveInstances = directives.map((d) => componentRef.injector.get(d as any));
 
@@ -124,6 +127,7 @@ export class ComponentFactory {
                 property: prop.name,
                 value: evt,
               });
+              this.changes$.next();
             });
           }
         }
@@ -262,7 +266,7 @@ export class ComponentFactory {
       const props: any = {};
       inspectableLinkProperties.forEach((prop) => {
         if (!prop.noneSerializable) {
-          props[prop.name] = (link.properties as any)[prop.name]();
+          props[prop.name] = (link as any)[prop.name]();
         }
       });
 
@@ -430,7 +434,6 @@ export class ComponentFactory {
   }
 
   addSvgContainer(container: FMContainer, directiveInstances: any[] = [], hidden = false) {
-    console.log('Adding SVG container', container);
     const pathDirective = container.injector.get(PathDirectiveDirective);
 
     this.containerElementMap.set(container, {
@@ -459,30 +462,64 @@ export class ComponentFactory {
             property: p.name,
             value: evt,
           });
+          this.changes$.next();
         });
       });
 
-    console.log('path inspectableProperties', pathDirective.inspectableProperties);
-
-    pathDirective.inspectableProperties
-      //.filter((p) => p.event)
-      .forEach((p) => {
-        const eventProp = p.event ? p.event : p.name;
-        console.log('Subscribing to path event prop', eventProp);
-
-        (pathDirective as any)[eventProp as any].subscribe((evt: any) => {
-          this.propertyChanged.next({
-            id,
-            property: p.name,
-            value: evt,
-          });
+    pathDirective.inspectableProperties.forEach((p) => {
+      const eventProp = p.event ? p.event : p.name;
+      (pathDirective as any)[eventProp as any].subscribe((evt: any) => {
+        this.propertyChanged.next({
+          id,
+          property: p.name,
+          value: evt,
         });
+        this.changes$.next();
       });
+    });
 
     this.selectionManager.setContainerForEditing(container);
     if (!hidden) {
       this.componentAdded.next({ id: container.id(), displayName: container.displayName() });
     }
+  }
+
+  addConnectionComponent(container: FMContainer, directiveInstances: any[] = [], link: Link, connectionDirective: ConnectionDirective) {
+    const id = 'connection-' + this.componentCount;
+    this.componentCount++;
+    container.id.set(id);
+
+    this.containerElementMap.set(container, {
+      instance: null,
+      propertyDirectiveMap: new Map<string, any>(),
+      directives: [],
+      componentRef: null,
+    });
+
+    link.inspectableProperties.forEach((p: any) => {
+      this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.name, connectionDirective);
+    });
+
+    runInInjectionContext(connectionDirective.injector, () => {
+      link.inspectableProperties
+        //.filter((p) => p.event)
+        .forEach((p: any) => {
+          const eventProp = p.event ? p.event : p.name;
+
+          toObservable((link as any)[eventProp]).subscribe((value) => {
+            this.propertyChanged.next({
+              id,
+              property: p.name,
+              value: value,
+            });
+            this.changes$.next();
+          });
+        });
+
+      this.changes$.next();
+    });
+
+    this.componentAdded.next({ id: container.id(), displayName: id });
   }
 
   removeComponent(item: FMContainer) {
@@ -511,6 +548,7 @@ export class ComponentFactory {
     }
     this.containerElementMap.delete(item);
     this.componentRemoved.next(item.id());
+    this.changes$.next();
   }
 
   copySelected(targets: FMContainer[]) {

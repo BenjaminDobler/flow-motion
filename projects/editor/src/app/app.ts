@@ -17,6 +17,7 @@ import {
   PathDirectiveDirective,
   FMWorld,
   FMContainer,
+  History,
 } from '@richapps/flow-motion';
 import { NgSplitComponent, NgSplitPanelComponent } from '@richapps/ngx-split';
 import { InspectorComponent } from './components/inspector/inspector.component';
@@ -30,7 +31,7 @@ import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
   imports: [SvgCanvasComponent, IconComponent, FMWorld, ConnectionContainerComponent, InspectorComponent, TimelineComponent, NgSplitPanelComponent, NgSplitComponent, ChildInspectorComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  providers: [FMService, ComponentFactory, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService, DuplicateService],
+  providers: [FMService, ComponentFactory, History, SelectionManager, KeyManager, TimelineService, SVGCanvas, MotionPathService, SerializationService, DuplicateService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(dblclick)': 'this.onDoubleClick($event)',
@@ -47,6 +48,7 @@ export class App {
   protected componentFactory = inject(ComponentFactory);
   protected motionPath = inject(MotionPathService);
   protected serialization = inject(SerializationService);
+  protected history = inject(History);
 
   svg = inject(SVGCanvas);
 
@@ -126,15 +128,20 @@ export class App {
   }
 
   async exportImage() {
-
-
     toJpeg(this.world()!.el.nativeElement as any, { quality: 0.95 }).then((dataUrl) => {
       const link = document.createElement('a');
       link.download = 'export.jpeg';
       link.href = dataUrl;
       link.click();
     });
-
-    
   }
+
+
+  undo() {
+    this.history.undo();
+  }
+
+  redo() {
+    this.history.redo();
+  } 
 }

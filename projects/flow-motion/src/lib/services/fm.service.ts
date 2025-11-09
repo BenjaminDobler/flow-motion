@@ -81,16 +81,26 @@ export const inspectableLinkProperties: InspectableProperty[] = [
     type: 'select',
     options: ['auto', 'auto-start-reverse'],
   },
+  {
+    name: 'strokeDashoffset',
+    type: 'number',
+  },
+  {
+    name: 'pathprogress',
+    type: 'range',
+    min: 0,
+    max: 100,
+    step: 1,
+  }
 ];
 
-export interface Link {
+export interface Link extends LinkProperties {
   x1: Signal<number | undefined>;
   y1: Signal<number | undefined>;
   x2: Signal<number | undefined>;
   y2: Signal<number | undefined>;
   inputId: string;
   outputId: string;
-  properties: LinkProperties;
   path: Signal<string>;
   inspectableProperties: any;
 }
@@ -120,6 +130,8 @@ export interface LinkProperties {
   textOnPath: WritableSignal<string>;
   midPoint: WritableSignal<{ x: number; y: number }>;
   totalLength: WritableSignal<number>;
+  pathprogress: WritableSignal<number>;
+  strokeDashoffset: WritableSignal<number>;
 }
 
 const defaultLinkProperties: any = {
@@ -189,7 +201,6 @@ export class FMService {
       property1?.isStartOfLink.set(true);
     }
 
-
     if (p1) {
       const defProps = this.defaultProperties();
       const animate = property1?.animatedLink() || linkProperties?.animate || defProps.animate || false;
@@ -223,29 +234,29 @@ export class FMService {
         inputId: id1,
         outputId: typeof id2 === 'string' ? id2 : 'current_drag_preview',
         inspectableProperties: inspectableLinkProperties,
-        properties: {
-          animate: signal(animate),
-          strokeWidth: signal(strokeWidth),
-          stroke: signal(stroke),
-          curveType: signal(curveType),
-          strokeDasharray: signal(linkProperties?.strokeDasharray || defProps.strokeDasharray || '10'),
-          curveRadius: signal(curveRadius),
-          animationBubbleCount: signal<number>(10),
-          animationBubbleDuration: signal<number>(4),
-          animationBubbleRadius: signal<number>(3),
-          animationBubbleColor: signal<string>('#333'),
-          textOnPath: signal<string>(''),
-          midPoint: signal<{ x: number; y: number }>({ x: 0, y: 0 }),
-          totalLength: signal<number>(0),
-          startMarker: signal(startMarker as string),
-          endMarker: signal(endMarker as string),
-          startMarkerOrient: signal(startMarkerOrient as string),
-          endMarkerOrient: signal(endMarkerOrient as string),
-        },
+        animate: signal(animate),
+        strokeWidth: signal(strokeWidth),
+        stroke: signal(stroke),
+        curveType: signal(curveType),
+        strokeDasharray: signal(linkProperties?.strokeDasharray || defProps.strokeDasharray || '10'),
+        curveRadius: signal(curveRadius),
+        animationBubbleCount: signal<number>(10),
+        animationBubbleDuration: signal<number>(4),
+        animationBubbleRadius: signal<number>(3),
+        animationBubbleColor: signal<string>('#333'),
+        textOnPath: signal<string>(''),
+        midPoint: signal<{ x: number; y: number }>({ x: 0, y: 0 }),
+        totalLength: signal<number>(0),
+        startMarker: signal(startMarker as string),
+        endMarker: signal(endMarker as string),
+        startMarkerOrient: signal(startMarkerOrient as string),
+        endMarkerOrient: signal(endMarkerOrient as string),
+        pathprogress: signal(linkProperties?.pathprogress || 100),
+        strokeDashoffset: signal(0),
         path: computed(() => {
           const scale = this.scale();
-          let cType = link.properties.curveType();
-          const curveRadius = link.properties.curveRadius();
+          let cType = link.curveType();
+          const curveRadius = link.curveRadius();
           let pathFunction;
           if (cType === 'bezier') {
             pathFunction = getSimpleBezierPath;

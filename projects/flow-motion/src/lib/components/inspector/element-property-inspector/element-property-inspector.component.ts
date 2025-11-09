@@ -33,7 +33,6 @@ export class ElementPropertyInspectorComponent {
 
     let elements = this.selectionManager.selectionTargets();
     const editContainer = this.selectionManager.editContainer();
-    console.log('----- editContainer', editContainer);
     if (editContainer) {
       elements = [...elements, editContainer];
     }

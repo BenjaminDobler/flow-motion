@@ -60,6 +60,7 @@ export class TimelineRulerComponent {
     }
   }
   onScrubberDragStart(event: any) {
+    console.log('Scrubber drag start');
     this.timelineService.setScrubbing(true);
   }
   onScrubberDragEnd(event: any) {

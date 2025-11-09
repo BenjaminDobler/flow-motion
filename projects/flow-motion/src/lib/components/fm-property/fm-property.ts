@@ -72,8 +72,6 @@ export class FMProperty {
 
   constructor() {
 
-
-    console.log('creating fm-property ', this.id());  
     const drag = makeDraggable(this.el.nativeElement);
 
     if (this.container) {
@@ -105,7 +103,6 @@ export class FMProperty {
     let isFirstMove = true;
 
     drag.dragStart$.pipe(takeUntilDestroyed()).subscribe(() => {
-      console.log('drag start preview from ', this.id());
       parentRect = parentRect = {
         width: this.container?.parent()?.width() ?? 0,
         height: this.container?.parent()?.height() ?? 0,
@@ -124,7 +121,6 @@ export class FMProperty {
 
       if (isFirstMove && this.id()) {
         this.ngBondService.currentDragSource = this;
-        console.log('start drag preview from ', this.id()); 
         currentPreview = this.ngBondService.createLink(this.id(), dragPreview) as any;
         isFirstMove = false;
       }
