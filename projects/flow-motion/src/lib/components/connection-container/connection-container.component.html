@@ -78,8 +78,8 @@
 
     />
 
-    @if (link.textOnPath() !== '') {
-      <text font-size="20">
+    @if (link.textOnPath() !== '' && link.alignTextToPath()) {
+      <text [attr.font-size]="link.fontSize()" [attr.fill]="link.color()">
         <textPath [attr.startOffset]="link.totalLength() / 2" text-anchor="middle" dominant-baseline="middle" [attr.href]="'#link-' + $index">{{ link.textOnPath() }}</textPath>
       </text>
     }
@@ -143,9 +143,9 @@
 </svg>
 
 @for (link of dragService.links(); track $index) {
-  @if (link.textOnPath() !== '') {
+  @if (link.textOnPath() !== '' && !link.alignTextToPath()) {
     <div [style.transform]="`translate(${link.midPoint().x}px, ${link.midPoint().y}px)`" style="position: absolute; left: 0; top: 0; pointer-events: none">
-      <div style="transform: translateX(-50%)">
+      <div style="transform: translateX(-50%)" [style.fontSize.px]="link.fontSize()" [style.color]="link.color()">
         {{ link.textOnPath() }}
       </div>
     </div>

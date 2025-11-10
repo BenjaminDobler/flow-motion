@@ -492,12 +492,27 @@ export class ComponentFactory {
     this.containerElementMap.set(container, {
       instance: null,
       propertyDirectiveMap: new Map<string, any>(),
-      directives: [],
+      directives: [connectionDirective],
       componentRef: null,
     });
 
     link.inspectableProperties.forEach((p: any) => {
       this.containerElementMap.get(container)?.propertyDirectiveMap.set(p.name, connectionDirective);
+    });
+
+    link.inspectableProperties.forEach((p: any) => {
+      const eventProp = p.event ? p.event : p.name;
+
+      if ((connectionDirective as any)[`${eventProp}Changed`] !== undefined) {
+        (connectionDirective as any)[`${eventProp}Changed`].subscribe((evt: any) => {
+          this.propertyChanged.next({
+            id,
+            property: p.name,
+            value: evt,
+          });
+          this.changes$.next();
+        });
+      }
     });
 
     runInInjectionContext(connectionDirective.injector, () => {
@@ -506,7 +521,10 @@ export class ComponentFactory {
         .forEach((p: any) => {
           const eventProp = p.event ? p.event : p.name;
 
+          console.log('Setting up link property subscription for', p.name, eventProp);
+
           toObservable((link as any)[eventProp]).subscribe((value) => {
+            console.log('---- Link property changed:', p.name, value);
             this.propertyChanged.next({
               id,
               property: p.name,

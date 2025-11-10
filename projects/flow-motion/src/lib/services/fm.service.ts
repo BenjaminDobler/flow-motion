@@ -17,81 +17,132 @@ export type Bound = {
 
 export const inspectableLinkProperties: InspectableProperty[] = [
   {
+    category: 'Stroke',
     name: 'stroke',
     type: 'color',
   },
   {
+    category: 'Text',
     name: 'textOnPath',
     type: 'text',
+    label: 'Text',
   },
   {
+    category: 'Text',
+    name: 'alignTextToPath',
+    type: 'checkbox',
+    label: 'Align to Path',
+  },
+  {
+    category: 'Text',
+    name: 'color',
+    type: 'color',
+    label: 'Color',
+  },
+  {
+    category: 'Text',
+    name: 'fontSize',
+    type: 'number',
+    label: 'Font Size',
+  },
+  {
+    category: 'Stroke',
     name: 'strokeWidth',
     type: 'number',
+    label: 'Width',
   },
   {
+    category: 'Stroke',
     name: 'strokeDasharray',
     type: 'string',
+    label: 'Dash Array',
   },
   {
+    category: 'Curve',
     name: 'curveRadius',
     type: 'number',
+    label: 'Radius',
   },
   {
+    category: 'Animation',
     name: 'animationBubbleCount',
     type: 'number',
+    label: 'Count',
   },
   {
+    category: 'Animation',
     name: 'animationBubbleDuration',
     type: 'number',
+    label: 'Duration',
   },
   {
+    category: 'Animation',
     name: 'animationBubbleRadius',
     type: 'number',
+    label: 'Radius',
   },
   {
+    category: 'Animation',
     name: 'animationBubbleColor',
     type: 'color',
+    label: 'Color',
   },
   {
+    category: 'Animation',
     name: 'animate',
     type: 'checkbox',
+    label: 'Animate',
   },
   {
+    category: 'Curve',
     name: 'curveType',
+    label: 'Curve Type',
     type: 'select',
     options: ['bezier', 'straight', 'multi-line', 'orthogonal'],
   },
   {
+    category: 'Markers',
     name: 'startMarker',
+    label: 'Start Marker',
     type: 'select',
     options: ['none', 'arrow1', 'arrow2', 'circle', 'square', 'diamond'],
   },
   {
+    category: 'Markers',
     name: 'startMarkerOrient',
+    label: 'Start Marker Orient',
     type: 'select',
     options: ['auto', 'auto-start-reverse'],
   },
   {
+    category: 'Markers',
     name: 'endMarker',
     type: 'select',
+    label: 'End Marker',
     options: ['none', 'arrow1', 'arrow2', 'circle', 'square', 'diamond'],
   },
   {
+    category: 'Markers',
     name: 'endMarkerOrient',
     type: 'select',
+    label: 'End Marker Orient',
     options: ['auto', 'auto-start-reverse'],
   },
   {
+    category: 'Stroke',
     name: 'strokeDashoffset',
+    label: 'Dash Offset',
     type: 'number',
   },
   {
+    category: 'Stroke',
     name: 'pathprogress',
+    label: 'Path Progress',
     type: 'range',
     min: 0,
     max: 100,
     step: 1,
-  }
+  },
 ];
 
 export interface Link extends LinkProperties {
@@ -128,6 +179,9 @@ export interface LinkProperties {
   endMarker: WritableSignal<string>;
   endMarkerOrient: WritableSignal<string>;
   textOnPath: WritableSignal<string>;
+  alignTextToPath: WritableSignal<boolean>;
+  color: WritableSignal<string>;
+  fontSize: WritableSignal<number>;
   midPoint: WritableSignal<{ x: number; y: number }>;
   totalLength: WritableSignal<number>;
   pathprogress: WritableSignal<number>;
@@ -245,6 +299,9 @@ export class FMService {
         animationBubbleRadius: signal<number>(3),
         animationBubbleColor: signal<string>('#333'),
         textOnPath: signal<string>(''),
+        alignTextToPath: signal<boolean>(linkProperties?.strokeDasharray || false),
+        color: signal<string>(linkProperties?.color || '#000000'),
+        fontSize: signal<number>(linkProperties?.fontSize || 14),
         midPoint: signal<{ x: number; y: number }>({ x: 0, y: 0 }),
         totalLength: signal<number>(0),
         startMarker: signal(startMarker as string),

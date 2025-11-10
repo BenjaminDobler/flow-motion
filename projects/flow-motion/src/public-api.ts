@@ -29,7 +29,6 @@ export * from './lib/components/inspector/element-tree/tree-child/tree-child.com
 export * from './lib/components/inspector/element-tree/element-tree.component';
 export * from './lib/components/inspector/alignment-inspector/alignment-inspector.component';
 export * from './lib/components/inspector/connection-inspector/connection-inspector.component';
-export * from './lib/components/inspector/link-properties/link-properties.component';
 
 export* from './lib/directives/resize-directive';
 
