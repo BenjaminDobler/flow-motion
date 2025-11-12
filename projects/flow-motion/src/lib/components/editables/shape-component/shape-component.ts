@@ -6,12 +6,13 @@ import { InspectableProperty } from '../../../types/types';
 import { SelectionManager } from '../../../../public-api';
 import { FMProperty } from '../../fm-property/fm-property';
 import { FMContainer } from '../../fm-container/fm-container';
+import { BackgroundColorPropertyDirective } from '../../../directives/backgroundColorProperty.directive';
 
 @Component({
   selector: 'editable-container',
   imports: [FMProperty, FormsModule],
-  templateUrl: './container-component.component.html',
-  styleUrl: './container-component.component.scss',
+  templateUrl: './shape-component.html',
+  styleUrl: './shape-component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [
     {
@@ -20,8 +21,14 @@ import { FMContainer } from '../../fm-container/fm-container';
     },
   ],
 })
-export class ContainerComponent {
+export class ShapeComponent {
   static inspectableProperties: InspectableProperty[] = [
+    {
+      category: 'Shape',
+      name: 'shape',
+      type: 'select',
+      options: ['pipe', 'database', 'diamond'],
+    },
     {
       category: 'Typography',
       name: 'text',
@@ -58,7 +65,7 @@ export class ContainerComponent {
   ]);
 
   get inspectableProperties() {
-    return ContainerComponent.inspectableProperties;
+    return ShapeComponent.inspectableProperties;
   }
 
   type = 'container';
@@ -86,10 +93,16 @@ export class ContainerComponent {
   fontWeight = model<'normal' | 'bold' | 'bolder' | 'lighter' | number>('normal');
   container = inject(FMContainer);
 
+  shape = model<'pipe' | 'database' | 'diamond'>('pipe');
+
+  properties = inject(BackgroundColorPropertyDirective);
+
   contextMenu = inject(ContextMenu);
 
   constructor() {
     this.contextMenu.contextMenu = this.contextMenuData;
+
+    this.properties.autoSetProperties = false;
 
     if (this.container.displayName() === '') {
       this.container.displayName.set('Container ');

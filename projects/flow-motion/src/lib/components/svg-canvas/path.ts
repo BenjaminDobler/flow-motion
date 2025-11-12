@@ -6,6 +6,7 @@ import { SVGCanvas } from './svgcanvas';
 
 let idCount = 0;
 export class Path {
+  isMotionPath = false;
   d = signal<string>('');
   previewPathD = signal<string>('');
   points = signal<Point[]>([]);
@@ -169,6 +170,7 @@ export class Path {
     path.strokeDashoffset.set(data.strokeDashoffset);
     path.strokeLineJoint.set(data.strokeLineJoint);
     path.strokeLineCap.set(data.strokeLineCap);
+    path.isMotionPath = data.isMotionPath || false;
 
     const svgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     svgPath.setAttribute('d', data.d);

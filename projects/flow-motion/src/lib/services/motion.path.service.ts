@@ -30,7 +30,7 @@ export class MotionPathService {
             d = `M${selectedTween.start().value().x} ${selectedTween.start().value().y} L${selectedTween.end().value().x} ${selectedTween.end().value().y}`;
           }
           if (d) {
-            const path = Path.deserialize({ d, fill: 'none', stroke: '#00ff00' }, this.svg);
+            const path = Path.deserialize({ d, fill: 'none', stroke: '#00ff00', isMotionPath: true }, this.svg);
 
             this.svg.paths.update((paths) => {
               return [...paths, path];

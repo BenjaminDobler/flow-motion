@@ -3,10 +3,13 @@
   <textarea [style.fontSize]="fontSize() + 'px'" [style.color]="color()" [(ngModel)]="text" [style.fontWeight]="fontWeight()" #textArea></textarea>
 </div>
 
+
+
+
 <div [style.transform]="`scale(${linkScale()}) translateY(-50%)`" [fm-property]="'prop' + container.id() + '-left'" positioning="none" [draggable]="false" class="connector left-connector"></div>
 
 <div [style.transform]="`scale(${linkScale()}) translateY(-50%)`" [fm-property]="'prop' + container.id() + '-right'" positioning="none" [draggable]="false" class="connector right-connector"></div>
 
-<div [style.transform]="`scale(${linkScale()}) translateX(-50%)`"  [fm-property]="'prop' + container.id() + '-top'" positioning="none" [draggable]="false" class="connector top-connector"></div>
+<div [style.transform]="`scale(${linkScale()}) translateX(-50%)`" [fm-property]="'prop' + container.id() + '-top'" positioning="none" [draggable]="false" class="connector top-connector"></div>
 
 <div [style.transform]="`scale(${linkScale()}) translateX(-50%)`" [fm-property]="'prop' + container.id() + '-bottom'" positioning="none" [draggable]="false" class="connector bottom-connector"></div>

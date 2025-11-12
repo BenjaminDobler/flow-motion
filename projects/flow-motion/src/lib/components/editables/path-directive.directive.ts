@@ -112,6 +112,8 @@ export class PathDirectiveDirective {
 
   path = input.required<Path>();
 
+  hiddenContainer = input<boolean>(false);
+
   container = inject(FMContainer);
 
   selection = inject(SelectionManager);
@@ -180,7 +182,6 @@ export class PathDirectiveDirective {
 
     effect(() => {
       const d = this.path()?.d() || '';
-      console.log('Path d changed', d);
       untracked(() => {
         this.pathdata.set(d);
       });
@@ -188,9 +189,7 @@ export class PathDirectiveDirective {
 
     effect(() => {
       const pathdata = this.pathdata();
-      console.log('Path data changed', pathdata);
       if (pathdata !== this.path()?.d()) {
-        console.log('Updating path d from pathdata property', pathdata);
         untracked(() => {});
         //this.path()?.d.set(pathdata);
         this.path()?.setD(pathdata);
@@ -237,7 +236,6 @@ export class PathDirectiveDirective {
       if (this.dragging() || this.container.editMode()) {
         return;
       }
-      console.log('#####Path d changed for bounding box update', d);
 
       const rect = this.path()?.boundingBox();
       this.container.width.set(rect?.width || 0);
@@ -249,7 +247,6 @@ export class PathDirectiveDirective {
 
     effect(() => {
       const editMode = this.container.editMode();
-      console.log('Path edit mode changed', editMode);
       if (editMode) {
         this.path()?.editMode.set(true);
         if (this.path()) {
@@ -265,7 +262,6 @@ export class PathDirectiveDirective {
     effect(() => {
       const d = this.path()?.d() || '';
       const length = this.container.el?.nativeElement.getTotalLength();
-      console.log('Path total length ', length, ' for d ', d);
       this.totalLength.set(length || 0);
     });
 
@@ -338,7 +334,6 @@ export class PathDirectiveDirective {
     const p$ = outputToObservable(this.container.positionUpdated);
 
     p$.pipe(takeUntil(this.destroyed$)).subscribe((position) => {
-      console.log('position updated ', position);
       if (isBoundChange) {
         isBoundChange = false;
         return;
@@ -354,8 +349,10 @@ export class PathDirectiveDirective {
     });
 
     afterNextRender(() => {
-      this.container.id.set(this.path().id());
-      this.componentFactory.addSvgContainer(this.container, [this], true);
+      const path = this.path();
+      this.container.id.set(path.id());
+
+      this.componentFactory.addSvgContainer(this.container, [this], path.isMotionPath);
     });
   }
 

@@ -1144,6 +1144,100 @@
           }
         }
       }
+    },
+    "fm-canvas-demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/fm-canvas-demo",
+      "sourceRoot": "projects/fm-canvas-demo/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/fm-canvas-demo/src/main.ts",
+            "tsConfig": "projects/fm-canvas-demo/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/fm-canvas-demo/public"
+              }
+            ],
+            "styles": [
+              "projects/fm-canvas-demo/src/styles.scss"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "fm-canvas-demo:build:production"
+            },
+            "development": {
+              "buildTarget": "fm-canvas-demo:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/fm-canvas-demo/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/fm-canvas-demo/public"
+              }
+            ],
+            "styles": [
+              "projects/fm-canvas-demo/src/styles.scss"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/fm-canvas-demo/**/*.ts",
+              "projects/fm-canvas-demo/**/*.html"
+            ],
+            "eslintConfig": "projects/fm-canvas-demo/eslint.config.js"
+          }
+        }
+      }
     }
   },
   "schematics": {

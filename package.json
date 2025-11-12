@@ -13,7 +13,8 @@
     "ngx-pentool:build": "ng build ngx-pentool",
     "ngx-pentool:link": "node --experimental-strip-types scripts/link.lib.ts --project=ngx-pentool",
     "ui-components:link": "node --experimental-strip-types scripts/link.lib.ts --project=ui-components",
-    "link:libs": "npm run ui-components:link && npm run ngx-pentool:link"
+    "link:libs": "npm run ui-components:link && npm run ngx-pentool:link",
+    "serve:editor": "ng serve editor --configuration development"
   },
   "private": true,
   "dependencies": {

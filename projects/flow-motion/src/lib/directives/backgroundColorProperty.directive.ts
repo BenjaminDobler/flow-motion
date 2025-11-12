@@ -251,6 +251,8 @@ export class BackgroundColorPropertyDirective {
 
   backgroundColor = model('#333333');
 
+  autoSetProperties = true;
+
   borderRadius = model(0);
   borderColor = model('#000000');
   borderEnabled = model(false);
@@ -377,7 +379,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const filter = this.filter();
       if (content) {
@@ -388,7 +390,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const backdropFilter = this.backdropFilter();
       if (content) {
@@ -399,7 +401,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const backgroundColor = this.backgroundColor();
       if (content) {
@@ -410,7 +412,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const mixBlendMode = this.mixBlendMode();
 
@@ -418,7 +420,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const opacity = this.opacity();
       if (content) {
@@ -429,7 +431,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const borderRadius = this.borderRadius();
       if (content) {
@@ -440,7 +442,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const overflow = this.overflow();
       if (content) {
@@ -451,7 +453,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const border = this.border();
       if (content) {
@@ -462,7 +464,7 @@ export class BackgroundColorPropertyDirective {
     });
 
     effect(() => {
-      if (!inited()) return;
+      if (!inited() || !this.autoSetProperties) return;
 
       const boxShadow = this.shadowCss();
       if (content) {

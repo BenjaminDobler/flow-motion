@@ -9,18 +9,17 @@ export const CONTEXT_CLOSE = new InjectionToken<string>('CONTEXT_CLOSE');
 export const CONTEXT_INIT_DATA = new InjectionToken<string>('CONTEXT_INIT_DATA');
 export const CONTEXT_SELECTED = new InjectionToken<string>('CONTEXT_SELECTED');
 
-
 @Directive({
   selector: '[contextMenu]',
   host: {
     '(contextmenu)': 'open($event)',
+    '(click)': 'onClick($event)',
   },
 })
 export class ContextMenu {
-
-
-
   contextMenu = input<any>();
+
+  contextMenuType = input<'menu' | 'context'>('context');
 
   contextMenuClosed = output<void>();
   contextMenuSelected = output<any>();
@@ -62,7 +61,7 @@ export class ContextMenu {
           { provide: CONTEXT_MENU_DATA, useValue: this.contextMenu() },
           { provide: CONTEXT_CLOSE, useValue: () => this.close() },
           { provide: CONTEXT_INIT_DATA, useValue: event },
-          { provide: CONTEXT_SELECTED, useValue: (item: any) => this.contextMenuSelected.emit({data: item,initEvent: event}) },
+          { provide: CONTEXT_SELECTED, useValue: (item: any) => this.contextMenuSelected.emit({ data: item, initEvent: event }) },
         ],
       })
     );
@@ -78,6 +77,12 @@ export class ContextMenu {
       )
       .subscribe(() => this.close());
   }
+
+  onClick(event: MouseEvent) {
+    if (this.contextMenuType() === 'menu') {
+      this.open(event);
+    }
+  } 
 
   close(selectedItem?: any) {
     console.log('close context menu', selectedItem);

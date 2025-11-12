@@ -145,7 +145,7 @@
 @for (link of dragService.links(); track $index) {
   @if (link.textOnPath() !== '' && !link.alignTextToPath()) {
     <div [style.transform]="`translate(${link.midPoint().x}px, ${link.midPoint().y}px)`" style="position: absolute; left: 0; top: 0; pointer-events: none">
-      <div style="transform: translateX(-50%)" [style.fontSize.px]="link.fontSize()" [style.color]="link.color()">
+      <div style="transform: translate(-50%, -50%)" [style.fontSize.px]="link.fontSize()" [style.color]="link.color()">
         {{ link.textOnPath() }}
       </div>
     </div>

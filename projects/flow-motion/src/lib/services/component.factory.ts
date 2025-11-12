@@ -8,7 +8,7 @@ import { TextComponentComponent } from '../components/editables/text-component/t
 import { NodeTableComponent } from '../components/editables/node-table/node-table.component';
 import { SelectionManager } from './selection.manager';
 import { FMService, inspectableLinkProperties } from './fm.service';
-import { ConnectionDirective, FMContainer, FMItem, FMWorld, InspectableProperty, Link, Path, PathDirectiveDirective, SVGCanvas } from '../../public-api';
+import { ConnectionDirective, FMContainer, FMItem, FMWorld, InspectableProperty, Link, Path, PathDirectiveDirective, ShapeComponent, SVGCanvas } from '../../public-api';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 const componentNameToClass = {
@@ -16,6 +16,7 @@ const componentNameToClass = {
   _ImageComponent: ImageComponent,
   _TextComponentComponent: TextComponentComponent,
   _NodeTableComponent: NodeTableComponent,
+  _ShapeComponent: ShapeComponent,
 };
 
 @Injectable()
@@ -434,8 +435,8 @@ export class ComponentFactory {
   }
 
   addSvgContainer(container: FMContainer, directiveInstances: any[] = [], hidden = false) {
-    const pathDirective = container.injector.get(PathDirectiveDirective);
 
+    const pathDirective = container.injector.get(PathDirectiveDirective);
     this.containerElementMap.set(container, {
       instance: null,
       propertyDirectiveMap: new Map<string, any>(),
@@ -480,7 +481,10 @@ export class ComponentFactory {
 
     this.selectionManager.setContainerForEditing(container);
     if (!hidden) {
+      console.log('Adding SVG container', container.id());
       this.componentAdded.next({ id: container.id(), displayName: container.displayName() });
+    } else {
+      console.log('!!!! hidden');
     }
   }
 

@@ -40,5 +40,13 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/fm-canvas-demo/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/fm-canvas-demo/tsconfig.spec.json"
+    }
+  ]
 }

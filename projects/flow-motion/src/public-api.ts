@@ -6,6 +6,8 @@ export * from './lib/components/fm-container/fm-container';
 export * from './lib/components/fm-property/fm-property';
 export * from './lib/components/fm-world/fm-world';
 
+export * from './lib/components/editables/shape-component/shape-component'
+
 export * from './lib/services/fm.service';
 export * from './lib/services/selection.manager';
 export * from './lib/services/key.manager';
@@ -24,6 +26,8 @@ export * from './lib/components/editables/image/image.component';
 export * from './lib/components/editables/node-table/node-table.component';
 export * from './lib/components/editables/text-component/text-component.component';
 export * from './lib/components/editables/path-directive.directive';
+
+export * from './lib/components/fm-canvas/fm-canvas';
 
 export * from './lib/components/inspector/element-tree/tree-child/tree-child.component';
 export * from './lib/components/inspector/element-tree/element-tree.component';
