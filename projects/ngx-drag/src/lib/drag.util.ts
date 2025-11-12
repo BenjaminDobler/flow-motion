@@ -6,7 +6,6 @@ const mouseUp$ = fromEvent<PointerEvent>(document, 'pointerup').pipe(share());
 export function makeDraggable(element: HTMLElement, disabled$ = new BehaviorSubject<boolean>(false)) {
   const mouseDown$ =  fromEvent<PointerEvent>(element, 'pointerdown').pipe(
     filter((e: PointerEvent)=>{
-      console.log(e.button)
       return !(e.target as any).attributes.preventselection && e.button === 0;
     }),
     tap((e: PointerEvent) => {

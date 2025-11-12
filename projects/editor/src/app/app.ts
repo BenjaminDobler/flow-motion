@@ -41,9 +41,7 @@ import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
     TimelineComponent,
     NgSplitPanelComponent,
     NgSplitComponent,
-    ChildInspectorComponent,
-    EdSelectComponent,
-    EdSelectOptionComponent,
+    ChildInspectorComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',

@@ -1,4 +1,4 @@
-import { ComponentRef, effect, inject, Injectable, Injector, inputBinding, outputBinding, runInInjectionContext, ViewContainerRef } from '@angular/core';
+import { ComponentRef, inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { BackgroundColorPropertyDirective } from '../directives/backgroundColorProperty.directive';
@@ -7,8 +7,9 @@ import { ImageComponent } from '../components/editables/image/image.component';
 import { TextComponentComponent } from '../components/editables/text-component/text-component.component';
 import { NodeTableComponent } from '../components/editables/node-table/node-table.component';
 import { SelectionManager } from './selection.manager';
+import { ShapeComponent } from '../components/editables/shape-component/shape-component';
 import { FMService, inspectableLinkProperties } from './fm.service';
-import { ConnectionDirective, FMContainer, FMItem, FMWorld, InspectableProperty, Link, Path, PathDirectiveDirective, ShapeComponent, SVGCanvas } from '../../public-api';
+import { ConnectionDirective, FMContainer, FMItem, FMWorld, InspectableProperty, Link, Path, PathDirectiveDirective, SVGCanvas } from '../../public-api';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 const componentNameToClass = {
@@ -64,18 +65,6 @@ export class ComponentFactory {
     const directives = [FMContainer, BackgroundColorPropertyDirective];
 
     const directiveSetup = directives.map((d) => {
-      // const bindings = d.inspectableProperties
-      //   .filter((p) => p.event)
-      //   .map((p) => {
-      //     return outputBinding(p.event as string, (evt: any) => {
-      //       this.propertyChanged.next({
-      //         id,
-      //         property: p.name,
-      //         value: evt,
-      //       });
-      //     });
-      //   });
-
       return {
         type: d,
         bindings: [],
@@ -167,7 +156,7 @@ export class ComponentFactory {
 
     const el: any = {};
 
-    el.elementProperties = [];
+    el.properties = {};
     el.directives = [];
     el.id = child.id();
     el.elements = [];
@@ -179,15 +168,9 @@ export class ComponentFactory {
         if (!prop.noneSerializable) {
           try {
             if (!prop.isGetter) {
-              el.elementProperties.push({
-                name: prop.name,
-                value: container.instance[prop.name](),
-              });
+              el.properties[prop.name] = container.instance[prop.name]();
             } else {
-              el.elementProperties.push({
-                name: prop.name,
-                value: container.instance[prop.name],
-              });
+              el.properties[prop.name] = container.instance[prop.name];
             }
           } catch (error) {
             console.error('Error serializing property:', prop.name, error);
@@ -212,23 +195,16 @@ export class ComponentFactory {
     container?.directives.forEach((directive: any) => {
       el.directives.push({
         name: directive.constructor.name,
-        properties: [],
+        properties: {},
       });
 
       directive.inspectableProperties.forEach((prop: InspectableProperty) => {
-        // serialized[key][prop.name] = directive[prop.name];
         if (!prop.noneSerializable) {
           try {
             if (!prop.isGetter) {
-              el.directives[el.directives.length - 1].properties.push({
-                name: prop.name,
-                value: directive[prop.name](),
-              });
+              el.directives[el.directives.length - 1].properties[prop.name] = directive[prop.name]();
             } else {
-              el.directives[el.directives.length - 1].properties.push({
-                name: prop.name,
-                value: directive[prop.name],
-              });
+              el.directives[el.directives.length - 1].properties[prop.name] = directive[prop.name];
             }
           } catch (error) {
             console.error('Error serializing property:', prop.name, error);
@@ -282,18 +258,10 @@ export class ComponentFactory {
   deserializeElement(element: any, host?: any) {
     const addChildren = (el: any, componentHost: any) => {
       const componentClass = componentNameToClass[el.name as keyof typeof componentNameToClass];
-      let componentProps = el.elementProperties.reduce((acc: any, prop: any) => {
-        acc[prop.name] = prop.value;
-        return acc;
-      }, {});
 
+      let componentProps = el.properties;
       el.directives.forEach((dir: any) => {
-        const directiveProps = dir.properties.reduce((acc: any, prop: any) => {
-          acc[prop.name] = prop.value;
-          return acc;
-        }, {});
-
-        componentProps = { ...componentProps, ...directiveProps };
+        componentProps = { ...componentProps, ...dir.properties };
       });
 
       const cHost = this.addComponent(componentClass, componentProps, el.id, componentHost);
@@ -426,7 +394,6 @@ export class ComponentFactory {
     }
 
     (targetContainer?.instance as unknown as ContainerComponent).insertSlot.insert(childContainer?.componentRef.hostView);
-    //child.parentContainer = target;
     child.parent.set(target);
     target.addChild(child);
 
@@ -435,7 +402,6 @@ export class ComponentFactory {
   }
 
   addSvgContainer(container: FMContainer, directiveInstances: any[] = [], hidden = false) {
-
     const pathDirective = container.injector.get(PathDirectiveDirective);
     this.containerElementMap.set(container, {
       instance: null,
@@ -481,10 +447,7 @@ export class ComponentFactory {
 
     this.selectionManager.setContainerForEditing(container);
     if (!hidden) {
-      console.log('Adding SVG container', container.id());
       this.componentAdded.next({ id: container.id(), displayName: container.displayName() });
-    } else {
-      console.log('!!!! hidden');
     }
   }
 
@@ -520,23 +483,17 @@ export class ComponentFactory {
     });
 
     runInInjectionContext(connectionDirective.injector, () => {
-      link.inspectableProperties
-        //.filter((p) => p.event)
-        .forEach((p: any) => {
-          const eventProp = p.event ? p.event : p.name;
-
-          console.log('Setting up link property subscription for', p.name, eventProp);
-
-          toObservable((link as any)[eventProp]).subscribe((value) => {
-            console.log('---- Link property changed:', p.name, value);
-            this.propertyChanged.next({
-              id,
-              property: p.name,
-              value: value,
-            });
-            this.changes$.next();
+      link.inspectableProperties.forEach((p: any) => {
+        const eventProp = p.event ? p.event : p.name;
+        toObservable((link as any)[eventProp]).subscribe((value) => {
+          this.propertyChanged.next({
+            id,
+            property: p.name,
+            value: value,
           });
+          this.changes$.next();
         });
+      });
 
       this.changes$.next();
     });
@@ -545,7 +502,6 @@ export class ComponentFactory {
   }
 
   removeComponent(item: FMContainer) {
-    console.log('Removing component', item.id());
     const container = this.containerElementMap.get(item);
 
     container?.directives.forEach((d: any) => {

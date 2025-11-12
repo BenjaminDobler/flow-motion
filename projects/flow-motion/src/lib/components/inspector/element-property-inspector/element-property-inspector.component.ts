@@ -32,7 +32,6 @@ export class ElementPropertyInspectorComponent {
     const categories: any[] = [];
 
     let elements = this.selectionManager.selectionTargets();
-    console.log('Inspectable Elements:', elements);
     const editContainer = this.selectionManager.editContainer();
     if (editContainer) {
       elements = [...elements, editContainer];
@@ -50,9 +49,6 @@ export class ElementPropertyInspectorComponent {
     if (elements.length > 0) {
       const componentInstance = this.getComponentInstance(elements[0]);
       const directiveInstances = this.getDirectives(elements[0]);
-      console.log('Component Instance:', componentInstance);
-      console.log('Directive Instances:', directiveInstances);
-
       allInspectableProperties.push(...(componentInstance?.inspectableProperties.map((prop: InspectableProperty) => ({ ...prop, target: componentInstance })) || []));
       allInspectableProperties.push(...(directiveInstances?.flatMap((dir) => dir.inspectableProperties.map((prop: InspectableProperty) => ({ ...prop, target: dir }))) || []));
     }
