@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install --force
       - name: Build Flow Motion Editor
-        run: flow-motion-nx % npx nx build editor
+        run: npx nx build editor
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
