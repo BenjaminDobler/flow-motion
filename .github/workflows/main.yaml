@@ -17,10 +17,10 @@ jobs:
         with:
           node-version: 23
 
-      - name: Build libs
-        run: npm install --force && npm run build:libs && npm run link:libs
+      - name: Install dependencies
+        run: npm install --force
       - name: Build Flow Motion Editor
-        run: npm run build:prod
+        run: flow-motion-nx % npx nx build editor
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

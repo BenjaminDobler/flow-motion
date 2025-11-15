@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@richapps/flow-motion": ["libs/flow-motion/src/index.ts"],
+      "@richapps/ui-components": ["libs/ui-components/src/index.ts"],
+      "@richapps/ngx-split": ["libs/ngx-split/src/index.ts"],
+      "@richapps/ngx-drag": ["libs/ngx-drag/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

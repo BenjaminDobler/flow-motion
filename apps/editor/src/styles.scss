@@ -1,0 +1,16 @@
+@use 'pentool';
+//@use '@richapps/ui-components/theming' as ui-theme;
+@use 'ui-components';
+@import 'primeicons/primeicons.css';
+
+body {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.backgroundMode {
+    opacity: 0.2!important;
+}
