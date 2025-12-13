@@ -18,7 +18,8 @@
       "@richapps/flow-motion": ["libs/flow-motion/src/index.ts"],
       "@richapps/ui-components": ["libs/ui-components/src/index.ts"],
       "@richapps/ngx-split": ["libs/ngx-split/src/index.ts"],
-      "@richapps/ngx-drag": ["libs/ngx-drag/src/index.ts"]
+      "@richapps/ngx-drag": ["libs/ngx-drag/src/index.ts"],
+      "@richapps/nx-ngtron": ["tools/nx-ngtron/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

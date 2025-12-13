@@ -1,0 +1,51 @@
+{
+  "name": "nx-ngtron",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tools/nx-ngtron/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/tools/nx-ngtron",
+        "main": "tools/nx-ngtron/src/index.ts",
+        "tsConfig": "tools/nx-ngtron/tsconfig.lib.json",
+        "assets": [
+          "tools/nx-ngtron/*.md",
+          {
+            "input": "./tools/nx-ngtron/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./tools/nx-ngtron/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./tools/nx-ngtron",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./tools/nx-ngtron",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/tools/nx-ngtron"
+      }
+    }
+  }
+}
